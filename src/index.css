@@ -1,69 +1,20 @@
+@import "tailwindcss";
+
+
+
+
 :root {
-  @import "tailwindcss";
+  
   
   /* color */
   --bg: #F6F4EF;
-  --surface: #FFFFFF;
-  --surface-alt: #FBFAF6;
-  --border: #E6E2D8;
-  --border-strong: #D6D0C1;
-
+ 
   --text: #20241F;
-  --text-secondary: #5F6459;
-  --text-muted: #94988C;
-
-  --primary: #2E6F62;
-  --primary-hover: #255A50;
-  --primary-light: #E4EFEA;
-  --primary-text-on: #FFFFFF;
-
-  --danger: #C1442E;
-  --danger-light: #FBEAE5;
-  --danger-hover: #A63A26;
-
-  --warning: #C87A2E;
-  --warning-light: #FBEEE0;
-
-  --amber: #AD8A1E;
-  --amber-light: #FBF3D9;
-
-  --safe: #4C7A5E;
-  --safe-light: #E9F2EC;
-
-  --status-open-bg: #E5EEFA;
-  --status-open-text: #2E5FA3;
-  --status-progress-bg: #EFE7FA;
-  --status-progress-text: #6B4FB0;
-  --status-resolved-bg: #E3F3E9;
-  --status-resolved-text: #2C8A57;
-  --status-closed-bg: #ECEBE7;
-  --status-closed-text: #6B6F63;
-
-  /* spacing */
-  --sp-1: 4px;
-  --sp-2: 8px;
-  --sp-3: 12px;
-  --sp-4: 16px;
-  --sp-5: 20px;
-  --sp-6: 24px;
-  --sp-8: 32px;
-  --sp-10: 40px;
-  --sp-12: 48px;
-
-  /* radius */
-  --r-sm: 8px;
-  --r-md: 12px;
-  --r-lg: 16px;
-  --r-pill: 999px;
-
-  /* shadow */
-  --shadow-sm: 0 1px 2px rgba(20, 20, 14, 0.05);
-  --shadow-md: 0 6px 16px rgba(20, 20, 14, 0.07);
-  --shadow-lg: 0 16px 40px rgba(20, 20, 14, 0.14);
-
-  --sidebar-w: 248px;
-  --topbar-h: 64px;
+ 
 }
+
+
+
 
 * {
   box-sizing: border-box;

@@ -1,7 +1,8 @@
-
+import React from 'react'
 import { useState } from 'react'
 
-import Issues from './Issues/Issues.jsx'
+import Issues from './Components/IssuesList/IssuesList.jsx'
+import Dashboard from './Components/Dashboard/Dashboard.jsx'
 import './App.css'
 
 function App() {
@@ -13,7 +14,7 @@ function App() {
 		<div className='min-h-screen bg-white text-slate-900 '>
 			{/* SIDEBAR */}
 			
-			<aside className='fixed inset-y-0 left-0 w-68 border-r border-slate-200 bg-white '>
+			<aside className='fixed inset-y-0 left-0 w-62 border-r border-slate-200 bg-white '>
 				{/* Logo */}
 				  <div className="flex h-20 items-center p-6 border-b border-slate-200">
 					<div className='flex bg-teal-700 w-5 h-5 p-4 justify-center items-center rounded-lg'>
@@ -23,13 +24,13 @@ function App() {
 						<h1 className='font-bold text-xl'>
 							Tugon
 						</h1>
-						<p className=' font-thin text-xs text-olive-400'>Report. Respond. Resolve</p>
+						  <p className=' font-thin text-[11px] text-olive-400'>Report. Respond. Resolve</p>
 					</div>
 				</div>
 
 				{/* Navigation */}
 				<nav className='p-3 py-5'>
-					  <a className='flex mb-1 items-center gap-3 rounded-lg  px-3 py-3 text-sm font-semibold text-green-800 bg-teal-700/10' href="">
+					  <a className='flex mb-1 items-center gap-3 rounded-lg  px-3 py-3 text-sm font-semibold text-green-800 bg-green-700/10' href="">
 						<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
 							fill="currentColor" viewBox="0 0 24 24" >
 							{/* <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free--> */}
@@ -92,38 +93,94 @@ function App() {
 
 			</aside>
 			
-			<div>
+			<div className='ml-62'>
 				{/* Top Bar */}
-				<header>
+				<header className='flex h-16 items-center justify-between border-b border-slate-200 bg-white px-8'>
 
 					{/* Search */}
-					<div>
-						<input type="text" />
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-								fill="currentColor" viewBox="0 0 24 24" >
-								{/* <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free--> */}
-								<path d="M18 10c0-4.41-3.59-8-8-8s-8 3.59-8 8 3.59 8 8 8c1.85 0 3.54-.63 4.9-1.69l5.1 5.1L21.41 20l-5.1-5.1A8 8 0 0 0 18 10M4 10c0-3.31 2.69-6 6-6s6 2.69 6 6-2.69 6-6 6-6-2.69-6-6"></path>
+					
+					  <div className="
+							flex h-8 w-72
+							items-center
+							rounded-lg
+							border border-slate-200
+							transition
+							focus-within:border-green-700
+							focus-within:ring-2
+							focus-within:ring-green-700/20
+							">
+						<input
+							type="text"
+							placeholder="Search for Issues"
+							className="
+							h-full w-full
+							bg-transparent
+							px-3
+							text-xs
+							outline-none
+							placeholder:text-slate-400/60
+							"
+						/>
+
+						<button
+							type="button"
+							className="
+							flex h-full
+							items-center justify-center
+							border-l border-slate-200
+							px-3
+							text-green-800
+							transition-colors
+							hover:bg-green-50
+							hover:rounded-r-lg
+							active:bg-teal-700
+							active:text-white
+							active:rounded-r-lg
+    						"						
+						>
+							<svg
+								xmlns="http://www.w3.org/2000/svg"
+								width="20"
+								height="20"
+								fill="currentColor"
+								viewBox="0 0 24 24"
+							>
+								<path d="M18 10c0-4.41-3.59-8-8-8s-8 3.59-8 8 3.59 8 8 8c1.85 0 3.54-.63 4.9-1.69l5.1 5.1L21.41 20l-5.1-5.1A8 8 0 0 0 18 10M4 10c0-3.31 2.69-6 6-6s6 2.69 6 6-2.69 6-6 6-6-2.69-6-6" />
 							</svg>
+						</button>
 					</div>
+
+
 					{/* Right Side */}
-					<div>
-						<div>
-							<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+					<div className='flex items-center gap-5 ms-auto'>
+						<button className='rounded-lg p-1 border border-slate-200 hover:bg-green-50
+							hover:rounded-r-lg
+							active:bg-teal-700
+							active:text-white
+							relative'>
+							<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
 								fill="currentColor" viewBox="0 0 24 24" >
 								{/* <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free--> */}
 								<path d="M19 12.59V10c0-3.22-2.18-5.93-5.14-6.74C13.57 2.52 12.85 2 12 2s-1.56.52-1.86 1.26C7.18 4.08 5 6.79 5 10v2.59L3.29 14.3a1 1 0 0 0-.29.71v2c0 .55.45 1 1 1h16c.55 0 1-.45 1-1v-2c0-.27-.11-.52-.29-.71zM19 16H5v-.59l1.71-1.71a1 1 0 0 0 .29-.71v-3c0-2.76 2.24-5 5-5s5 2.24 5 5v3c0 .27.11.52.29.71L19 15.41zm-4.18 4H9.18c.41 1.17 1.51 2 2.82 2s2.41-.83 2.82-2"></path>
 							</svg>
-						</div>
-						<div></div>
+							  <span class="dot absolute top-[3px] right-[4px] w-[7px] h-[7px] rounded-full bg-red-600 border-2 border-white"></span>
+						</button>
+						{/* <div></div> */}
 
-						<div>
-							<div>
+						  <div className='flex  group items-center gap-3 rounded-4xl p-1 pr-2 border border-slate-200 
+							active:bg-teal-700
+							active:text-white
+							cursor-pointer'>
+							  <div className='rounded-3xl p-2 bg-teal-700 text-white font-bold
+							  	group-active:bg-white
+								group-active:text-green-700'>
 								TC
 							</div>
-							<span>Tom Cook</span>
-							<span>
-								˅
-							</span>
+							<div className='flex flex-col px-1'>
+								<span className='font-semibold'>Tom Cook</span>
+								  <span className=' font-thin text-[11px] text-olive-400'>Coordinator</span>
+							</div>
+							
 						</div>
 						
 
@@ -132,7 +189,8 @@ function App() {
 				</header>
 
 				{/* Main Content */}
-				<main></main>
+				<Dashboard />
+				<Issues />
 			</div>
 
 		</div>
