@@ -95,7 +95,7 @@ function App() {
 			
 			<div className='ml-62'>
 				{/* Top Bar */}
-				<header className='flex h-16 items-center justify-between border-b border-slate-200 bg-white px-8'>
+				<header className='sticky top-0 z-50 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-8'>
 
 					{/* Search */}
 					
@@ -163,7 +163,7 @@ function App() {
 								{/* <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free--> */}
 								<path d="M19 12.59V10c0-3.22-2.18-5.93-5.14-6.74C13.57 2.52 12.85 2 12 2s-1.56.52-1.86 1.26C7.18 4.08 5 6.79 5 10v2.59L3.29 14.3a1 1 0 0 0-.29.71v2c0 .55.45 1 1 1h16c.55 0 1-.45 1-1v-2c0-.27-.11-.52-.29-.71zM19 16H5v-.59l1.71-1.71a1 1 0 0 0 .29-.71v-3c0-2.76 2.24-5 5-5s5 2.24 5 5v3c0 .27.11.52.29.71L19 15.41zm-4.18 4H9.18c.41 1.17 1.51 2 2.82 2s2.41-.83 2.82-2"></path>
 							</svg>
-							  <span class="dot absolute top-[3px] right-[4px] w-[7px] h-[7px] rounded-full bg-red-600 border-2 border-white"></span>
+							  <span className="dot absolute top-[3px] right-[4px] w-[7px] h-[7px] rounded-full bg-red-600 border-2 border-white"></span>
 						</button>
 						{/* <div></div> */}
 
@@ -177,7 +177,7 @@ function App() {
 								TC
 							</div>
 							<div className='flex flex-col px-1'>
-								<span className='font-semibold'>Tom Cook</span>
+								<span className='font-semibold'>Tom Cookerist</span>
 								  <span className=' font-thin text-[11px] text-olive-400'>Coordinator</span>
 							</div>
 							
@@ -189,8 +189,12 @@ function App() {
 				</header>
 
 				{/* Main Content */}
-				<Dashboard />
-				<Issues />
+				  <div className='p-5 bg-[#F6F4EF] h-screen'>
+					<Dashboard />
+
+					<Issues />
+				</div>
+				
 			</div>
 
 		</div>
