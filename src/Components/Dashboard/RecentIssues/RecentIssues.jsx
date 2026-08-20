@@ -42,8 +42,7 @@ const issues = [
     },
 ];
 
-// Maps each possible value to a Tailwind color pair (background + text).
-// Centralizing this means the <Badge> component doesn't need if/else chains.
+
 const priorityStyles = {
     Critical: "bg-red-600/10 text-red-600",
     High: "bg-orange-600/10 text-orange-600",
