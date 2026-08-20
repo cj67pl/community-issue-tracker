@@ -1,6 +1,7 @@
 import KPICard from "./KPICard/KPICard";
 import IssuesGraph from "./IssuesGraph/IssuesGraph";
 import UrgentsList from "./UrgentsList/UrgentsList";
+import RecentIssues from "./RecentIssues/RecentIssues";
 
 import kpiCardsData from '../../data/KpiCardsData'
 
@@ -60,6 +61,8 @@ function Dashboard() {
                 <IssuesGraph />
                 <UrgentsList />
             </div>
+
+            <RecentIssues />
             
         </div>
     )
