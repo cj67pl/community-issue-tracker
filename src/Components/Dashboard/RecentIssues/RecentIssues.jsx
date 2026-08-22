@@ -1,5 +1,5 @@
 import { FaChevronRight } from "react-icons/fa6";
-
+import Badge from "../../common/Badge";
 
 const issues = [
     {
@@ -58,15 +58,16 @@ const statusStyles = {
     Resolved: "bg-emerald-50 text-emerald-700",
 };
 
-function Badge({ label, styles }) {
-    return (
-        <span
-            className={`inline-block shrink-0 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold ${styles}`}
-        >
-            {label}
-        </span>
-    );
-}
+// function Badge({ label, styles }) {
+//     return (
+//         <span
+//             className={`inline-block shrink-0 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold ${styles}`}
+//         >
+//             {label}
+//         </span>
+
+//     );
+// }
 
 
 function RecentIssues({label, styles}) {
@@ -74,7 +75,7 @@ function RecentIssues({label, styles}) {
         <div className="w-full rounded-xl border border-gray-200 bg-white shadow-sm my-5 ">
             
             <div className="px-6 py-4">
-                <h2 className="text-lg font-bold text-gray-900">Recent Issues</h2>
+                <h3 className="text-lg font-bold text-gray-900">Recent Issues</h3>
             </div>
             
             <div className="overflow-x-auto">   

@@ -1,4 +1,5 @@
 import { FaChevronRight } from "react-icons/fa6";
+import Badge from "../../common/Badge";
 
 const urgentsData = [
     {
@@ -46,13 +47,13 @@ const statusStyles = {
     "In Progress": { text: "text-purple-500", bg: "bg-purple-500/10" },
 };
 
-function Pill({ label, text, bg }) {
-    return (
-        <span className={`rounded-full px-3 py-1 text-xs font-semibold ${bg} ${text}`}>
-            {label}
-        </span>
-    );
-}
+// function Pill({ label, text, bg }) {
+//     return (
+//         <span className={`rounded-full px-3 py-1 text-xs font-semibold ${bg} ${text}`}>
+//             {label}
+//         </span>
+//     );
+// }
 
 function UrgentsList() {
     return (
@@ -81,8 +82,10 @@ function UrgentsList() {
 
                             <div className="flex flex-row items-center gap-8">
                                 <div className="flex flex-row gap-4">
-                                    <Pill label={data.priorityLevel} text={priority.text} bg={priority.bg} />
-                                    <Pill label={data.respondStatus} text={status.text} bg={status.bg} />
+                                    {/* <Pill label={data.priorityLevel} text={priority.text} bg={priority.bg} /> */}
+                                    <Badge label={data.priorityLevel} styles={[priority.text, priority.bg]} />
+                                    {/* <Pill label={data.respondStatus} text={status.text} bg={status.bg} /> */}
+                                    <Badge label={data.respondStatus} styles={[status.text, status.bg]} bg={status.bg} />
                                 </div>
                                 <span className="text-xs text-gray-400">{data.dateReported}</span>
                             </div>
