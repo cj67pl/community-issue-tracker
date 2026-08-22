@@ -1,7 +1,12 @@
-import KPICard from "./KPICard/KPICard";
-import IssuesGraph from "./IssuesGraph/IssuesGraph";
-import UrgentsList from "./UrgentsList/UrgentsList";
-import RecentIssues from "./RecentIssues/RecentIssues";
+
+
+
+import KPICard from "../../components/Dashboard/KPICard/KPICard";
+import IssuesGraph from "../../components/Dashboard/IssuesGraph/IssuesGraph";
+import UrgentsList from "../../components/Dashboard/UrgentsList/UrgentsList";
+import RecentIssues from "../../components/Dashboard/RecentIssues/RecentIssues";
+import { IoIosAdd } from "react-icons/io";
+
 
 import kpiCardsData from '../../data/KpiCardsData'
 
@@ -28,12 +33,8 @@ function Dashboard() {
                             hover:bg-teal-800
                 "   
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15"
-                        fill="currentColor" viewBox="0 0 24 24" >
-                        {/* <!--Boxicons v3.0.8 https://boxicons.com | License  https://docs.boxicons.com/free--> */}
-                        <path d="M3 13h8v8h2v-8h8v-2h-8V3h-2v8H3z"></path>
-                    </svg>
-                    Report issue
+                    <IoIosAdd size={25}/>
+                    <span className="hidden sm:inline">Report issue</span>
                 </button>
             </div>   
 

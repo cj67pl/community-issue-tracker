@@ -1,3 +1,5 @@
+import { FaChevronRight } from "react-icons/fa6";
+
 const urgentsData = [
     {
         id: crypto.randomUUID(),
@@ -92,7 +94,7 @@ function UrgentsList() {
             <div className="border-t border-slate-200 px-6 py-3">
                 <button className="flex items-center gap-1 text-sm font-medium text-teal-700 hover:underline">
                     View all issues
-                    <span aria-hidden>›</span>
+                    <FaChevronRight className="w-2 h-2" />
                 </button>
             </div>
         </div>

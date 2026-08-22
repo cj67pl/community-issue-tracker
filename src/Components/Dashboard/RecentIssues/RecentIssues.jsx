@@ -1,3 +1,5 @@
+import { FaChevronRight } from "react-icons/fa6";
+
 
 const issues = [
     {
@@ -59,7 +61,7 @@ const statusStyles = {
 function Badge({ label, styles }) {
     return (
         <span
-            className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${styles}`}
+            className={`inline-block shrink-0 whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold ${styles}`}
         >
             {label}
         </span>
@@ -78,7 +80,7 @@ function RecentIssues({label, styles}) {
             <div className="overflow-x-auto">   
                 <table className="w-full border-collapse text-left">
                     <thead>
-                    <tr className="border-y border-gray-100">
+                        <tr className="border-y border-slate-200">
                         {["Issue", "Category", "Location", "Priority", "Status", "Reported"].map(
                         (heading) => (
                             <th
@@ -93,7 +95,7 @@ function RecentIssues({label, styles}) {
                     </thead>
                     <tbody>
                     {issues.map((row) => (
-                        <tr key={row.issue} className="border-b border-gray-100 last:border-b-0">
+                        <tr key={row.issue} className="border-b border-slate-200 last:border-b-0">
                         <td className="px-6 py-4 text-sm font-semibold text-gray-900">
                             {row.issue}
                         </td>
@@ -117,7 +119,7 @@ function RecentIssues({label, styles}) {
             <div className="border-t border-slate-200 px-6 py-3">
                 <button className="flex items-center gap-1 text-sm font-medium text-teal-700 hover:underline">
                     View all issues
-                    <span aria-hidden>›</span>
+                    <FaChevronRight className="w-2 h-2" />
                 </button>
             </div>
             

@@ -1,4 +1,5 @@
-import {PieChart, Pie, Cell, ResponsiveContainer} from "recharts";
+import {PieChart, Pie, Sector, ResponsiveContainer} from "recharts";
+import { FaChevronRight } from "react-icons/fa6";
 
 const data = [
         { name: "Maintenance", value: 13, color: "#0f5c4c" },
@@ -25,21 +26,24 @@ function IssuesGraph() {
                 
                 <div className="relative h-54 w-50 shrink-0">
                     <ResponsiveContainer width="100%" height="100%">
-                    <PieChart>
-                        <Pie
-                        data={data}
-                        dataKey="value"
-                        nameKey="name"
-                        innerRadius="68%"
-                        outerRadius="100%"
-                        paddingAngle={1}
-                        stroke="none"
-                        >
-                        {data.map((entry, i) => (
-                            <Cell key={i} fill={entry.color} />
-                        ))}
-                        </Pie>
-                    </PieChart>
+                        <PieChart>
+                            <Pie
+                                data={data}
+                                dataKey="value"
+                                nameKey="name"
+                                innerRadius="68%"
+                                outerRadius="100%"
+                                paddingAngle={1}
+                                stroke="none"
+                                
+                                
+                                shape={(props) => {
+                                    const {index} = props;
+                                    const entryColor = data[index]?.color || '#88884d8';
+                                    return <Sector {...props} fill={entryColor} />;
+                                }}
+                            />
+                        </PieChart>
                     </ResponsiveContainer>
         
                     {/* Center text, absolutely positioned over the chart */}
@@ -71,8 +75,8 @@ function IssuesGraph() {
                 
                 <div className="flex border-t border-slate-200 px-6 py-3 items-center">
                     <button className="flex items-center gap-1 text-sm font-medium text-teal-700 hover:underline ">
-                    View full report
-                    <span aria-hidden>›</span>
+                        View full report
+                        <FaChevronRight className="w-2 h-2" />
                     </button>
                 </div>
             </div>
