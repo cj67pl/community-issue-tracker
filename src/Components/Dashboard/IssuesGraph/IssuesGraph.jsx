@@ -15,14 +15,14 @@ function IssuesGraph() {
     
 
     return (
-        <div className="w-full max-w-2xl rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div className="w-full sm:min-w-xs max-w-2xl rounded-xl border border-gray-200 bg-white shadow-sm">
             
             <div className="border-b border-slate-200 px-6 py-4">
                 <h3 className="text-lg font-bold text-gray-900">Issues by Category</h3>
             </div>
     
             
-            <div className="flex items-center gap-8 px-6 py-6">
+            <div className="flex items-center gap-8 px-6 py-6 ">
                 
                 <div className="relative h-54 w-50 shrink-0">
                     <ResponsiveContainer width="100%" height="100%">
@@ -56,12 +56,12 @@ function IssuesGraph() {
                 {/* Legend */}
                 <div className="flex-1 space-y-3">
                     {data.map((d) => (
-                    <div key={d.name} className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <span
-                            className="h-2.5 w-2.5 rounded-full"
-                            style={{ backgroundColor: d.color }}
-                            />
+                        <div key={d.name} className="flex flex-col items-start justify-start sm:flex-row sm:items-center sm:justify-between gap-1 ">
+                            <div className="flex items-center gap-2  ">
+                                <span
+                                className="h-2.5 w-2.5 rounded-full "
+                                style={{ backgroundColor: d.color }}
+                                />
                             <span className="text-sm text-gray-700">{d.name}</span>
                         </div>
                         <span className="text-sm text-gray-400">

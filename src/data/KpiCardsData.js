@@ -12,6 +12,7 @@ const kpiCardsData = [
 		icon: ClipboardList,
 		color: "text-green-700",
 		background: "bg-green-700/10",
+		statsData: "38",
 		statsDescription: "All reported issues",
 	},
 	{
@@ -19,6 +20,7 @@ const kpiCardsData = [
 		icon: CircleAlert,
 		color: "text-sky-700",
 		background: "bg-sky-700/10",
+		statsData: "16",
 		statsDescription: "Awaiting response",
 	},
 	{
@@ -26,6 +28,7 @@ const kpiCardsData = [
 		icon: RefreshCw,
 		color: "text-purple-500",
 		background: "bg-purple-500/10",
+		statsData: "8",
 		statsDescription: "Being addressed",
 	},
 	{
@@ -33,6 +36,7 @@ const kpiCardsData = [
 		icon: CheckCircle2,
 		color: "text-green-600",
 		background: "bg-green-600/10",
+		statsData: "14",
 		statsDescription: "This month",
 	},
 	{
@@ -40,6 +44,7 @@ const kpiCardsData = [
 		icon: TriangleAlert,
 		color: "text-red-700",
 		background: "bg-red-700/10",
+		statsData: "3",
 		statsDescription: "Needs immediate action",
 	},
 ];

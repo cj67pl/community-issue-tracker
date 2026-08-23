@@ -1,62 +1,11 @@
 import { FaChevronRight } from "react-icons/fa6";
-import Badge from "../../common/Badge";
-
-const issues = [
-    {
-        issue: "No internet connection",
-        category: "Internet / Tech",
-        location: "Computer Lab",
-        priority: "Critical",
-        status: "Open",
-        reported: "Aug 12",
-    },
-    {
-        issue: "Broken window in classroom",
-        category: "Infrastructure",
-        location: "Room 201",
-        priority: "High",
-        status: "Open",
-        reported: "Aug 14",
-    },
-    {
-        issue: "Water leak in restroom",
-        category: "Utilities",
-        location: "Building A",
-        priority: "Medium",
-        status: "In Progress",
-        reported: "Aug 13",
-    },
-    {
-        issue: "Street light not working",
-        category: "Safety",
-        location: "Parking Area",
-        priority: "Low",
-        status: "Open",
-        reported: "Aug 12",
-    },
-    {
-        issue: "Garbage not collected",
-        category: "Sanitation",
-        location: "Back Gate",
-        priority: "Low",
-        status: "Resolved",
-        reported: "Aug 11",
-    },
-];
+import Badge from "../../../common/Badge";
+import { priorityStyles, recentIssues, statusStyles } from "../../issuesData";
 
 
-const priorityStyles = {
-    Critical: "bg-red-600/10 text-red-600",
-    High: "bg-orange-600/10 text-orange-600",
-    Medium: "bg-amber-500/10 text-amber-500",
-    Low: "bg-green-700/10 text-green-700",
-};
 
-const statusStyles = {
-    Open: "bg-sky-700/10 text-sky-700",
-    "In Progress": "bg-purple-500/10 text-purple-500",
-    Resolved: "bg-emerald-50 text-emerald-700",
-};
+
+
 
 // function Badge({ label, styles }) {
 //     return (
@@ -72,7 +21,7 @@ const statusStyles = {
 
 function RecentIssues({label, styles}) {
     return (
-        <div className="w-full rounded-xl border border-gray-200 bg-white shadow-sm my-5 ">
+        <div className="w-full rounded-xl min-w-sm border border-gray-200 bg-white shadow-sm my-5 ">
             
             <div className="px-6 py-4">
                 <h3 className="text-lg font-bold text-gray-900">Recent Issues</h3>
@@ -95,7 +44,7 @@ function RecentIssues({label, styles}) {
                     </tr>
                     </thead>
                     <tbody>
-                    {issues.map((row) => (
+                    {recentIssues.map((row) => (
                         <tr key={row.issue} className="border-b border-slate-200 last:border-b-0">
                         <td className="px-6 py-4 text-sm font-semibold text-gray-900">
                             {row.issue}
@@ -104,6 +53,7 @@ function RecentIssues({label, styles}) {
                         <td className="px-6 py-3 text-sm text-gray-500">{row.location}</td>
                         <td className="px-6 py-3">
                             <Badge label={row.priority} styles={priorityStyles[row.priority]} />
+                            {/* <Badge label={row.priority} styles={priorityStyles[row.priority]} /> */}
                         </td>
                         <td className="px-6 py-3">
                             <Badge label={row.status} styles={statusStyles[row.status]} />

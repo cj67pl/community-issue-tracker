@@ -1,10 +1,15 @@
 import { useState } from "react";
 
+import Login from "./pages/Auth/Login/Login.jsx"
 
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
 import Topbar from "./components/Topbar/Topbar.jsx";
-import IssuesPage from "./pages/IssuesPage/IssuesPage.jsx";
-import Dashboard from "./pages/Dashboard/Dashboard.jsx";
+import IssuesPage from "./pages/Coordinator/IssuesPage/IssuesPage.jsx";
+import Dashboard from "./pages/Coordinator/Dashboard/Dashboard.jsx";
+import ReportIssue from "./pages/Coordinator/ReportIssue/ReportIssue.jsx";
+import Reports from "./pages/Coordinator/Reports/Reports.jsx";
+import SettingsPage from "./pages/Coordinator/SettingsPage/SettingsPage.jsx";
+import HelpPage from "./pages/Coordinator/HelpPage/HelpPage.jsx"
 import "./App.css";
 
 function App() {
@@ -35,6 +40,11 @@ function App() {
 				<div className="p-5 bg-[#F6F4EF] h-screen">
 					{currentPage === "dashboard" && <Dashboard />}
 					{currentPage === "issues" && <IssuesPage />}
+					{currentPage === "report" && <ReportIssue />}
+					{currentPage === "reports" && <Reports />}
+					{currentPage === "settings" && <SettingsPage/>}
+					{currentPage === "help" && <HelpPage />}
+					{currentPage === "logout" && <Login />}
 				</div>
 			</div>
 		</div>

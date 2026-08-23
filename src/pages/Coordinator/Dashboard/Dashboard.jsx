@@ -1,14 +1,14 @@
 
 
 
-import KPICard from "../../components/Dashboard/KPICard/KPICard";
-import IssuesGraph from "../../components/Dashboard/IssuesGraph/IssuesGraph";
-import UrgentsList from "../../components/Dashboard/UrgentsList/UrgentsList";
-import RecentIssues from "../../components/Dashboard/RecentIssues/RecentIssues";
+import KPICard from "../../../common/KPICard";
+import IssuesGraph from "../../../components/Dashboard/IssuesGraph/IssuesGraph";
+import UrgentsList from "../../../components/Dashboard/UrgentsList/UrgentsList";
+import RecentIssues from "../../../components/Dashboard/RecentIssues/RecentIssues";
 import { IoIosAdd } from "react-icons/io";
 
 
-import kpiCardsData from '../../data/KpiCardsData'
+import kpiCardsData from '../../../data/KpiCardsData'
 
 function Dashboard() {
     

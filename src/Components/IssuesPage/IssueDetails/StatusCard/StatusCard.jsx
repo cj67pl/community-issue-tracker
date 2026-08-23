@@ -1,8 +1,8 @@
 import { useState } from "react";
 import FilterSelect from "../../FilterSelect/FilterSelect.jsx";
-import Badge from "../../../common/Badge";
-import {statusOptions} from "../../filterOptions.js";
-import {statusStyles} from "../../issuesData.js"
+import Badge from "../../../../common/Badge";
+import {statusOptions} from "../../../filterOptions.js";
+import {statusStyles} from "../../../issuesData.js"
 import { IoIosArrowRoundForward } from "react-icons/io";
 
 

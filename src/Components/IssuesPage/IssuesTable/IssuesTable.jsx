@@ -1,6 +1,6 @@
 import { Trash2, Pencil } from "lucide-react";
-import Badge from "../../common/Badge.jsx";
-import { priorityStyles, statusStyles } from "../issuesData.js";
+import Badge from "../../../common/Badge.jsx";
+import { priorityStyles, statusStyles } from "../../issuesData.js";
 
 const columns = ["Issue", "Category", "Location", "Priority", "Status", "Reported", ""];
 

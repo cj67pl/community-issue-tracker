@@ -1,6 +1,8 @@
+
+
 function Description({description}) {
     return(
-        <div className="my-5 w-full max-w-3xl  min-w-sm rounded-xl border border-gray-200 bg-white shadow-sm">
+        <div className="my-5 w-full xl:max-w-3xl  min-w-md md:max-w-md sm:max-w-md rounded-xl border border-gray-200 bg-white shadow-sm">
 
 
             <div className="border-b border-slate-200 px-6 py-4">

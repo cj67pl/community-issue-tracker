@@ -1,12 +1,14 @@
 import { ChevronLeft, Plus, Trash, Pencil} from "lucide-react";
 import ActionButton from "./ActionButton";
-import { priorityStyles, statusStyles } from "../issuesData.js";
-import { issue } from "../issueDetails.js";
-import Badge from "../../common/Badge";
+import { priorityStyles, statusStyles } from "../../issuesData.js";
+import { issue } from "../../issueDetails.js";
+import Badge from "../../../common/Badge";
 import IssueInfo from "./IssueInfo/IssueInfo.jsx"
 import StatusCard from "./StatusCard/StatusCard.jsx";
 import Description from "./Description/Description.jsx"
-
+import ReporterCard from "./ReporterCard/ReporterCard.jsx";
+import Notes from "./NotesCard/NotesCard.jsx";
+import { getInitials } from "../../funcs.js";
 
 const actionData = [
     {
@@ -25,7 +27,7 @@ const actionData = [
     }
 ]
 
-
+// const getInitials = (str) => str.trim().split(/\s+/).map(w=>[0]).join("").toUpperCase();
 
 function IssueDetails() {
     return (
@@ -83,6 +85,17 @@ function IssueDetails() {
             </div>
             <div className="grid grid-cols-1 gap-9 xl:flex">
                 <Description description={issue.description}/>
+                <ReporterCard
+                    initials={getInitials(issue.reporter.name)}
+                    name={issue.reporter.name}
+                    role={issue.reporter.position}
+                    variant="large"
+                />
+            </div>
+            <div className="grid grid-cols-1 gap-9 xl:flex">
+                <Notes 
+                    notes={issue.notes}
+                />
             </div>
 
 

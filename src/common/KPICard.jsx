@@ -4,6 +4,7 @@ function KPICard({ card }) {
     return (
         <div
             className="
+            
                     flex flex-col
                     border 
                     border-slate-200
@@ -12,6 +13,7 @@ function KPICard({ card }) {
                     rounded-xl
                     shadow-sm
                     shrink-0
+                    
                     "
         >
             <div className="flex items-center gap-4 font-bold text-neutral-500">
@@ -23,7 +25,7 @@ function KPICard({ card }) {
 
                 {card.name}
             </div>
-            <p className="text-4xl font-bold my-3 self-center ">38</p>
+            <p className="text-3xl font-bold my-3 self-center ">{card.statsData}</p>
             <span className="text-gray-400 self-center">{card.statsDescription}</span>
         </div>
     );

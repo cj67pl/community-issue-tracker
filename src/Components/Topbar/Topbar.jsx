@@ -1,6 +1,6 @@
 import SearchBar from "./SearchBar.jsx";
 import NotificationButton from "./NotificationButton.jsx";
-import UserProfile from "./UserProfile.jsx";
+import UserProfile from "../../common/UserProfile.jsx";
 import MobileMenuButton from "./MobileMenuButton.jsx";
 
 function Topbar({ onMenuClick }) {
@@ -11,9 +11,15 @@ function Topbar({ onMenuClick }) {
                 <SearchBar />
             </div>
 
-            <div className="flex items-center gap-5 ms-auto">
+            <div className="flex items-center gap-3 sm:gap-5 ms-auto">
                 <NotificationButton />
-                <UserProfile />
+                <UserProfile
+                    initials="TC"
+                    name="Tom Cookerist"
+                    role="Coordinator"
+                    variant="compact"
+                    hideDetailsOnMobile
+                />
             </div>
         </header>
     );
