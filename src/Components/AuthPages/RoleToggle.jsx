@@ -1,13 +1,14 @@
-import { Shield, User } from "lucide-react";
+import { Shield, User, Crown } from "lucide-react";
 
 const roles = [
     { value: "coordinator", label: "Coordinator", icon: Shield },
     { value: "reporter", label: "Reporter", icon: User },
+    { value: "admin", label: "Admin", icon: Crown },
 ];
 
 function RoleToggle({ value, onChange }) {
     return (
-        <div className="grid grid-cols-2 gap-1 rounded-lg bg-slate-100 p-1">
+        <div className="grid grid-cols-3 gap-1 rounded-lg bg-slate-100 p-1">
             {roles.map((role) => {
                 const isActive = value === role.value;
                 return (
@@ -21,7 +22,7 @@ function RoleToggle({ value, onChange }) {
                             }`}
                     >
                         <role.icon size={16} />
-                        {role.label}
+                        <span className="hidden sm:inline">{role.label}</span>
                     </button>
                 );
             })}

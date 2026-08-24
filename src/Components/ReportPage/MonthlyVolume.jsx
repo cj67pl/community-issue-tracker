@@ -1,4 +1,4 @@
-import BarChartCard from "../../../common/BarChartCard.jsx";
+import BarChartCard from "../../common/BarChartCard.jsx";
 
 const monthlyData = [
     { label: "April", value: 9, color: "bg-teal-700" },

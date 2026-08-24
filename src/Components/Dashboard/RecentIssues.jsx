@@ -1,6 +1,6 @@
 import { FaChevronRight } from "react-icons/fa6";
-import Badge from "../../../common/Badge";
-import { priorityStyles, recentIssues, statusStyles } from "../../issuesData";
+import Badge from "../../common/Badge";
+import { priorityStyles, recentIssues, statusStyles } from "../issuesData";
 
 
 

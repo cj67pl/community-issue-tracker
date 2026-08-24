@@ -2,8 +2,8 @@
 
 
 import KPICard from "../../../common/KPICard";
-import IssuesGraph from "../../../components/Dashboard/IssuesGraph";
-import UrgentsList from "../../../components/Dashboard/UrgentsList.jsx";
+import IssuesGraph from "../../../components/Dashboard/IssuesGraph.jsx";
+import UrgentsList from "../../../components/Dashboard/UrgentsList";
 import RecentIssues from "../../../components/Dashboard/RecentIssues.jsx";
 import { IoIosAdd } from "react-icons/io";
 
@@ -17,7 +17,7 @@ function Dashboard() {
             <div className="flex justify-between
                     ">
                 <div className="grid gap-2">
-                    <h2 className="text-2xl font-bold">Dashboard</h2>
+                    <h2 className="text-2xl font-bold">My Dashboard</h2>
                     <span className="font-small text-neutral-500 ">Monitor reported issues and identify what needs attention.</span>
                 </div>
                 <button className="

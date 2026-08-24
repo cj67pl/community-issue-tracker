@@ -1,6 +1,6 @@
 import { useState } from "react";
-import FAQItem from "../FAQItem/FAQItem.jsx";
-import { faqData } from "../../faqData.js";
+import FAQItem from "./FAQItem.jsx";
+import { faqData } from "../faqData.js";
 
 function FAQList() {
     // Index of the currently open question, -1 = none open.

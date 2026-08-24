@@ -1,7 +1,7 @@
 import { Plus } from "lucide-react";
-import SearchInput from "../../../components/IssuesPage/SearchInput/SearchInput.jsx";
-import IssueFilters from "../../../components/IssuesPage/IssueFilters/IssueFilters.jsx";
-import IssuesTable from "../../../components/IssuesPage/IssuesTable/IssuesTable.jsx";
+import SearchInput from "../../../components/IssuesPage/SearchInput.jsx";
+import IssueFilters from "../../../components/IssuesPage/IssueFilters.jsx";
+import IssuesTable from "../../../components/IssuesPage/IssuesTable.jsx";
 import IssueDetails from "../../../components/IssuesPage/IssueDetails/IssueDetails.jsx"
 import { issues } from "../../../components/issuesData.js";
 

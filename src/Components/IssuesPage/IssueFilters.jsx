@@ -1,6 +1,6 @@
 import { useState } from "react";
-import FilterSelect from "../FilterSelect/FilterSelect.jsx";
-import { categoryOptions, priorityOptions, statusOptions, sortOptions } from "../../filterOptions.js";
+import FilterSelect from "./FilterSelect.jsx";
+import { categoryOptions, priorityOptions, statusOptions, sortOptions } from "../filterOptions.js";
 
 function IssueFilters() {
     const [category, setCategory] = useState("");

@@ -1,4 +1,4 @@
-import BarChartCard from "../../../common/BarChartCard.jsx";
+import BarChartCard from "../../common/BarChartCard.jsx";
 
 const statusData = [
     { label: "Open", value: 16, color: "bg-blue-700" },

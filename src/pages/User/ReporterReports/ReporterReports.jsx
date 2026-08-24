@@ -1,6 +1,6 @@
 import { BsDownload } from "react-icons/bs";
 import KPICard from "../../../common/KPICard.jsx";
-import reportsKpiCardsData  from "../../../data/ReportsKPICardsData.js"
+import reportsKpiCardsData from "../../../data/ReportsKPICardsData.js"
 import IssuesGraph from "../../../components/Dashboard/IssuesGraph.jsx";
 import IssuedByStatus from "../../../components/ReportPage/IssuedBySats.jsx";
 import MonthlyVolume from "../../../components/ReportPage/MonthlyVolume.jsx";
@@ -20,7 +20,7 @@ function Reports() {
             <div className="">
                 <div className="flex justify-between mb-10">
                     <div className="grid gap-2">
-                        <h2 className="text-2xl font-bold">Reports & Analytics</h2>
+                        <h2 className="text-2xl font-bold">My Reports</h2>
                         <span className="text-sm text-neutral-500">Tell us what needs attention.</span>
                     </div>
 
@@ -36,27 +36,27 @@ function Reports() {
                                 h-10
                                 px-5
                                 hover:bg-teal-800/10
-                    "   
+                    "
                     >
-                        <BsDownload IoIosAdd size={18}/>
+                        <BsDownload IoIosAdd size={18} />
                         <span className="hidden sm:inline">Export CSV</span>
                     </button>
                 </div>
-                
+
                 <div className="
                     grid xl:grid-cols-4 lg:grid-cols-4 sm:grid-cols-2 md:grid-cols-2 gap-6
                     my-5
                 ">
 
-                        {reportsKpiCardsData.map((card) => (
-                            <KPICard
+                    {reportsKpiCardsData.map((card) => (
+                        <KPICard
 
-                                key={card.name}
-                                card={card}
+                            key={card.name}
+                            card={card}
 
-                            />
+                        />
 
-                        ))}  
+                    ))}
 
                 </div>
                 <div className="grid xl:grid-cols-2  md:grid-cols-1 gap-6">
@@ -67,7 +67,7 @@ function Reports() {
                 <div className="my-5">
                     <MonthlyVolume />
                 </div>
-                
+
             </div>
         </div>
     )

@@ -1,4 +1,4 @@
-import Toggle from "../../../common/Toggle";
+import Toggle from "../../common/Toggle";
 
 function NotificationRow({ title, description, checked, onChange }) {
     return (

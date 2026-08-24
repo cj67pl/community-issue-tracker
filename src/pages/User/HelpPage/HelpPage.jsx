@@ -1,5 +1,5 @@
-import FAQList from "../../../components/HelpSupport/FAQlist.jsx";
-import ContactSupport from "../../../components/HelpSupport/ContactsSupport.jsx";
+import FAQList from "../../../components/HelpSupport/FAQlist/FAQlist.jsx";
+import ContactSupport from "../../../components/HelpSupport/ContactsSupport/ContactsSupport.jsx";
 
 function HelpSupport() {
     return (

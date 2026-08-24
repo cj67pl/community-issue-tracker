@@ -4,9 +4,9 @@ import { priorityStyles, statusStyles } from "../../issuesData.js";
 import { issue } from "../../issueDetails.js";
 import Badge from "../../../common/Badge";
 import IssueInfo from "./IssueInfo/IssueInfo.jsx"
-import StatusCard from "./StatusCard/StatusCard.jsx";
-import Description from "./Description/Description.jsx"
-import ReporterCard from "./ReporterCard/ReporterCard.jsx";
+import StatusCard from "./StatusCard.jsx";
+import Description from "./Description.jsx"
+import ReporterCard from "./ReporterCard.jsx";
 import Notes from "./NotesCard/NotesCard.jsx";
 import { getInitials } from "../../funcs.js";
 

@@ -1,18 +1,60 @@
 import { useState } from "react";
 import FormField from "../../../common/FormField.jsx";
 import { inputClass } from "../../../common/formStyles.jsx";
-import RoleToggle from "../../../components/AuthPages/RoleToggle/RoleToggle.jsx";
+import RoleToggle from "../../../components/AuthPages/RoleToggle.jsx";
 
-function Login() {
-    const [role, setRole] = useState("coordinator");
-    const [email, setEmail] = useState("maria.santos@tugon.edu.ph");
+
+
+
+
+function Login({ onSwitchToRegister, creds, onLoginSuccess }) {
+    const [role, setRole] = useState("");
+    const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('');
+    
+
+    function checkEntry({loginInfo}) {
+        
+    }
 
     function handleSubmit(e) {
         e.preventDefault();
-        // Demo mode for now — swap this for a real auth call later.
-        console.log({ role, email, password, rememberMe });
+
+        setErrorMessage("");
+
+        console.log("Form values being checked:", { email, password });
+        // console.log({ role, email, password, rememberMe });
+        
+        
+        
+        const matchedUser = creds.find(user =>
+            
+            
+            user.email.toLowerCase().trim() === email.toLowerCase().trim() && 
+            String(user.password) === String(password).trim()
+            
+
+        );
+
+
+        if (matchedUser) {
+            console.log("User matched successfully:", matchedUser);
+
+            if (typeof setRole === "function") {
+                setRole(matchedUser.role);
+            }
+            onLoginSuccess(matchedUser)
+            
+        }
+        else {
+            setErrorMessage("Invalid credentials.");
+            console.log("Login failed: Invalid credentials."); 
+
+        }
+        console.log(errorMessage);
+        
     }
 
     return (
@@ -36,9 +78,9 @@ function Login() {
                     Sign in to manage and resolve reported issues.
                 </p>
 
-                <div className="mt-6">
+                {/* <div className="mt-6">
                     <RoleToggle value={role} onChange={setRole} />
-                </div>
+                </div> */}
 
                 <div className="mt-6">
                     <FormField label="Email">
@@ -77,6 +119,8 @@ function Login() {
                     </a>
                 </div>
 
+                {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+
                 <button
                     type="submit"
                     className="mt-6 w-full rounded-lg bg-teal-700 py-3 text-sm font-bold text-white hover:bg-teal-800"
@@ -84,7 +128,18 @@ function Login() {
                     Sign In
                 </button>
 
-                <p className="mt-6 border-t border-slate-100 pt-4 text-center text-xs leading-relaxed text-neutral-400">
+                <p className="mt-6 text-center text-sm text-neutral-500">
+                    Don't have an account?{" "}
+                    <button
+                        type="button"
+                        onClick={onSwitchToRegister}
+                        className="font-semibold text-teal-700 hover:underline"
+                    >
+                        Register
+                    </button>
+                </p>
+
+                <p className="mt-4 border-t border-slate-100 pt-4 text-center text-xs leading-relaxed text-neutral-400">
                     Demo mode — any email/password signs you in.
                     <br />
                     <span className="font-semibold text-neutral-500">Coordinator</span> manages all

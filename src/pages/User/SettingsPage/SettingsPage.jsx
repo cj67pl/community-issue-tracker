@@ -1,7 +1,7 @@
 import { useState } from "react";
 import FormField from "../../../common/FormField.jsx";
 import { inputClass, disabledInputClass } from "../../../common/formStyles.jsx";
-import NotificationRow from "../../../components/SettingsPage/NotificationRow.jsx.jsx";
+import NotificationRow from "../../../components/SettingsPage/NotificationRow/NotificationRow.jsx.jsx";
 
 function SettingsPage() {
 

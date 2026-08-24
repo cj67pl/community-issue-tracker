@@ -1,4 +1,4 @@
-import UserProfile from "../../../../common/UserProfile"
+import UserProfile from "../../../common/UserProfile"
 
 function ReporterCard({initials, name, role, variant}) {
     return(

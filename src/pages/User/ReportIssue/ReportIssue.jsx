@@ -1,5 +1,5 @@
 import { useState } from "react";
-import FormField from "../../../components/ReportingPage/FormField.jsx";
+import FormField from "../../../components/ReportingPage/FormField/FormField.jsx";
 import { categoryOptions, priorityOptions } from "../../../components/filterOptions.js";
 
 const inputClass =
