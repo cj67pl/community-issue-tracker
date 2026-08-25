@@ -10,7 +10,7 @@ import { IoIosAdd } from "react-icons/io";
 
 import kpiCardsData from '../../../data/KpiCardsData'
 
-function Dashboard() {
+function ReporterDashboard() {
     
     return (
         <div className="p-4  ">
@@ -69,4 +69,4 @@ function Dashboard() {
     )
 }
 
-export default Dashboard;
+export default ReporterDashboard;

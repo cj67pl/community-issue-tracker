@@ -94,7 +94,7 @@ function App() {
 						<>
 							{/* Creates a specific landing component or reuses Dashboard */}
 							{currentPage === "reporterdashboard" && <ReporterDashboard />}
-							{currentPage === "reporterreports" && <ReporterReports />} {/* "My Reports" view */}
+							{currentPage === "reporterreports" && <ReporterReports currentUser={currentUser}/>} {/* "My Reports" view */}
 							{currentPage === "report" && <ReportIssue />}
 							{currentPage === "settings" && <SettingsPage />}
 							{currentPage === "help" && <HelpPage />}

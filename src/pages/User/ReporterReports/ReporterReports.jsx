@@ -1,10 +1,11 @@
-import { BsDownload } from "react-icons/bs";
-import KPICard from "../../../common/KPICard.jsx";
-import reportsKpiCardsData from "../../../data/ReportsKPICardsData.js"
-import IssuesGraph from "../../../components/Dashboard/IssuesGraph.jsx";
-import IssuedByStatus from "../../../components/ReportPage/IssuedBySats.jsx";
-import MonthlyVolume from "../../../components/ReportPage/MonthlyVolume.jsx";
+import { useState } from "react";
 
+import { Plus } from "lucide-react";
+import SearchInput from "../../../components/IssuesPage/SearchInput.jsx";
+import IssueFilters from "../../../components/IssuesPage/IssueFilters.jsx";
+import IssuesTable from "../../../components/IssuesPage/IssuesTable.jsx";
+import IssueDetails from "../../../components/IssuesPage/IssueDetails/IssueDetails.jsx"
+import { issues } from "../../../components/issuesData.js";
 const data = [
     { name: "Avg. Resolution Time", value: 13, color: "#0f5c4c" },
     { name: "Internet / Tech", value: 9, color: "#4d9b7f" },
@@ -14,64 +15,51 @@ const data = [
 ];
 
 
-function Reports() {
+function ReporterReports(currentUser) {
+
+    const [isReporterAccount, setIsReporterAccount] = useState(true)
+    console.log(currentUser);
+    if (currentUser.role === 'reporter') {
+        setIsReporterAccount(true)
+    }
+    
     return (
         <div className="p-4">
             <div className="">
-                <div className="flex justify-between mb-10">
+                <div className="flex justify-between">
                     <div className="grid gap-2">
                         <h2 className="text-2xl font-bold">My Reports</h2>
-                        <span className="text-sm text-neutral-500">Tell us what needs attention.</span>
+                        <span className="text-sm text-neutral-500">All the issues you've submitted and their current status.</span>
                     </div>
-
-                    <button className="
-                                flex items-center justify-center
-                                gap-3
-                                rounded-md
-                                text-small
-                                border
-                                border-gray-300
-                                font-semibold
-                                bg-white
-                                h-10
-                                px-5
-                                hover:bg-teal-800/10
-                    "
+                    <button
+                        className="
+                        flex items-center justify-center gap-2
+                        rounded-md text-sm font-bold text-white
+                        bg-teal-700 h-10 px-5
+                        hover:bg-teal-800
+                        "
                     >
-                        <BsDownload IoIosAdd size={18} />
-                        <span className="hidden sm:inline">Export CSV</span>
+                        <Plus size={20} />
+                        <span className="hidden sm:inline">Report issue</span>
                     </button>
                 </div>
 
-                <div className="
-                    grid xl:grid-cols-4 lg:grid-cols-4 sm:grid-cols-2 md:grid-cols-2 gap-6
-                    my-5
-                ">
+                <IssueFilters reporterAccount={isReporterAccount}/>
 
-                    {reportsKpiCardsData.map((card) => (
-                        <KPICard
+                <span className="mt-5 block text-sm text-neutral-500">
+                    Showing {issues.length} of 38 issues
+                </span>
 
-                            key={card.name}
-                            card={card}
-
-                        />
-
-                    ))}
-
-                </div>
-                <div className="grid xl:grid-cols-2  md:grid-cols-1 gap-6">
-                    <IssuesGraph />
-                    <IssuedByStatus />
-                </div>
-
-                <div className="my-5">
-                    <MonthlyVolume />
-                </div>
-
+                <IssuesTable issues={issues} style={"hidden"}/>
+                <div></div>
             </div>
+
+
+
+            <IssueDetails style={"hidden"}></IssueDetails>
         </div>
     )
 }
 
 
-export default Reports;
+export default ReporterReports;

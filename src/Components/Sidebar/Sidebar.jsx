@@ -1,5 +1,5 @@
 import NavItem from "./NavItem.jsx";
-import { mainNavItems, secondaryNavItems, bottomNavItems } from "./navConfig.jsx";
+import { mainNavItems, secondaryNavItems, bottomNavItems } from "./Navconfig.jsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 function Sidebar({ currentPage, onNavigate, isCollapsed, onToggleCollapse, isMobileOpen, onCloseMobile, role }) {
@@ -63,7 +63,7 @@ function Sidebar({ currentPage, onNavigate, isCollapsed, onToggleCollapse, isMob
                                 key={item.key}
                                 icon={item.icon}
                                 // Custom visual labeling override for the Reporter role
-                                label={userRole === "reporter" && item.key === "reports" ? "My Reports" : item.label}
+                                label={item.label}
                                 active={currentPage === item.key}
                                 collapsed={isCollapsed}
                                 onClick={() => onNavigate(item.key)}
