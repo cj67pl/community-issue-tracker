@@ -1,5 +1,5 @@
 import { useState } from "react";
-import FilterSelect from "../FilterSelect.jsx";
+import FilterSelect from "../../../common/FilterSelect.jsx";
 import Badge from "../../../common/Badge.jsx";
 import {statusOptions} from "../../filterOptions.js";
 import {statusStyles} from "../../issuesData.js"

@@ -89,6 +89,7 @@ function Login({ onSwitchToRegister, creds, onLoginSuccess }) {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className={inputClass}
+                            autoComplete="email"
                         />
                     </FormField>
                 </div>
@@ -100,6 +101,7 @@ function Login({ onSwitchToRegister, creds, onLoginSuccess }) {
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             className={inputClass}
+                            autoComplete="current-password"
                         />
                     </FormField>
                 </div>

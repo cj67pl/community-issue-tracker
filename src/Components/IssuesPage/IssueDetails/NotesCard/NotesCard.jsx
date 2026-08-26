@@ -4,6 +4,8 @@ import Note from "./Note.jsx"
 
 
 function Notes({ notes }) {
+    // console.log(notes[1].key);
+    
     return (
         
         <div className="my-5 w-full min-w-md lg:min-w-0 rounded-xl border border-gray-200 bg-white shadow-sm">
@@ -14,7 +16,7 @@ function Notes({ notes }) {
             <div className="flex flex-col gap-3 p-4">
                 {notes.map((note) => (
                     <Note
-                        key={note.id}
+                        key={note.key}
                         initials={getInitials(note.user)}
                         userName={note.user}
                         note={note.note}

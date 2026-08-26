@@ -6,6 +6,9 @@ import IssueFilters from "../../../components/IssuesPage/IssueFilters.jsx";
 import IssuesTable from "../../../components/IssuesPage/IssuesTable.jsx";
 import IssueDetails from "../../../components/IssuesPage/IssueDetails/IssueDetails.jsx"
 import { issues } from "../../../components/issuesData.js";
+import RecentIssues from "../../../components/Dashboard/RecentIssues.jsx";
+
+
 const data = [
     { name: "Avg. Resolution Time", value: 13, color: "#0f5c4c" },
     { name: "Internet / Tech", value: 9, color: "#4d9b7f" },
@@ -16,9 +19,9 @@ const data = [
 
 
 function ReporterReports(currentUser) {
-
+console.log("Current user:",currentUser);
     const [isReporterAccount, setIsReporterAccount] = useState(true)
-    console.log(currentUser);
+    
     if (currentUser.role === 'reporter') {
         setIsReporterAccount(true)
     }
@@ -44,13 +47,21 @@ function ReporterReports(currentUser) {
                     </button>
                 </div>
 
-                <IssueFilters reporterAccount={isReporterAccount}/>
+                <IssueFilters reporterAccount={isReporterAccount}
+                                currentUser={currentUser.currentUser}
+                />
 
                 <span className="mt-5 block text-sm text-neutral-500">
                     Showing {issues.length} of 38 issues
                 </span>
 
-                <IssuesTable issues={issues} style={"hidden"}/>
+                <RecentIssues currentUser={currentUser.currentUser} />
+
+                {/* <IssuesTable issues={issues} style={"hidden"}
+                    currentUser={currentUser.role}
+                
+                /> */}
+
                 <div></div>
             </div>
 

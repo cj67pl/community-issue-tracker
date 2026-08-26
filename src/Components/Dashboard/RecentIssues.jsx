@@ -19,12 +19,12 @@ import { priorityStyles, recentIssues, statusStyles } from "../issuesData";
 // }
 
 
-function RecentIssues({label, styles}) {
+function RecentIssues({ label, styles, currentUser}) {
     return (
         <div className="w-full rounded-xl min-w-sm border border-gray-200 bg-white shadow-sm my-5 ">
             
             <div className="px-6 py-4">
-                <h3 className="text-lg font-bold text-gray-900">Recent Issues</h3>
+                <h3 className="text-lg font-bold text-gray-900">{`${(currentUser === 'reporter' ? "My Reports" : "Recent Issues")}`}</h3>
             </div>
             
             <div className="overflow-x-auto">   
