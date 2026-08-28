@@ -78,9 +78,9 @@ function Login({ onSwitchToRegister, creds, onLoginSuccess }) {
                     Sign in to manage and resolve reported issues.
                 </p>
 
-                {/* <div className="mt-6">
+                <div className="mt-6">
                     <RoleToggle value={role} onChange={setRole} />
-                </div> */}
+                </div>
 
                 <div className="mt-6">
                     <FormField label="Email">

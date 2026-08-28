@@ -20,6 +20,8 @@ import { priorityStyles, recentIssues, statusStyles } from "../issuesData";
 
 
 function RecentIssues({ label, styles, currentUser}) {
+    console.log("current user recent issuees page:", currentUser);
+    
     return (
         <div className="w-full rounded-xl min-w-sm border border-gray-200 bg-white shadow-sm my-5 ">
             

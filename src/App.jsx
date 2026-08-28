@@ -34,6 +34,8 @@ function App() {
 		
 		setCurrentUser(user);
 		setCurrentPage(defaultPageByRole[user.role] ?? "dashboard");
+		
+		
 	}
 
 	function handleLogout() {
