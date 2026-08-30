@@ -33,11 +33,12 @@ export const getIssueComments = async (req, res) => {
 
 export const createComment =  async (req, res) => {
 	const { id } = req.params;
-	const { user_id, content } = req.body;
+	const { content } = req.body;
+    const user_id = req.user.id;
 
-	if (!user_id || !content) {
+	if (!content) {
 		return res.status(400)({
-			error: "All fields are required",
+			error: "Comment content is required",
 		});
 	}
 

@@ -7,11 +7,11 @@ const router = express.Router();
 
 
 
-router.get("/", getIssues);
-router.get("/:id", getIssueById);
+router.get("/", authenticateToken, getIssues);
+router.get("/:id", authenticateToken, getIssueById);
 router.post("/", authenticateToken, createIssue);
-router.patch("/:id", updateIssue);
-router.delete("/:id", deleteIssue);
+router.patch("/:id", authenticateToken, updateIssue);
+router.delete("/:id", authenticateToken, deleteIssue);
 
 
 
