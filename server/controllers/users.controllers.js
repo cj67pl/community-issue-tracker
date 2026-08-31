@@ -1,7 +1,8 @@
 import pool from "../config/db.js";
 import bcrypt from "bcrypt";
+import { isNonEmptyString, isValidId, isValidEmail, isValidPassword } from "../utils/validation.js";
 
-export const getUsers = async (req, res) => {
+export const getUsers = async (req, res, next) => {
 	try {
 		const result = await pool.query(`
                     SELECT
@@ -31,6 +32,12 @@ export const getUsers = async (req, res) => {
 export const getUserById = async (req, res) => {
 	const { id } = req.params;
 
+	if (!isValidId(id)) {
+		return res.status(400).json({
+			error: "Invalid user ID",
+		});
+	}
+
 	try {
 		const result = await pool.query(
 			`
@@ -57,40 +64,46 @@ export const getUserById = async (req, res) => {
 			});
 		}
 
-		res.json(result.rows[0]);
-	} catch (error) {
-		console.error(error);
-
-		res.status(500).json({
-			error: "User not found",
+		res.json({
+			message: "User fetched successfully!",
+			user: result.rows[0]
 		});
+	} catch (error) {
+		next(error);
 	}
 };
 
-export const createUser = async (req, res) => {
+export const createUser = async (req, res, next) => {
 	const { name, password, role, email } = req.body;
 
-	if (!name || !password || !role || !email) {
+	if (!isNonEmptyString(name)) {
 		return res.status(400).json({
-			error: "All fields are required",
+			error: "Name is required",
 		});
 	}
 
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-	if (!emailRegex.test(email)) {
+	if (!isValidEmail(email)) {
 		return res.status(400).json({
 			error: "Invalid email format",
 		});
 	}
 
-	if (password.length < 8) {
+	if (!isValidPassword(password)) {
 		return res.status(400).json({
 			error: "Password must be at least 8 characters long",
 		});
 	}
 
+	if (!isValidId(role)) {
+		return res.status(400).json({
+			error: "Invalid role ID",
+		});
+	}
+
 	try {
+		const cleanName = name.trim();
+		const cleanEmail = email.trim().toLowerCase();
+
 		const existingUser = await pool.query(
 			`
                 SELECT id 
@@ -98,7 +111,7 @@ export const createUser = async (req, res) => {
                 WHERE email = $1 
             
         `,
-			[email],
+			[cleanEmail],
 		);
 
 		if (existingUser.rowCount > 0) {
@@ -133,33 +146,43 @@ export const createUser = async (req, res) => {
             
             
         `,
-			[name, hashedPassword, role, email],
+			[cleanName, hashedPassword, role, cleanEmail],
 		);
 
-		res.status(201).json(result.rows[0]);
-	} catch (error) {
-		console.error(error);
-		res.status(500).json({
-			error: "Failed to create user",
+		res.status(201).json(
+		{
+			message: "User registered successfully",
+			user: result.rows[0]
 		});
+	} catch (error) {
+		next(error);
 	}
 };
 
-export const updateUserPassword = async (req, res) => {
+export const updateUserPassword = async (req, res, next) => {
 	const { id } = req.params;
 	const { password } = req.body;
 
-	if (!password) {
+    if (!isValidId(id)) {
 		return res.status(400).json({
-			error: "Password is required",
+			error: "Invalid user ID",
 		});
 	}
 
-	if (password.length < 8) {
+	if (!isValidPassword(password)) {
 		return res.status(400).json({
 			error: "Password must be at least 8 characters long",
 		});
 	}
+
+
+    if (req.user.role_id !== 1 && Number(id) !== req.user.id) {
+		return res.status(403).json({
+			error: "You can only change your own password",
+		});
+	}
+
+
 
 	try {
 		const userResult = await pool.query(
@@ -176,6 +199,7 @@ export const updateUserPassword = async (req, res) => {
 				error: "User not found",
 			});
 		}
+
 
 		const hashedPassword = await bcrypt.hash(password, 15);
 
@@ -197,21 +221,22 @@ export const updateUserPassword = async (req, res) => {
 			user: result.rows[0],
 		});
 	} catch (error) {
-		console.error(error);
-
-		res.status(500).json({
-			error: "Failed to update user password",
-		});
+		next(error);
 	}
 };
 
-export const updateUserRole = async (req, res) => {
+export const updateUserRole = async (req, res, next) => {
 	const { id } = req.params;
 	const { role } = req.body;
-
-	if (!role) {
+	if (!isValidId(id)) {
 		return res.status(400).json({
-			error: "Role is required",
+			error: "Invalid user ID",
+		});
+	}
+
+	if (!isValidId(role)) {
+		return res.status(400).json({
+			error: "Invalid role ID",
 		});
 	}
 
@@ -268,17 +293,17 @@ export const updateUserRole = async (req, res) => {
 			user: result.rows[0],
 		});
 	} catch (error) {
-		console.error(error);
-
-		res.status(500).json({
-			error: "Failed to update user role",
-		});
+		next(error);
 	}
 };
 
-export const reactivateUser = async (req, res) => {
+export const reactivateUser = async (req, res, next) => {
 	const { id } = req.params;
-
+	if (!isValidId(id)) {
+		return res.status(400).json({
+			error: "Invalid user ID",
+		});
+	}
 	try {
 		const userResult = await pool.query(
 			`
@@ -291,7 +316,7 @@ export const reactivateUser = async (req, res) => {
 		);
 
 		if (userResult.rowCount === 0) {
-			return res.status(400).json({
+			return res.status(404).json({
 				error: "User not found",
 			});
 		}
@@ -319,16 +344,18 @@ export const reactivateUser = async (req, res) => {
 			user: result.rows[0],
 		});
 	} catch (error) {
-		console.error(error);
-
-		res.status(500).json({
-			error: "Failed to reactivate user",
-		});
+		next(error);
 	}
 };
 
-export const deleteUser = async (req, res) => {
+export const deactivateUser = async (req, res, next) => {
 	const { id } = req.params;
+
+	if (!isValidId(id)) {
+		return res.status(400).json({
+			error: "Invalid user ID",
+		});
+	}
 
 	try {
 		const result = await pool.query(
@@ -352,10 +379,6 @@ export const deleteUser = async (req, res) => {
 			message: "User deleted successfully",
 		});
 	} catch (error) {
-		console.error(error);
-
-		res.status(500).json({
-			error: "Failed to delete user",
-		});
+		next(error);
 	}
 };

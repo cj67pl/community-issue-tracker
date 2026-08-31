@@ -1,6 +1,7 @@
 import pool from "../config/db.js";
+import { isNonEmptyString, isValidId } from "../utils/validation.js";
 
-export const getCategories = async (req, res) => {
+export const getCategories = async (req, res, next) => {
 	try {
 		const result = await pool.query(`
             SELECT
@@ -28,20 +29,23 @@ export const getCategories = async (req, res) => {
 export const createCategory = async (req, res) => {
 	const { category_name, description } = req.body;
 
-	if (!category_name) {
+	if (!isNonEmptyString(category_name)) {
 		return res.status(400).json({
 			error: "Category name is required",
 		});
 	}
 
 	try {
+
+		const cleanName = category_name.trim();
+		const cleanDescription = description?.trim() || null;
 		const existingCategory = await pool.query(
 			`
             SELECT id
             FROM categories
             WHERE LOWER(category_name) = LOWER($1)
             `,
-			[category_name],
+			[cleanName],
 		);
 
 		if (existingCategory.rowCount > 0) {
@@ -59,30 +63,38 @@ export const createCategory = async (req, res) => {
             VALUES ($1, $2)
             RETURNING *;
             `,
-			[category_name, description || null],
+			[cleanName, cleanDescription || null],
 		);
 
-		res.status(201).json(result.rows[0]);
-	} catch (error) {
-		console.error(error);
-
-		res.status(500).json({
-			error: "Failed to create category",
+		res.status(201).json({
+			message: "Category created successfully",
+			category: result.rows[0],
 		});
+	} catch (error) {
+		next(error);
 	}
 };
 
-export const updateCategory = async (req, res) => {
+export const updateCategory = async (req, res, next) => {
 	const { id } = req.params;
 	const { category_name, description } = req.body;
 
-	if (!category_name) {
+	if (!isValidId(id)) {
+		return res.status(400).json({
+			error: "Invalid category ID",
+		});
+	}
+
+	if (!isNonEmptyString(category_name)) {
 		return res.status(400).json({
 			error: "Category name is required",
 		});
 	}
-
 	try {
+
+		const cleanName = category_name.trim();
+		const cleanDescription = description?.trim() || null;
+
 		const categoryResult = await pool.query(
 			`
             SELECT id
@@ -105,7 +117,7 @@ export const updateCategory = async (req, res) => {
             WHERE LOWER(category_name) = LOWER($1)
             AND id != $2
             `,
-			[category_name, id],
+			[cleanName, id],
 		);
 
 		if (duplicateResult.rowCount > 0) {
@@ -122,9 +134,10 @@ export const updateCategory = async (req, res) => {
                 description = $2,
                 updated_at = CURRENT_TIMESTAMP
             WHERE id = $3
+				AND is_active = true
             RETURNING *;
             `,
-			[category_name, description || null, id],
+			[category_name, cleanDescription || null, id],
 		);
 
 		res.status(200).json({
@@ -132,16 +145,18 @@ export const updateCategory = async (req, res) => {
 			category: result.rows[0],
 		});
 	} catch (error) {
-		console.error(error);
-
-		res.status(500).json({
-			error: "Failed to update category",
-		});
+		next(error);
 	}
 };
 
-export const deactivateCategory = async (req, res) => {
+export const deactivateCategory = async (req, res, next) => {
 	const { id } = req.params;
+
+	if (!isValidId(id)) {
+		return res.status(400).json({
+			error: "Invalid category ID",
+		});
+	}
 
 	try {
 		const result = await pool.query(
@@ -167,10 +182,6 @@ export const deactivateCategory = async (req, res) => {
 			message: "Category deactivated successfully",
 		});
 	} catch (error) {
-		console.error(error);
-
-		res.status(500).json({
-			error: "Failed to deactivate category",
-		});
+		next(error);
 	}
 };

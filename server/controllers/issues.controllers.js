@@ -1,8 +1,12 @@
 import pool from "../config/db.js";
+import { isNonEmptyString, isValidId } from "../utils/validation.js";
 
 
-export const getIssues = async (req, res) => {
+export const getIssues = async (req, res, next) => {
+
     try {
+
+		
         const result = await pool.query(`SELECT 
                                     issues.id,
                                     issues.title,
@@ -27,15 +31,24 @@ export const getIssues = async (req, res) => {
 
         res.json(result.rows);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            error: "Failed to retrieve issues",
-        });
-    }
+    //     console.error(error);
+    //     res.status(500).json({
+    //         error: "Failed to retrieve issues",
+    //     });
+    // }
+		next(error);
+	}
 };
 
 
-export const getIssueById = async (req, res) => {
+export const getIssueById = async (req, res, next) => {
+	const { id } = req.params;
+
+	if (!isValidId(id)) {
+		return res.status(400).json({
+			error: "Invalid issue ID",
+		});
+	}
     
     // console.log(req.params.id);
 
@@ -75,21 +88,21 @@ export const getIssueById = async (req, res) => {
             });
         }
 
-        res.json(result.rows[0]);
+        res.json({
+			message: "Issue fetched successfully!",
+			issue: result.rows[0]});
     } catch (error) {
-        console.error(error);
-        res.status(500).json({
-            error: "Failed to retrieve issue",
-        });
+        next(error);
     }
 
 };
 
-export const createIssue =  async (req, res) => {
+export const createIssue =  async (req, res, next) => {
 	// console.log(req.body);
     // const userId = req.user.id;
 
     const reported_by = req.user.id;
+
 	const {
 		title,
 		description,
@@ -100,19 +113,30 @@ export const createIssue =  async (req, res) => {
 	} = req.body;
 
 	if (
-		!title ||
-		!description ||
-		!category_id ||
-		!reported_by ||
-		!location ||
-		!priority_level_id ||
-		!status_id
+		!isNonEmptyString(title) ||
+		!isNonEmptyString(description) ||
+		!isNonEmptyString(location)
 	) {
 		return res.status(400).json({
-			error: "All fields are required",
+			error: "Title, description, and location are required",
 		});
 	}
+
+	if (
+		!isValidId(category_id) ||
+		!isValidId(priority_level_id) ||
+		!isValidId(status_id)
+	) {
+		return res.status(400).json({
+			error: "Invalid category, priority, or status ID",
+		});
+	}
+
 	try {
+
+		const cleanTitle = title.trim();
+		const cleanDescription = description.trim();
+		const cleanLocation = location.trim();
 		const categoryResult = await pool.query(
 			`SELECT id FROM categories WHERE id = $1`,
 			[category_id],
@@ -129,7 +153,8 @@ export const createIssue =  async (req, res) => {
 		);
 
 		const userResult = await pool.query(
-			`SELECT id FROM users WHERE id = $1`,
+			`SELECT id FROM users WHERE id = $1 AND is_active = true
+		`,
 			[reported_by],
 		);
 
@@ -179,39 +204,71 @@ export const createIssue =  async (req, res) => {
             
             `,
 			[
-				title,
-				description,
+				cleanTitle,
+				cleanDescription,
 				category_id,
 				reported_by,
-				location,
+				cleanLocation,
 				priority_level_id,
 				status_id,
 			],
 		);
-		res.status(201).json(result.rows[0]);
+		res.status(201).json({
+			message: "Issue created successfully!",
+			issue: result.rows[0]});
 	} catch (error) {
-		console.error(error);
-
-		res.status(500).json({
-			error: "Failed to create issue",
-		});
+		next(error);
 	}
 };
 
-export const updateIssue = async (req, res) => {
+export const updateIssue = async (req, res, next) => {
 	const { id } = req.params;
 	const { status_id } = req.body;
-	if (!status_id) {
+
+    if (!isValidId(id)) {
 		return res.status(400).json({
-			error: "status_id is required",
+			error: "Invalid issue ID",
+		});
+	}
+
+	if (!isValidId(status_id)) {
+		return res.status(400).json({
+			error: "Invalid status ID",
 		});
 	}
 
 	try {
+		const issueResult = await pool.query(
+			`
+		SELECT id, reported_by
+		FROM issues
+		WHERE id = $1
+	`,
+			[id],
+		);
+
+		if (issueResult.rowCount === 0) {
+			return res.status(404).json({
+				error: "Issue not found",
+			});
+		}
+
+		const issue = issueResult.rows[0];
+		if (
+			(req.user.role_id !== 1 &&
+			req.user.role_id !== 2 && 
+			issue.reported_by !== req.user.id)
+		) {
+			return res.status(403).json({
+				error: "You do not have permission to update this issue",
+			});
+		}
+
 		const statusResult = await pool.query(
 			`SELECT id FROM statuses WHERE id = $1`,
 			[status_id],
 		);
+
 		if (statusResult.rowCount === 0) {
 			return res.status(400).json({
 				error: "Invalid status",
@@ -239,17 +296,18 @@ export const updateIssue = async (req, res) => {
 			issue: result.rows[0],
 		});
 	} catch (error) {
-		console.error(error);
-
-		res.status(500).json({
-			error: "Failed to update issues",
-		});
+		next(error);
 	}
 };
 
 
-export const deleteIssue =  async (req, res) => {
+export const deleteIssue =  async (req, res, next) => {
 	const { id } = req.params;
+    if (!isValidId(id)) {
+		return res.status(400).json({
+			error: "Invalid issue ID",
+		});
+	}
 
 	try {
 		const result = await pool.query(
@@ -271,9 +329,6 @@ export const deleteIssue =  async (req, res) => {
 			message: "Issue deleted successfully",
 		});
 	} catch (error) {
-		console.error(error);
-		res.status(500).json({
-			error: "Failed to delete issue",
-		});
+		next(error);
 	}
 };

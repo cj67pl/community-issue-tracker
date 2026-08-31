@@ -1,4 +1,6 @@
 import express from "express";
+import { authenticateToken } from "../middleware/auth.middleware.js";
+import { authorizedRoles } from "../middleware/role.middleware.js";
 
 import {
 	getCategories,
@@ -9,12 +11,15 @@ import {
 
 const router = express.Router();
 
-router.get("/", getCategories);
+router.get("/", authenticateToken, getCategories);
 
-router.post("/", createCategory);
+// router.get("/:id", authenticateToken, getCategoryById);
 
-router.patch("/:id", updateCategory);
+router.post("/", authenticateToken, authorizedRoles(1), createCategory);
 
-router.patch("/:id/deactivate", deactivateCategory);
+router.patch("/:id", authenticateToken, authorizedRoles(1), updateCategory);
+
+router.delete("/:id", authenticateToken, authorizedRoles(1), deactivateCategory);
+
 
 export default router;

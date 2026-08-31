@@ -1,17 +1,18 @@
 import express from "express";
-import { getUsers, getUserById, createUser, updateUserPassword, updateUserRole, reactivateUser, deleteUser } from "../controllers/users.controllers.js";
+import { getUsers, getUserById, createUser, updateUserPassword, updateUserRole, reactivateUser, deactivateUser } from "../controllers/users.controllers.js";
 import { authenticateToken } from "../middleware/auth.middleware.js";
+import { authorizedRoles } from "../middleware/role.middleware.js";
 
 
 const router = express.Router();
 
-router.get("/", authenticateToken, getUsers);
-router.get("/:id", authenticateToken, getUserById);
-router.post("/", authenticateToken, createUser);
+router.get("/", authenticateToken, authorizedRoles(1,2), getUsers);
+router.get("/:id", authenticateToken, authorizedRoles(1, 2), getUserById);
+router.post("/", authenticateToken, authorizedRoles(1), createUser);
 router.patch("/:id/password", authenticateToken, updateUserPassword);
-router.patch("/:id/role", authenticateToken, updateUserRole);
-router.patch("/:id/reactivate", authenticateToken, reactivateUser);
-router.delete("/:id", authenticateToken, deleteUser);
+router.patch("/:id/role", authenticateToken, authorizedRoles(1), updateUserRole);
+router.patch("/:id/reactivate", authenticateToken, authorizedRoles(1), reactivateUser);
+router.delete("/:id", authenticateToken, authorizedRoles(1), deactivateUser);
 
 
 

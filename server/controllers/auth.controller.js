@@ -1,30 +1,40 @@
 import pool from "../config/db.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import { isValidEmail, isValidPassword, isNonEmptyString } from "../utils/validation.js";
 
 export const login = async (req, res) => {
     const { email, password} = req.body;
 
-    if (!email || !password) {
+
+    if (!isValidEmail(email)) {
         return res.status(400).json({
-            error:"Email and password are required"
-        })
+			error: "Invalid email or password",
+		});
     }
+
+    if (!isNonEmptyString(password)) {
+        return res.status(400).json({
+			error: "Invalid email or password",
+		});
+    }
+
+
     try {
-    const result = await pool.query(` 
-            SELECT
-                id,
-                name,
-                email,
-                password,
-                role_id,
-                is_active
-            FROM users
-            WHERE email = $1
-        `,
-            [email],
-        );
+        const cleanEmail = email.trim().toLowerCase();
+        const result = await pool.query(` 
+                SELECT
+                    id,
+                    name,
+                    email,
+                    password,
+                    role_id,
+                    is_active
+                FROM users
+                WHERE email = $1
+            `,
+                [cleanEmail],
+            );
         if (result.rowCount === 0) {
             return res.status(401).json({
                 error: "Invalid email or password",
