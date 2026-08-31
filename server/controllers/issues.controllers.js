@@ -297,7 +297,7 @@ export const updateIssue = async (req, res, next) => {
 		});
 	} catch (error) {
 		next(error);
-	}
+	} 
 };
 
 
