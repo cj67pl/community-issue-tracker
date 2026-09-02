@@ -94,3 +94,34 @@ export const login = async (req, res) => {
     
 
 };
+
+export const getCurrentUser = async (req, res, next) => {
+    try {
+        const userId = req.user.id;
+        const result = await pool.query(
+            `SELECT
+                id, 
+                name, 
+                email, 
+                role_id
+            FROM users 
+            WHERE id = $1
+            `,
+            [userId]
+        );
+        if (result.rowCount === 0) {
+            return res.status(404).json({
+                error: "User not found",
+            });
+        }
+        res.status(200).json({
+            user: result.rows[0],
+        });
+    } catch (error) {
+        // console.error(error);
+        // res.status(500).json({
+        //     error: "Failed to fetch user",
+        // });
+        next(error);
+    }
+};
