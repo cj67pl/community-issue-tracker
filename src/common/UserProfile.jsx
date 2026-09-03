@@ -1,3 +1,5 @@
+import { capitalizeFirstLetter, getInitials } from "../utils/stringHelpers.js";
+
 function UserProfile({ initials, name, role, variant, hideDetailsOnMobile = false }) {
     const variants = {
         compact: {
@@ -33,16 +35,18 @@ function UserProfile({ initials, name, role, variant, hideDetailsOnMobile = fals
 
     const styles = variants[variant];
 
+
+
     return (
         <div className={`flex items-center ${styles.container}`}>
-            <div className={`shrink-0 ${styles.avatar}`}>{initials}</div>
+            <div className={`shrink-0 ${styles.avatar}`}>{initials || getInitials(name)}</div>
 
             {/* hideDetailsOnMobile is opt-in: pages that always want the name/role
           visible (e.g. a profile page) just don't pass this prop. Only the
           compact header usage needs it collapsed on small screens. */}
             <div className={`flex-col ${hideDetailsOnMobile ? "hidden lg:flex" : "flex"}`}>
                 <span className={styles.name}>{name}</span>
-                <span className={styles.role}>{role}</span>
+                <span className={styles.role}>{capitalizeFirstLetter(role)}</span>
             </div>
         </div>
     );

@@ -1,4 +1,4 @@
-
+import { useEffect, useState } from "react";
 
 
 import KPICard from "../../../common/KPICard";
@@ -7,10 +7,46 @@ import UrgentsList from "../../../components/Dashboard/UrgentsList.jsx";
 import RecentIssues from "../../../components/Dashboard/RecentIssues.jsx";
 import { IoIosAdd } from "react-icons/io";
 
+import { apiRequest } from "../../../api/api.js";
 
 import kpiCardsData from '../../../data/KpiCardsData'
 
-function Dashboard() {
+
+function Dashboard({onNavigate}) {
+
+    const [kpis, setKpis] = useState(null);
+    useEffect(() =>{
+        const fetchKPIs = async () => {
+
+            try {
+                const data = await apiRequest("/dashboard/kpis");
+                // console.log("DASHBOARD KPIs:", data.kpis);
+                setKpis(data.kpis);
+                
+            }
+            catch(error){
+                console.error("Failed to fetch dashboard KPIs:", error);
+                localStorage.removeItem("token");
+            }
+        }
+        fetchKPIs();
+
+    }, []);
+
+    // useEffect(() => {
+    //     console.log("ISSUES COMPONENT LOADED");
+    //     const testApi = async () => {
+
+    //         try {
+    //             const data = await apiRequest("/issues");
+    //             console.log("API DATA:", data);
+    //         } catch (error) {
+    //             console.error("API ERROR:", error);
+    //         }
+    //     };
+
+    //     testApi();
+    // }, []);
     
     return (
         <div className="p-4  ">
@@ -48,7 +84,9 @@ function Dashboard() {
                 <KPICard
                 
                     key={card.name}
-                    card={card}
+                    card={{
+                        ...card,
+                        statsData: kpis ? kpis[card.key] : "Loading...",}}
                    
                 />
 
@@ -60,10 +98,10 @@ function Dashboard() {
 
             <div className="grid xl:grid-cols-2  md:grid-cols-1 gap-6">
                 <IssuesGraph />
-                <UrgentsList />
+                <UrgentsList onNavigate={onNavigate} />
             </div>
 
-            <RecentIssues />
+            <RecentIssues onNavigate={onNavigate} />
             
         </div>
     )

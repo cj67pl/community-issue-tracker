@@ -3,7 +3,10 @@ import NotificationButton from "./NotificationButton.jsx";
 import UserProfile from "../../common/UserProfile.jsx";
 import MobileMenuButton from "./MobileMenuButton.jsx";
 
-function Topbar({ onMenuClick }) {
+function Topbar({ onMenuClick, currentUserName, currentRole }) {
+    // console.log("TopbarName", currentUserName);
+    // console.log("TopbarRole", currentRole);
+
     return (
         <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 lg:px-8">
             <div className="flex items-center">
@@ -14,9 +17,9 @@ function Topbar({ onMenuClick }) {
             <div className="flex items-center gap-3 sm:gap-5 ms-auto">
                 <NotificationButton />
                 <UserProfile
-                    initials="TC"
-                    name="Tom Cookerist"
-                    role="Coordinator"
+                    name={currentUserName}
+                    
+                    role={currentRole}
                     variant="compact"
                     hideDetailsOnMobile
                 />

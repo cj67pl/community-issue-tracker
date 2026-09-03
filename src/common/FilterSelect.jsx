@@ -1,6 +1,9 @@
 import { ChevronDown } from 'lucide-react';
 
 function FilterSelect({ name, placeholder, options, value, onChange }) {
+    console.log("OPTIONS:", options);
+    // console.log("VALUE: ", value);
+    
     return (
         <div className='relative flex justify-between w-full sm:w-auto'>
             <select
@@ -19,11 +22,11 @@ function FilterSelect({ name, placeholder, options, value, onChange }) {
                     focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20
                 "
             >
-                <option value="">{placeholder}</option>
+                <option key="placeholder" value="">{placeholder}</option>
                 {options.map((option) => (
                     
-                    <option key={option} value={option}>
-                        {option}
+                    <option key={option.value} value={option.value}>
+                        {option.label}
                     </option>
                 ))}
             </select> 

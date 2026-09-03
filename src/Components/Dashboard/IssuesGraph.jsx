@@ -1,18 +1,64 @@
+import { useEffect, useState } from "react";
 import {PieChart, Pie, Sector, ResponsiveContainer} from "recharts";
 import { FaChevronRight } from "react-icons/fa6";
 
-const data = [
-        { name: "Maintenance", value: 13, color: "#0f5c4c" },
-        { name: "Internet / Tech", value: 9, color: "#4d9b7f" },
-        { name: "Infrastructure", value: 7, color: "#c8792a" },
-        { name: "Safety", value: 5, color: "#7c5cbf" },
-        { name: "Other", value: 4, color: "#7fb3d5" },
-    ];
+import { apiRequest } from "../../api/api";
 
-const total = data.reduce((sum, d) => sum + d.value, 0);
+// const data = [
+//         { name: "Maintenance", value: 13, color: "#0f5c4c" },
+//         { name: "Internet / Tech", value: 9, color: "#4d9b7f" },
+//         { name: "Infrastructure", value: 7, color: "#c8792a" },
+//         { name: "Safety", value: 5, color: "#7c5cbf" },
+//         { name: "Other", value: 4, color: "#7fb3d5" },
+//     ];
 
+
+// const categoryColors = [
+//     "#0f5c4c",
+//     "#4d9b7f",
+//     "#c8792a",
+//     "#7c5cbf",
+//     "#7fb3d5",
+//     "#d05a5a",
+//     "#d4a72c",
+//     "#4f7cac",
+//     "#8b5e83",
+//     "#5f8d7a",
+// ];
+const getCategoryColor = (index, total) => {
+    const hue = (index / total) * 360;
+
+    return `hsl(${hue}, 55%, 45%)`;
+};
 function IssuesGraph() {
-    
+
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try{
+                const response = await apiRequest("/dashboard/categories");
+
+                // console.log("ISSUES BY CATEGORY: ", response);
+
+                const categories = response.categories.map((category, index) => ({
+                    name: category.category,
+                    value: Number(category.value),
+                    color: getCategoryColor(index, response.categories.length),
+                })); 
+                
+
+                setData(categories);
+            }
+            catch (error) {
+                console.log("Failed to fetch issues by categories");
+                
+            }
+        }
+        fetchCategories();
+    }, []);
+
+    const total = data.reduce((sum, d) => sum + d.value, 0);
 
     return (
         <div className="w-full sm:min-w-xs max-w-2xl rounded-xl border border-gray-200 bg-white shadow-sm">

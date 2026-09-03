@@ -12,7 +12,7 @@ const creds = [
     {
         id: 1,
         role: "coordinator",
-        email: "tom.cookerist@tugon.edu.ph",
+        email: "tom@tugon.edu.ph",
         password: "123"
     },
     {

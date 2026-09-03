@@ -3,7 +3,7 @@ import FormField from "../../../common/FormField.jsx";
 import { inputClass } from "../../../common/formStyles.jsx";
 import RoleToggle from "../../../components/AuthPages/RoleToggle.jsx";
 
-
+import { apiRequest } from "../../../api/api.js";
 
 
 
@@ -19,42 +19,66 @@ function Login({ onSwitchToRegister, creds, onLoginSuccess }) {
         
     }
 
-    function handleSubmit(e) {
+    // function handleSubmit(e) {
+    //     e.preventDefault();
+
+    //     setErrorMessage("");
+
+    //     console.log("Form values being checked:", { email, password });
+    //     // console.log({ role, email, password, rememberMe });
+        
+        
+        
+    //     // const matchedUser = creds.find(user =>
+            
+            
+    //     //     user.email.toLowerCase().trim() === email.toLowerCase().trim() && 
+    //     //     String(user.password) === String(password).trim()
+            
+
+    //     // );
+
+
+    //     // if (matchedUser) {
+    //     //     console.log("User matched successfully:", matchedUser);
+
+    //     //     if (typeof setRole === "function") {
+    //     //         setRole(matchedUser.role);
+    //     //     }
+    //     //     onLoginSuccess(matchedUser)
+            
+    //     // }
+    //     // else {
+    //     //     setErrorMessage("Invalid credentials.");
+    //     //     console.log("Login failed: Invalid credentials."); 
+
+    //     // }
+    //     console.log(errorMessage);
+        
+    // }
+
+    async function handleSubmit(e) {
         e.preventDefault();
+        setErrorMessage("");    
+        try {
+            const data = await apiRequest("/auth/login", {
+                method: "POST",
+                body: JSON.stringify({
+                    email,
+                    password,
+                }),
+            });
 
-        setErrorMessage("");
-
-        console.log("Form values being checked:", { email, password });
-        // console.log({ role, email, password, rememberMe });
-        
-        
-        
-        const matchedUser = creds.find(user =>
+            console.log("LOGIN SUCCESS:", data);
             
-            
-            user.email.toLowerCase().trim() === email.toLowerCase().trim() && 
-            String(user.password) === String(password).trim()
-            
-
-        );
-
-
-        if (matchedUser) {
-            console.log("User matched successfully:", matchedUser);
-
-            if (typeof setRole === "function") {
-                setRole(matchedUser.role);
-            }
-            onLoginSuccess(matchedUser)
+            onLoginSuccess(data);
+        }
+        catch (error) {
+            console.error("LOGIN ERROR:", error);
+            setErrorMessage(error.message || "An error occurred during login.");
             
         }
-        else {
-            setErrorMessage("Invalid credentials.");
-            console.log("Login failed: Invalid credentials."); 
 
-        }
-        console.log(errorMessage);
-        
     }
 
     return (
@@ -78,9 +102,9 @@ function Login({ onSwitchToRegister, creds, onLoginSuccess }) {
                     Sign in to manage and resolve reported issues.
                 </p>
 
-                <div className="mt-6">
+                {/* <div className="mt-6">
                     <RoleToggle value={role} onChange={setRole} />
-                </div>
+                </div> */}
 
                 <div className="mt-6">
                     <FormField label="Email">

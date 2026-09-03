@@ -1,7 +1,9 @@
 function KPICard({ card }) {
     const Icon = card.icon; // must be capitalized to render as a component: <Icon />
-
+// console.log(card);
     return (
+        
+        
         <div
             className="
             

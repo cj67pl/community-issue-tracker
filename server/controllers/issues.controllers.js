@@ -26,6 +26,7 @@ export const getIssues = async (req, res, next) => {
                                     ON issues.priority_level_id = priority_levels.id
                                 JOIN users
                                     ON issues.reported_by = users.id
+								ORDER by reported_at DESC
                                 
                                 `);
 

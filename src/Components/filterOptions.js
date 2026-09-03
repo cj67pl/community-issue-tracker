@@ -11,6 +11,6 @@ export const categoryOptions = [
 
 export const priorityOptions = ["Critical", "High", "Medium", "Low"];
 
-export const statusOptions = ["Open", "In Progress", "Resolved", "Closed"];
+export const statusOptions = ["Pending", "In Progress", "Resolved", "Closed"];
 
 export const sortOptions = ["Newest", "Oldest", "Priority"];
