@@ -56,7 +56,9 @@ function Dashboard({onNavigate}) {
                     <h2 className="text-2xl font-bold">Dashboard</h2>
                     <span className="font-small text-neutral-500 ">Monitor reported issues and identify what needs attention.</span>
                 </div>
-                <button className="
+                <button 
+                    onClick={() => onNavigate("report")}
+                    className="
                             flex items-center justify-center
                             gap-2
                             rounded-md
@@ -67,7 +69,7 @@ function Dashboard({onNavigate}) {
                             h-10
                             px-5
                             hover:bg-teal-800
-                "   
+                    "   
                 >
                     <IoIosAdd size={25}/>
                     <span className="hidden sm:inline">Report issue</span>

@@ -1,19 +1,27 @@
+import { useState } from "react";
 import { Trash2, Pencil } from "lucide-react";
 import Badge from "../../common/Badge.jsx";
 import { priorityStyles, statusStyles } from "../issuesData.js";
 
 
 
+
 const columns = ["Issue", "Category", "Location", "Priority", "Status", "Reported", ""];
 
-function IssuesTable({ issues }) {
+function IssuesTable({ issues, isSelected, onNavigate, isIssueOpen }) {
     
 
     return (
         <div className="w-full rounded-xl border border-gray-200 bg-white shadow-sm my-5">
-            <div className="px-6 py-4">
+            {/* <div
+                onClick={() => {
+                    isSelected("");
+                    isIssueOpen("false")
+                }}
+                    className="px-6 py-4">
+                
                 <h2 className="text-lg font-bold text-gray-900">Recent Issues</h2>
-            </div>
+            </div> */}
 
             <div className="overflow-x-auto">
                 <table className="w-full min-w-[720px] border-collapse text-left">
@@ -28,7 +36,13 @@ function IssuesTable({ issues }) {
                     </thead>
                     <tbody>
                         {issues.map((row) => (
-                            <tr key={row.id} className="border-b border-slate-200 last:border-b-0 hover:bg-[#F6F4EF]/70 cursor-pointer">
+                            <tr 
+                                key={row.id} 
+                                onClick={() => {
+                                    isSelected(row.id);
+                                    isIssueOpen("true")
+                                }}
+                                className="border-b border-slate-200 last:border-b-0 hover:bg-[#F6F4EF]/70 cursor-pointer">
                                 <td className="px-6 py-4 text-sm font-semibold text-gray-900">{row.title}</td>
                                 <td className="px-6 py-3 text-sm text-gray-500">{row.category}</td>
                                 <td className="px-6 py-3 text-sm text-gray-500">{row.location}</td>

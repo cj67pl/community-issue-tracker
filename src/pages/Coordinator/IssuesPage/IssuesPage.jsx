@@ -4,14 +4,16 @@ import { Plus } from "lucide-react";
 import SearchInput from "../../../components/IssuesPage/SearchInput.jsx";
 import IssueFilters from "../../../components/IssuesPage/IssueFilters.jsx";
 import IssuesTable from "../../../components/IssuesPage/IssuesTable.jsx";
-import IssueDetails from "../../../components/IssuesPage/IssueDetails/IssueDetails.jsx"
+import IssueDetailsModal from "../../../components/IssuesPage/IssueDetails/IssueDetailsModal.jsx"
 
 
 import { apiRequest } from "../../../api/api.js";
 
-function IssuesPage({currentRole}) {
+function IssuesPage({currentRole, onNavigate}) {
 
-    const [isIssueOpen, setIsIssueOpen] = useState(false)
+    const [showIssueDetails, setShowIssueDetails] = useState(false);
+    const [isSelected, setIsSelected] = useState(null)
+
     const [searchQuery, setIsSearchQuery] =useState("");
     const [issuesList, setIssuesList] = useState([]);
 
@@ -19,6 +21,7 @@ function IssuesPage({currentRole}) {
     const [priority, setPriority] = useState("");
     const [status, setStatus] = useState("");
     const [sort, setSort] = useState("newest");
+
 
 
     useEffect(() => {
@@ -61,6 +64,13 @@ function IssuesPage({currentRole}) {
             //         selectedStatus: status, });
 
             if (
+                searchQuery &&
+                !issue.title.toLowerCase().includes(searchQuery.toLowerCase())
+            ) {
+                return false;
+            }
+
+            if (
                 category &&
                 Number(issue.category_id) !== Number(category)
             ) {
@@ -93,21 +103,44 @@ function IssuesPage({currentRole}) {
 
             return dateB - dateA;
         });
+
+        if (showIssueDetails) {
+            console.log("Issue is clicked and supposed to be opened." );
+        }  
+        if (!showIssueDetails) {
+            console.log("X is clicked and supposed to be closed.");
+
+        }
+        if (isSelected) {
+            console.log("selected is: ",isSelected);
+            
+        }
+        if (!isSelected) {
+            console.log("Closed. selected is: ", isSelected);
+
+        }
+
+        const handleIssueClick = (issue) => {
+            setIsSelected(issue);
+            setShowIssueDetails(true);
+        };
+
+
     return (
         <div className="p-4">
-            <div className={`${isIssueOpen ? "hidden" : " " }`}>
+            <div className={`${showIssueDetails ? "hidden" : " " }`}>
                 <div className="flex justify-between">
                     <div className="grid gap-2">
                         <h2 className="text-2xl font-bold">Issues</h2>
                         <span className="text-sm text-neutral-500">View, filter, and manage reported issues.</span>
                     </div>
                     <button
+                        onClick={() => onNavigate("report")}
                         className="
-                flex items-center justify-center gap-2
-                rounded-md text-sm font-bold text-white
-                bg-teal-700 h-10 px-5
-                hover:bg-teal-800
-                "
+                        flex items-center justify-center gap-2
+                        rounded-md text-sm font-bold text-white
+                        bg-teal-700 h-10 px-5
+                        hover:bg-teal-800"
                     >
                         <Plus size={20} />
                         <span className="hidden sm:inline">Report issue</span>
@@ -115,7 +148,11 @@ function IssuesPage({currentRole}) {
                 </div>
 
                 <div className="my-5">
-                    <SearchInput placeholder="Search for Issues" />
+                    <SearchInput 
+                        placeholder="Search for Issues" 
+                        value={searchQuery}
+                        onChange={setIsSearchQuery}
+                    />
                 </div>
 
                 <IssueFilters 
@@ -134,14 +171,26 @@ function IssuesPage({currentRole}) {
                     Showing {filteredIssues.length} issues
                 </span>
 
-                <IssuesTable issues={filteredIssues} />
+                <IssuesTable 
+                    issues={filteredIssues}
+                    isSelected={setIsSelected}
+                    isIssueOpen={setShowIssueDetails}
+                    onNavigate={onNavigate}
+                />
                 <div></div>
             </div>
 
             
-            <div className={`${(!isIssueOpen) ? "hidden" : " "}`}>
-                 <IssueDetails></IssueDetails>
-            </div>
+
+            <IssueDetailsModal 
+                isOpen={showIssueDetails}
+                onClose={() => { 
+                    setShowIssueDetails(false); 
+                }}
+                isSelected={isSelected}
+                setIsSelected={setIsSelected}
+            ></IssueDetailsModal>
+  
            
         </div>
         

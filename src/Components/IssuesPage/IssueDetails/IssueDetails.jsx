@@ -29,10 +29,22 @@ const actionData = [
 
 // const getInitials = (str) => str.trim().split(/\s+/).map(w=>[0]).join("").toUpperCase();
 
-function IssueDetails({style}) {
+function IssueDetails({ style,  }) {
     return (
-        <div className={`p-2 ${style}`}>
-            <a href="" className="flex flex-row items-center font-bold text-xs text-neutral-500 hover:text-neutral-800 mb-3"><ChevronLeft size={15}/> Back to Issues</a>
+        <div className={`p-14 ${style}`}>
+            
+            {/* <a
+                type="button"
+                onClick={() => {
+                    onClose()
+                }}
+                href=""
+                className="flex flex-row items-center font-bold text-xs text-neutral-500 hover:text-neutral-800 mb-3"
+            >
+                <ChevronLeft size={15} />
+                Back to Issues
+            </a> */}
+           
             <div className="flex justify-between">
                 
                 <div className="grid gap-2">

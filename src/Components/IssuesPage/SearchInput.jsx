@@ -1,6 +1,6 @@
 import { Search } from "lucide-react";
 
-function SearchInput({ placeholder = "Search" }) {
+function SearchInput({ placeholder = "Search", value, onChange }) {
     return (
         <div
             className="
@@ -14,6 +14,8 @@ function SearchInput({ placeholder = "Search" }) {
             <input
                 type="text"
                 placeholder={placeholder}
+                value={value}
+                onChange={(e) => onChange(e.target.value)}
                 className="h-full w-full bg-transparent text-sm outline-none placeholder:text-slate-400/60"
             />
         </div>

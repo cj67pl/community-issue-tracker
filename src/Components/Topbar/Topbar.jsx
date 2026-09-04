@@ -11,7 +11,7 @@ function Topbar({ onMenuClick, currentUserName, currentRole }) {
         <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 lg:px-8">
             <div className="flex items-center">
                 <MobileMenuButton onClick={onMenuClick} />
-                <SearchBar />
+                {/* <SearchBar /> */}
             </div>
 
             <div className="flex items-center gap-3 sm:gap-5 ms-auto">

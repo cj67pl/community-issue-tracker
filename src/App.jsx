@@ -133,8 +133,12 @@ function App() {
 					{currentUser.role === "coordinator" && (
 						<>
 							{currentPage === "dashboard" && <Dashboard onNavigate={setCurrentPage} />}
-							{currentPage === "issues" && <IssuesPage currentRole = {currentUser.role}/>}
-							{currentPage === "report" && <ReportIssue />}
+							{currentPage === "issues" && <IssuesPage 
+																currentRole={currentUser.role} 
+																onNavigate={setCurrentPage} />}
+							{currentPage === "report" && <ReportIssue 
+																currentRole={currentUser.role} 
+																onNavigate={setCurrentPage} />}
 							{currentPage === "reports" && <Reports />}
 							{currentPage === "settings" && <SettingsPage />}
 							{currentPage === "help" && <HelpPage />}
