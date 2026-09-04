@@ -1,7 +1,7 @@
 import { ChevronDown } from 'lucide-react';
 
-function FilterSelect({ name, placeholder, options, value, onChange }) {
-    console.log("OPTIONS:", options);
+function FilterSelect({ name, placeholder, options = [], value, onChange }) {
+    // console.log("OPTIONS:", options);
     // console.log("VALUE: ", value);
     
     return (
@@ -23,12 +23,17 @@ function FilterSelect({ name, placeholder, options, value, onChange }) {
                 "
             >
                 <option key="placeholder" value="">{placeholder}</option>
-                {options.map((option) => (
+                {options.map((option, index) => {
+                    const optionValue = typeof option === "object" ? option.value : option; 
+                    const optionLabel = typeof option === "object" ? option.label : option;
+                    return(
+                        <option key={`${name}-${optionValue}-${index}`} value={option.value}>
+                            {optionLabel}
+                        </option>
+
+                    )
                     
-                    <option key={option.value} value={option.value}>
-                        {option.label}
-                    </option>
-                ))}
+                })}
             </select> 
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500">
                 <ChevronDown className="h-5 w-5" />

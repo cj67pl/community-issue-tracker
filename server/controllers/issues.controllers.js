@@ -13,6 +13,11 @@ export const getIssues = async (req, res, next) => {
                                     issues.description,
                                     issues.location,
                                     issues.reported_at,
+
+									issues.category_id,
+									issues.priority_level_id,
+									issues.status_id,
+
                                     categories.category_name AS category,
                                     priority_levels.priority_name AS priority,
                                     statuses.status_name AS status,

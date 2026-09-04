@@ -12,6 +12,7 @@ import { apiRequest } from "../../../api/api.js";
 function IssuesPage({currentRole}) {
 
     const [isIssueOpen, setIsIssueOpen] = useState(false)
+    const [searchQuery, setIsSearchQuery] =useState("");
     const [issuesList, setIssuesList] = useState([]);
 
     const [category, setCategory] = useState("");
@@ -26,8 +27,18 @@ function IssuesPage({currentRole}) {
 
             try {
                 const data = await apiRequest("/issues");
-                console.log("API DATA:", data);
-                console.log("IS ARRAY:", Array.isArray(data));
+                // console.log("API DATA:", data);
+                // console.log("FIRST ISSUE:", data[0]);
+                // console.log("IS ARRAY:", Array.isArray(data));
+                /*console.log("FIRST ISSUE FILTER FIELDS:", {
+                    id: data[0].id,
+                    category_id: data[0].category_id,
+                    priority_level_id: data[0].priority_level_id,
+                    status_id: data[0].status_id,
+                    category: data[0].category,
+                    priority: data[0].priority,
+                    status: data[0].status, });*/
+                
                 setIssuesList(Array.isArray(data) ? data : data.issues || []);
             } catch (error) {
                 console.error("API ERROR:", error);
@@ -37,8 +48,17 @@ function IssuesPage({currentRole}) {
         fetchIssues();
     }, []);
 
-    const filteredIssues = issuesList
+    const filteredIssues = [...issuesList]
         .filter((issue) => {
+
+            // console.log("FILTERING ISSUE:", 
+            //     { issueId: issue.id, 
+            //         category_id: issue.category_id, 
+            //         selectedCategory: category, 
+            //         priority_level_id: issue.priority_level_id, 
+            //         selectedPriority: priority, 
+            //         status_id: issue.status_id, 
+            //         selectedStatus: status, });
 
             if (
                 category &&
@@ -64,8 +84,8 @@ function IssuesPage({currentRole}) {
             return true;
         })
         .sort((a, b) => {
-            const dateA = new Date(a.created_at);
-            const dateB = new Date(b.created_at);
+            const dateA = new Date(a.reported_at);
+            const dateB = new Date(b.reported_at);
 
             if (sort === "oldest") {
                 return dateA - dateB;

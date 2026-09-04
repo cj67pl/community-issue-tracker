@@ -24,7 +24,7 @@ function IssueFilters({
             try {
                 const response = await apiRequest("/issues/filter-options");
 
-                console.log("FILTER OPTIONS:", response);
+                // console.log("FILTER OPTIONS:", response);
 
                 setCategories(response.categories);
                 setPriorities(response.priorities);
@@ -53,9 +53,10 @@ function IssueFilters({
         label: status.name,
     }));
     
-    console.log("RAW STATUSES:", statuses);
-    console.log("STATUS OPTIONS:", statusOptions);
+    // console.log("RAW STATUSES:", statuses);
+    // console.log("STATUS OPTIONS:", statusOptions);
     
+// console.log(statusOptions);
 
     // Sorting doesn't come from the database.
     const sortOptions = [
