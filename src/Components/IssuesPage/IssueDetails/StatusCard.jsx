@@ -1,7 +1,7 @@
 import { useState } from "react";
 import FilterSelect from "../../../common/FilterSelect.jsx";
 import Badge from "../../../common/Badge.jsx";
-import {statusOptions} from "../../filterOptions.js";
+// import {statusOptions} from "../../filterOptions.js";
 import {statusStyles} from "../../issuesData.js"
 import { IoIosArrowRoundForward } from "react-icons/io";
 
@@ -9,10 +9,33 @@ import { IoIosArrowRoundForward } from "react-icons/io";
 
 const inactiveStyle = "bg-gray-100 text-gray-400 border border-gray-200";
 
-function StatusCard({issueStats}) {
+function StatusCard({ issueStats, setIssueStatus, issue }) {
     
     
     const [status, setStatus] = useState(issueStats);
+    const [statusOptions, setStatusOptions] = useState({});
+
+
+
+        useEffect(() => {
+            const fetchStatusOptions = async () => {
+                try {
+                    const response = await apiRequest("/issues/filter-options");
+    
+                    // console.log("FILTER OPTIONS:", response);
+    
+                    setCategories(response.categories);
+                    setPriorities(response.priorities);
+                    setStatuses(response.statuses);
+    
+                } catch (error) {
+                    console.error("Failed to fetch filter options:", error);
+                }
+            };
+            fetchStatusOptions();
+        }, []);
+    console.log(statusOptions);
+    
 
     const currentStatusIndex = statusOptions.indexOf(status);
     return(
@@ -28,7 +51,15 @@ function StatusCard({issueStats}) {
                 Update Status
             </span>
             <div className="px-6 pb-5 my-2">
-                <FilterSelect name="status" placeholder="All Statuses" options={statusOptions} value={status} onChange={setStatus} />
+                <FilterSelect 
+                    name="status" 
+                    placeholder="All Statuses" 
+                    options={statusOptions} 
+                    value={status} 
+                    onChange={(newStatus) => { 
+                        setStatus(newStatus), 
+                        setIssueStatus(issue, newStatus)}} 
+                />
             </div>
             <div className="flex justify-center items-center mb-8">
                 {statusOptions.map((stats, key) => {
@@ -38,7 +69,9 @@ function StatusCard({issueStats}) {
                         ? statusStyles[stats]
                         : inactiveStyle;
                 return (
-                    <div key={key} className="flex items-center gap-2">
+                    <div
+                         
+                        key={key} className="flex items-center gap-2">
                         <Badge label={stats} styles={styleToApply} size="md" />
                         {key < statusOptions.length - 1 && (
                             <IoIosArrowRoundForward

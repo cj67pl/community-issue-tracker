@@ -2,7 +2,7 @@ import IssueGrid from "./IssueGrid..jsx";
 
 
 
-function IssueInfo({category, reporter, lastUpdated, location, dateReported, issueId, description, notes}) {
+function IssueInfo({ category, reporter, lastUpdated, location, dateReported, issueId, updatedBy }) {
     const issueInfo = [
         {
             label: "CATEGORY",
@@ -14,7 +14,7 @@ function IssueInfo({category, reporter, lastUpdated, location, dateReported, iss
         },
         {
             label: "REPORTER",
-            data: reporter.name,
+            data: reporter  ,
         },
         {
             label: "REPORTED",
@@ -23,6 +23,10 @@ function IssueInfo({category, reporter, lastUpdated, location, dateReported, iss
         {
             label: "LAST UPDATED",
             data: lastUpdated,
+        },
+        { 
+            label: "UPDATED BY", 
+            data: updatedBy || "-", 
         },
         {
             label: "ISSUE ID",

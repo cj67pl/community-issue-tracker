@@ -1,4 +1,5 @@
-import { getInitials } from "../../../funcs.js";
+import { getInitials } from "../../../../utils/stringHelpers.js";
+import { formatDate } from "../../../../utils/dateHelper.js";
 import Note from "./Note.jsx"
 
 
@@ -14,16 +15,23 @@ function Notes({ notes }) {
             </div>
 
             <div className="flex flex-col gap-3 p-4">
-                {notes.map((note) => (
-                    <Note
-                        key={note.key}
-                        initials={getInitials(note.user)}
-                        userName={note.user}
-                        note={note.note}
-                        postDate={note.postDate}
-                        
-                    />
-                ))}
+                {!notes || notes.length === 0 ? 
+                (
+                    <div>No Notes Yet</div>
+                ) : (
+                    
+                
+                    notes.map((note) => (
+                        <Note
+                            key={note.id}
+                            initials={getInitials(note.user_name)}
+                            userName={note.user_name}
+                            note={note.content}
+                            postDate={formatDate(note.updated_at)}
+                            
+                        />
+                    ))
+                )}
             </div>
 
             <div className="flex items-center gap-3 border-t border-slate-200 p-4">

@@ -27,4 +27,13 @@ export function formatRelativeTime(dateInput) {
 
     return "1s ago";
 
+};
+
+
+export function formatDate(dateInput) {
+	return new Date(dateInput).toLocaleDateString("en-US", {
+		month: "short",
+		day: "numeric",
+		year: "numeric",
+	});
 }

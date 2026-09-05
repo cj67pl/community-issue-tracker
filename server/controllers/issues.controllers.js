@@ -61,32 +61,45 @@ export const getIssueById = async (req, res, next) => {
     try {
         const id = req.params.id;
         const result = await pool.query(
-            `
-                                SELECT 
-                                    issues.id,
-                                    issues.title,
-                                    issues.description,
-                                    issues.location,
-                                    issues.reported_at,
-                                    categories.category_name AS category,
-                                    priority_levels.priority_name AS priority,
-                                    statuses.status_name AS status,
-                                    users.name AS reported_by
+			`
+				SELECT 
+					i.id,
+					i.title,
+					i.description,
+					i.location,
+					i.reported_at,
+					i.updated_at,
+					i.updated_by,
 
-                                FROM issues 
-                                JOIN categories
-                                    ON issues.category_id = categories.id
-                                JOIN statuses
-                                    ON issues.status_id = statuses.id
-                                JOIN priority_levels
-                                    ON issues.priority_level_id = priority_levels.id
-                                JOIN users
-                                    ON issues.reported_by = users.id
-                                WHERE issues.id = $1
+					reporter.name AS reported_by,
+					updater.name AS updated_by,
+
+					c.category_name AS category,
+					p.priority_name AS priority,
+					s.status_name AS status
+
+				FROM issues i
+
+				LEFT JOIN users reporter
+					ON i.reported_by = reporter.id
+
+				LEFT JOIN users updater
+					ON i.updated_by = updater.id
+
+				LEFT JOIN categories c
+					ON i.category_id = c.id
+
+				LEFT JOIN priority_levels p
+					ON i.priority_level_id = p.id
+
+				LEFT JOIN statuses s
+					ON i.status_id = s.id
+
+				WHERE i.id = $1;
 
         `,
-            [id],
-        );
+			[id],
+		);
 
         if (result.rowCount === 0) {
             return res.status(404).json({
@@ -186,6 +199,7 @@ export const createIssue =  async (req, res, next) => {
 		}
 
 		const result = await pool.query(
+			
 			`
                     INSERT INTO issues (
                         title,
@@ -228,30 +242,32 @@ export const createIssue =  async (req, res, next) => {
 };
 
 export const updateIssue = async (req, res, next) => {
-	const { id } = req.params;
-	const { status_id } = req.body;
+    const { id } = req.params;
+	const { status_name } = req.body;
 
-    if (!isValidId(id)) {
+	if (!isValidId(id)) {
 		return res.status(400).json({
 			error: "Invalid issue ID",
 		});
 	}
 
-	if (!isValidId(status_id)) {
+	if (!status_name || typeof status_name !== "string") {
 		return res.status(400).json({
-			error: "Invalid status ID",
+			error: "Invalid status name",
 		});
 	}
 
 	try {
+
 		const issueResult = await pool.query(
-			`
-		SELECT id, reported_by
-		FROM issues
-		WHERE id = $1
-	`,
+					`
+            SELECT id, reported_by
+            FROM issues
+            WHERE id = $1
+            `,
 			[id],
 		);
+
 
 		if (issueResult.rowCount === 0) {
 			return res.status(404).json({
@@ -262,8 +278,7 @@ export const updateIssue = async (req, res, next) => {
 		const issue = issueResult.rows[0];
 		if (
 			(req.user.role_id !== 1 &&
-			req.user.role_id !== 2 && 
-			issue.reported_by !== req.user.id)
+			req.user.role_id !== 2)
 		) {
 			return res.status(403).json({
 				error: "You do not have permission to update this issue",
@@ -271,9 +286,14 @@ export const updateIssue = async (req, res, next) => {
 		}
 
 		const statusResult = await pool.query(
-			`SELECT id FROM statuses WHERE id = $1`,
-			[status_id],
+			`
+            SELECT id
+            FROM statuses
+            WHERE status_name = $1
+            `,
+			[status_name],
 		);
+		const status_id = statusResult.rows[0].id;
 
 		if (statusResult.rowCount === 0) {
 			return res.status(400).json({
@@ -284,11 +304,12 @@ export const updateIssue = async (req, res, next) => {
 			`
             UPDATE issues
             SET status_id = $1,
-                updated_at = CURRENT_TIMESTAMP
-            WHERE id = $2
+                updated_at = CURRENT_TIMESTAMP,
+				updated_by = $2
+            WHERE id = $3
             RETURNING *;
         `,
-			[status_id, id],
+			[status_id, req.user.id, id],
 		);
 
 		if (result.rowCount === 0) {

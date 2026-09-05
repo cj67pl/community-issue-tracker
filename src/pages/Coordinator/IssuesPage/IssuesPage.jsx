@@ -22,6 +22,8 @@ function IssuesPage({currentRole, onNavigate}) {
     const [status, setStatus] = useState("");
     const [sort, setSort] = useState("newest");
 
+    const [issueToDelete, setIssueToDelete] = useState("");
+
 
 
     useEffect(() => {
@@ -104,28 +106,67 @@ function IssuesPage({currentRole, onNavigate}) {
             return dateB - dateA;
         });
 
-        if (showIssueDetails) {
-            console.log("Issue is clicked and supposed to be opened." );
-        }  
-        if (!showIssueDetails) {
-            console.log("X is clicked and supposed to be closed.");
+        // if (showIssueDetails) {
+        //     console.log("Issue is clicked and supposed to be opened." );
+        // }  
+        // if (!showIssueDetails) {
+        //     console.log("X is clicked and supposed to be closed.");
 
-        }
-        if (isSelected) {
-            console.log("selected is: ",isSelected);
+        // }
+        // if (isSelected) {
+        //     console.log("selected is: ",isSelected);
             
-        }
-        if (!isSelected) {
-            console.log("Closed. selected is: ", isSelected);
+        // }
+        // if (!isSelected) {
+        //     console.log("Closed. selected is: ", isSelected);
 
-        }
+        // }
 
         const handleIssueClick = (issue) => {
             setIsSelected(issue);
             setShowIssueDetails(true);
         };
 
+        const handleDeleteIssue = async (issueID) => {
+            try{
+                await apiRequest(`/issues/${issueID}`, {
+                    method: "DELETE",
+                });
 
+                setIssuesList((currentIssues) =>
+                    currentIssues.filter((issue) => issue.id != issue.id)
+                );
+            }
+            catch (error) {
+                console.error("Failed to delete issue.")
+            }
+        }
+
+        const handlEditIssueStatus = async (issueID, newStatus) => {
+            console.log("EDIT ID:", issueID);
+            console.log("EDIT STATUS:", newStatus);
+
+            try {
+                await apiRequest(`/issues/${issueID}`, {
+                    method: "PATCH",
+                    body: JSON.stringify({
+                        status_name: newStatus
+                    })
+
+                })
+                setIssuesList((currentIssues) =>
+                    currentIssues.map((issue) =>
+                        Number(issue.id) === Number(issueID)
+                            ? { ...issue, status_id: newStatus}
+                            : issue
+                    )
+                );
+            }
+            catch (error) {
+                console.log("Failed to edit the issue!");
+                
+            }
+        }
     return (
         <div className="p-4">
             <div className={`${showIssueDetails ? "hidden" : " " }`}>
@@ -173,8 +214,9 @@ function IssuesPage({currentRole, onNavigate}) {
 
                 <IssuesTable 
                     issues={filteredIssues}
-                    isSelected={setIsSelected}
-                    isIssueOpen={setShowIssueDetails}
+                    onSelectIssue={handleIssueClick}
+                    onDeleteIssue={handleDeleteIssue}
+                    
                     onNavigate={onNavigate}
                 />
                 <div></div>
@@ -189,6 +231,9 @@ function IssuesPage({currentRole, onNavigate}) {
                 }}
                 isSelected={isSelected}
                 setIsSelected={setIsSelected}
+                onDeleteIssue={handleDeleteIssue}
+                onEditIssueStatus={ handlEditIssueStatus }
+                
             ></IssueDetailsModal>
   
            

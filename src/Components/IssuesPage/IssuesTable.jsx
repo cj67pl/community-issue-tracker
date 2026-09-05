@@ -8,7 +8,7 @@ import { priorityStyles, statusStyles } from "../issuesData.js";
 
 const columns = ["Issue", "Category", "Location", "Priority", "Status", "Reported", ""];
 
-function IssuesTable({ issues, isSelected, onNavigate, isIssueOpen }) {
+function IssuesTable({ issues, onSelectIssue, onDeleteIssue }) {
     
 
     return (
@@ -39,8 +39,7 @@ function IssuesTable({ issues, isSelected, onNavigate, isIssueOpen }) {
                             <tr 
                                 key={row.id} 
                                 onClick={() => {
-                                    isSelected(row.id);
-                                    isIssueOpen("true")
+                                    onSelectIssue(row.id)
                                 }}
                                 className="border-b border-slate-200 last:border-b-0 hover:bg-[#F6F4EF]/70 cursor-pointer">
                                 <td className="px-6 py-4 text-sm font-semibold text-gray-900">{row.title}</td>
@@ -55,14 +54,19 @@ function IssuesTable({ issues, isSelected, onNavigate, isIssueOpen }) {
                                 <td className="px-6 py-3 text-sm text-gray-500">{row.reported_by}</td>
                                 <td className="flex items-center justify-center gap-3 px-6 py-3">
                                     <button 
-                                        onClick={() => {row.id}}
+                                        onClick={() => {onDeleteIssue(row.id)}}
                                         className="p-2 border border-slate-200 rounded-lg hover:bg-red-500/10 hover:text-red-700 cursor-pointer">
                                             <Trash2 size={16} />
                                     </button>
                                     <button
-                                        onClick={() => { row.id }} 
+                                        onClick={() => {
+                                                    onSelectIssue(row.id)
+                                                }}
+                                        
                                         className="p-2 border border-slate-200 rounded-lg hover:bg-green-500/10 hover:text-green-700 cursor-pointer">
-                                            <Pencil size={16} />
+                                            <Pencil 
+                                                
+                                                size={16} />
                                     </button>
                                 </td>
                             </tr>

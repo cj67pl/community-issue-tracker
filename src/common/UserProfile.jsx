@@ -46,7 +46,7 @@ function UserProfile({ initials, name, role, variant, hideDetailsOnMobile = fals
           compact header usage needs it collapsed on small screens. */}
             <div className={`flex-col ${hideDetailsOnMobile ? "hidden lg:flex" : "flex"}`}>
                 <span className={styles.name}>{name}</span>
-                <span className={styles.role}>{capitalizeFirstLetter(role)}</span>
+                <span className={styles.role}>{!role ?  "" : capitalizeFirstLetter(role)}</span>
             </div>
         </div>
     );
