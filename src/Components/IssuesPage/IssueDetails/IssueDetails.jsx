@@ -72,7 +72,7 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus }) {
                     <h2 className="text-2xl font-bold">{issueData.title}</h2>
                    
                     <div className="flex gap-5 py-2">
-                        <Badge label={issueData.status} styles={statusStyles[issueData.status].toLowerCase()} size="md" />
+                        <Badge label={issueData.status} styles={statusStyles[issueData.status]} size="md" />
                         <Badge
                             label={`${issueData.priority} Priority`}
                             styles={priorityStyles[issueData.priority].toLowerCase()}
@@ -116,7 +116,16 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus }) {
                     updatedBy={issueData.updated_by}
                 />
                 <StatusCard 
-                    setIssueStatus={onEditIssueStatus}
+                    setIssueStatus={async (issueID, newStatus) => {
+                        const updatedIssue = await onEditIssueStatus(issueID, newStatus);
+
+                        if (updatedIssue) {
+                            setIssueData((currentIssue) => ({
+                                ...currentIssue,
+                                ...updatedIssue
+                            }));
+                        }
+                    }}
                     issue={issue}
                     issueStats={issueData.status}/>
                     
@@ -124,6 +133,10 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus }) {
             </div>
             <div className="grid grid-cols-1 gap-9 xl:flex">
                 <Description description={issueData.description}/>
+                {/* {(() => {
+                    console.log("REPORTED BY:", issueData.reported_by);
+                    console.log("UPDATED BY:", issueData.updated_by);
+                })()} */}
                 <ReporterCard
                     initials={getInitials(issueData.reported_by)}
                     name={issueData.reported_by}

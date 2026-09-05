@@ -69,7 +69,6 @@ export const getIssueById = async (req, res, next) => {
 					i.location,
 					i.reported_at,
 					i.updated_at,
-					i.updated_by,
 
 					reporter.name AS reported_by,
 					updater.name AS updated_by,

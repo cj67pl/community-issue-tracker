@@ -142,31 +142,40 @@ function IssuesPage({currentRole, onNavigate}) {
             }
         }
 
-        const handlEditIssueStatus = async (issueID, newStatus) => {
-            console.log("EDIT ID:", issueID);
-            console.log("EDIT STATUS:", newStatus);
+    const handlEditIssueStatus = async (issueID, newStatus) => {
+        console.log("EDIT ID:", issueID);
+        console.log("EDIT STATUS:", newStatus);
 
-            try {
-                await apiRequest(`/issues/${issueID}`, {
-                    method: "PATCH",
-                    body: JSON.stringify({
-                        status_name: newStatus
-                    })
-
+        try {
+            await apiRequest(`/issues/${issueID}`, {
+                method: "PATCH",
+                body: JSON.stringify({
+                    status_name: newStatus
                 })
-                setIssuesList((currentIssues) =>
-                    currentIssues.map((issue) =>
-                        Number(issue.id) === Number(issueID)
-                            ? { ...issue, status_id: newStatus}
-                            : issue
-                    )
-                );
-            }
-            catch (error) {
-                console.log("Failed to edit the issue!");
-                
-            }
+            });
+            const updatedData = await apiRequest(`/issues/${issueID}`);
+
+            console.log("REFRESHED ISSUE:", updatedData.issue);
+
+            setIssuesList((currentIssues) =>
+                currentIssues.map((issue) =>
+                    Number(issue.id) === Number(issueID)
+                        ? {
+                            ...issue,
+                            status: updatedData.issue.status,
+                            status_id: updatedData.issue.status_id
+                        }
+                        : issue
+                )
+            );
+
+            return updatedData.issue;
         }
+        catch (error) {
+            console.log("Failed to edit the issue!", error);
+            return null;
+        }
+    };
     return (
         <div className="p-4">
             <div className={`${showIssueDetails ? "hidden" : " " }`}>
