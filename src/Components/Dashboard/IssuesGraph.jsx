@@ -30,7 +30,7 @@ const getCategoryColor = (index, total) => {
 
     return `hsl(${hue}, 55%, 45%)`;
 };
-function IssuesGraph() {
+function IssuesGraph({onNavigate}) {
 
     const [data, setData] = useState([]);
 
@@ -120,7 +120,9 @@ function IssuesGraph() {
         
                 
                 <div className="flex border-t border-slate-200 px-6 py-3 items-center">
-                    <button className="flex items-center gap-1 text-sm font-medium text-teal-700 hover:underline ">
+                    <button 
+                        onClick={() => onNavigate("reports")}
+                        className="flex items-center gap-1 text-sm font-medium text-teal-700 hover:underline ">
                         View full report
                         <FaChevronRight className="w-2 h-2" />
                     </button>

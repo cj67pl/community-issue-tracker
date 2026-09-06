@@ -18,7 +18,7 @@ function IssueDetailsModal({ isOpen, onClose, isSelected, onDeleteIssue, onEditI
                     onClick={() => {
                         onClose()
                     }}
-                    className="absolute right-4 top-4 z-10 rounded-full p-2 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-800"
+                    className="sticky top-4 z-10 ml-auto block rounded-full p-2 text-neutral-500 hover:bg-neutral-100 hover:text-neutral-800"
                 >
                     <X size={20} />
                 </button>

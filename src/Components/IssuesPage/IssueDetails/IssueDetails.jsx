@@ -123,7 +123,7 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddCom
                     </div>
                     
                 </div>
-                <div className="flex gap-5">
+                {/* <div className="flex gap-5">
 
                     <button
                         onClick={() => { onDeleteIssue(issue) }}
@@ -141,10 +141,10 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddCom
                         <span className="hidden sm:inline">Delete</span>
                     </button>
                 </div>
-                
+                 */}
                 
             </div>
-            <div className="grid grid-cols-1 gap-9 xl:flex">
+            <div className="grid grid-cols-1 gap-9 lg:flex">
                 <IssueInfo 
                     category={issueData.category}
                     reporter={issueData.reported_by}
@@ -172,7 +172,7 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddCom
                     
                 
             </div>
-            <div className="grid grid-cols-1 gap-9 xl:flex">
+            <div className="grid grid-cols-1 gap-9 lg:flex">
                 <Description description={issueData.description}/>
                 {/* {(() => {
                     console.log("REPORTED BY:", issueData.reported_by);

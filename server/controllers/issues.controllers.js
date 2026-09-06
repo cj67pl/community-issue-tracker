@@ -117,7 +117,7 @@ export const getIssueById = async (req, res, next) => {
 
 export const createIssue =  async (req, res, next) => {
 	// console.log(req.body);
-    // const userId = req.user.id;
+    const userId = req.user.id;
 
     const reported_by = req.user.id;
 
@@ -127,7 +127,6 @@ export const createIssue =  async (req, res, next) => {
 		category_id,
 		location,
 		priority_level_id,
-		status_id,
 	} = req.body;
 
 	if (
@@ -142,8 +141,7 @@ export const createIssue =  async (req, res, next) => {
 
 	if (
 		!isValidId(category_id) ||
-		!isValidId(priority_level_id) ||
-		!isValidId(status_id)
+		!isValidId(priority_level_id)
 	) {
 		return res.status(400).json({
 			error: "Invalid category, priority, or status ID",
@@ -165,15 +163,15 @@ export const createIssue =  async (req, res, next) => {
 			[priority_level_id],
 		);
 
-		const statusResult = await pool.query(
-			`SELECT id FROM statuses WHERE id = $1`,
-			[status_id],
-		);
+		// const statusResult = await pool.query(
+		// 	`SELECT id FROM statuses WHERE id = $1`,
+		// 	[status_id],
+		// );
 
 		const userResult = await pool.query(
 			`SELECT id FROM users WHERE id = $1 AND is_active = true
 		`,
-			[reported_by],
+			[userId],
 		);
 
 		if (categoryResult.rowCount === 0) {
@@ -186,11 +184,11 @@ export const createIssue =  async (req, res, next) => {
 				error: "Invalid priority",
 			});
 		}
-		if (statusResult.rowCount === 0) {
-			return res.status(400).json({
-				error: "Invalid status",
-			});
-		}
+		// if (statusResult.rowCount === 0) {
+		// 	return res.status(400).json({
+		// 		error: "Invalid status",
+		// 	});
+		// }
 		if (userResult.rowCount === 0) {
 			return res.status(400).json({
 				error: "Invalid user",
@@ -198,16 +196,15 @@ export const createIssue =  async (req, res, next) => {
 		}
 
 		const result = await pool.query(
-			
 			`
                     INSERT INTO issues (
                         title,
                         description,
                         category_id,
                         reported_by,
+						updated_by,
                         location,
-                        priority_level_id,
-                        status_id
+                        priority_level_id
                     )
                     VALUES (
                         $1,
@@ -216,7 +213,7 @@ export const createIssue =  async (req, res, next) => {
                         $4,
                         $5,
                         $6,
-                        $7
+						$7
                     )
                     RETURNING *;
             
@@ -226,10 +223,10 @@ export const createIssue =  async (req, res, next) => {
 				cleanTitle,
 				cleanDescription,
 				category_id,
-				reported_by,
-				cleanLocation,
-				priority_level_id,
-				status_id,
+				userId,
+				userId,
+				location,
+				priority_level_id
 			],
 		);
 		res.status(201).json({

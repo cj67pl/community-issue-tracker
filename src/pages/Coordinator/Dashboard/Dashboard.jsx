@@ -84,7 +84,7 @@ function Dashboard({onNavigate}) {
         
             {kpiCardsData.map((card) => (
                 <KPICard
-                
+                    onNavigate={onNavigate}
                     key={card.name}
                     card={{
                         ...card,
@@ -99,7 +99,7 @@ function Dashboard({onNavigate}) {
             </div>
 
             <div className="grid xl:grid-cols-2  md:grid-cols-1 gap-6">
-                <IssuesGraph />
+                <IssuesGraph onNavigate={onNavigate}/>
                 <UrgentsList onNavigate={onNavigate} />
             </div>
 
