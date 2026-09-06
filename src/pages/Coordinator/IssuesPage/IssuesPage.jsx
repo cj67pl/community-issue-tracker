@@ -22,6 +22,7 @@ function IssuesPage({currentRole, onNavigate}) {
     const [status, setStatus] = useState("");
     const [sort, setSort] = useState("newest");
 
+  
     const [issueToDelete, setIssueToDelete] = useState("");
 
 
@@ -176,6 +177,79 @@ function IssuesPage({currentRole, onNavigate}) {
             return null;
         }
     };
+
+    const handleAddComment = async (issueID, newComment) => {
+        console.log("3. PAGE ISSUE ID:", issueID);
+        console.log("3. PAGE COMMENT:", newComment);
+        try {
+            await apiRequest(`/issues/${issueID}/comments`, {
+                method: "POST", 
+                body: JSON.stringify({
+                    content: newComment
+                })
+            });
+
+            const updatedComments = await apiRequest(
+                `/issues/${issueID}/comments`
+            )
+
+            return updatedComments;
+        }
+        catch (error) {
+            console.error("Failed to add comment!", error);
+            
+        }
+        
+    }
+    const handleEditComment = async (issueID, commentID, newCommentUpdate) => {
+        console.log("3. PAGE ISSUE ID:", issueID);
+        console.log("3. PAGE COMMENT ID:", commentID);
+        console.log("3. PAGE COMMENT:", newCommentUpdate);
+        try {
+            await apiRequest(`/issues/${issueID}/comments/${commentID}`, {
+                method: "PATCH",
+                body: JSON.stringify({
+                    content: newCommentUpdate
+                })
+            });
+
+            const updatedComments = await apiRequest(
+                `/issues/${issueID}/comments/`
+            )
+
+            return updatedComments;
+        }
+        catch (error) {
+            console.error("Failed to add comment!", error);
+
+        }
+
+    }
+
+    const handleDeleteComment = async (issueID, commentID) => {
+        console.log("3. PAGE ISSUE ID:", issueID);
+        console.log("3. PAGE COMMENT ID:", commentID);
+
+        try {
+            await apiRequest(`/issues/${issueID}/comments/${commentID}`, {
+                method: "DELETE",
+                body: JSON.stringify({
+                    id: commentID
+                })
+            });
+
+            const updatedComments = await apiRequest(
+                `/issues/${issueID}/comments/`
+            )
+
+            return updatedComments;
+        }
+        catch (error) {
+            console.error("Failed to add comment!", error);
+
+        }
+
+    }
     return (
         <div className="p-4">
             <div className={`${showIssueDetails ? "hidden" : " " }`}>
@@ -242,7 +316,9 @@ function IssuesPage({currentRole, onNavigate}) {
                 setIsSelected={setIsSelected}
                 onDeleteIssue={handleDeleteIssue}
                 onEditIssueStatus={ handlEditIssueStatus }
-                
+                onAddComment={handleAddComment}
+                onEditComment={handleEditComment}
+                onDeleteComment={handleDeleteComment}
             ></IssueDetailsModal>
   
            

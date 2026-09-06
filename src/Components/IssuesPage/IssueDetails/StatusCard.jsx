@@ -22,7 +22,7 @@ function StatusCard({ issueStats, setIssueStatus, issue }) {
                 try {
                     const response = await apiRequest("/issues/filter-options");
     
-                    console.log("FILTER OPTIONS:", response.statuses);
+                    // console.log("FILTER OPTIONS:", response.statuses);
     
                     
                     setStatusOptions(response.statuses);
@@ -33,7 +33,7 @@ function StatusCard({ issueStats, setIssueStatus, issue }) {
             };
             fetchStatusOptions();
         }, []);
-    console.log(statusOptions);
+    // console.log(statusOptions);
     
 
     const currentStatusIndex = statusOptions.findIndex(

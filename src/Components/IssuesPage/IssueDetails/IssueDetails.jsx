@@ -15,7 +15,7 @@ import { apiRequest } from "../../../api/api.js";
 
 // const getInitials = (str) => str.trim().split(/\s+/).map(w=>[0]).join("").toUpperCase();
 
-function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus }) {
+function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddComment, onEditComment, onDeleteComment }) {
     // console.log("Issue ID:", issue);
     
     const [issueData, setIssueData] = useState(null);
@@ -60,6 +60,47 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus }) {
     if (!issueData) {
         return <div>Loading issue...</div>;
     }
+
+
+    // const handleAddComment = async (newComment) => {
+    //     const updatedComments = await onAddComment(issue, newComment);
+
+    //     if (updatedComments) {
+    //         setIssueNotes(updatedComments);
+    //     }
+    // };
+    
+    const handleAddComment = async (newComment) => {
+        // console.log("2. DETAILS COMMENT:", newComment);
+
+        const updatedComments = await onAddComment(issue, newComment);
+
+        if (updatedComments) {
+            setIssueNotes(updatedComments);
+        }
+    };
+    const handleEditComment = async (commentId, editComment) => {
+        // console.log("2. DETAILS COMMENT:", newComment);
+
+        const updatedComments = await onEditComment(issue, commentId, editComment);
+
+        if (updatedComments) {
+            setIssueNotes(updatedComments);
+        }
+    };
+
+    const handleDeleteComment = async (commentId) => {
+        // console.log("2. DETAILS COMMENT:", newComment);
+
+        const updatedComments = await onDeleteComment(issue, commentId);
+
+        if (updatedComments) {
+            setIssueNotes(updatedComments);
+        }
+    };
+
+    const currentUser = JSON.parse(localStorage.getItem("user"));
+    // console.log(currentUser);
     
     return (
         <div className={`p-18 ${style}`}>
@@ -145,8 +186,12 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus }) {
                 />
             </div>
             <div className="grid grid-cols-1 gap-9 xl:flex">
-                <Notes 
+                <Notes
                     notes={issueNotes}
+                    onAddComment={handleAddComment}
+                    onEditComment={handleEditComment}
+                    onDeleteComment={handleDeleteComment}
+                    currentUser={currentUser}
                 />
             </div>
 

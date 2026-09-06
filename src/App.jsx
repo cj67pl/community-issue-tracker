@@ -69,9 +69,11 @@ function App() {
 
 
 	function handleLoginSuccess(userData) {
-		console.log("User: ", userData);
+		// console.log("🔥 handleLoginSuccess CALLED");
+		// console.log("USER DATA:", userData);
 		localStorage.setItem("token", userData.token);
-		
+		localStorage.setItem("user", JSON.stringify(userData.user));
+		// console.log("USER:", JSON.parse(localStorage.getItem("user")));
 		const user = userData.user;
 		const role = roleNameById[user.role_id]
 		const currentUser = {

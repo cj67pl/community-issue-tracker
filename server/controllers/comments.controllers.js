@@ -12,18 +12,17 @@ export const getIssueComments = async (req, res, next) => {
 	try {
 		const result = await pool.query(
 			`
-                        SELECT 
-                            comments.id,
-                            comments.content,
-                            comments.created_at,
-                            comments.updated_at,
-                            users.name AS user_name
-                        FROM comments
-                        
-                        JOIN users
-                            ON comments.user_id = users.id
-                        WHERE comments.issue_id = $1
-                        ORDER by comments.created_at DESC;
+				SELECT
+					c.id,
+					c.content,
+					c.user_id,
+					u.name AS user_name,
+					c.created_at,
+					c.updated_at
+				FROM comments c
+				JOIN users u ON c.user_id = u.id
+				WHERE c.issue_id = $1
+				ORDER BY c.created_at ASC;
                 `,
 			[id],
 		);
