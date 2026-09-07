@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { BsDownload } from "react-icons/bs";
 import KPICard from "../../../common/KPICard.jsx";
 import reportsKpiCardsData  from "../../../data/ReportsKPICardsData.js"
@@ -5,6 +6,45 @@ import IssuesGraph from "../../../components/Dashboard/IssuesGraph.jsx";
 import IssuedByStatus from "../../../components/ReportPage/IssuedBySats.jsx";
 import MonthlyVolume from "../../../components/ReportPage/MonthlyVolume.jsx";
 
+import { CheckCircle2, Clock3, CircleAlert, FilePlus2 } from "lucide-react";
+
+import { apiRequest } from "../../../api/api.js";
+import { use } from "react";
+
+// export const reportsKpiCardsData = [
+//     {
+//         name: "Avg. Resolution Time",
+//         icon: Clock3,
+//         color: "text-green-700",
+//         background: "bg-green-700/10",
+//         statsData: "3.4d",
+//         statsDescription: "Down from 4.1d last month",
+//     },
+//     {
+//         name: "Resolution Rate",
+//         icon: CheckCircle2,
+//         color: "text-sky-700",
+//         background: "bg-sky-700/10",
+//         statsData: "76%",
+//         statsDescription: "29 of 38 issues resolved",
+//     },
+//     {
+//         name: "Reports This Month",
+//         icon: FilePlus2,
+//         color: "text-purple-500",
+//         background: "bg-purple-500/10",
+//         statsData: "14",
+//         statsDescription: "22% more than last month",
+//     },
+//     {
+//         name: "Open Issues",
+//         icon: CircleAlert,
+//         color: "text-red-700",
+//         background: "bg-red-700/10",
+//         statsData: "7",
+//         statsDescription: "12% fewer than last month",
+//     },
+// ];
 const data = [
     { name: "Avg. Resolution Time", value: 13, color: "#0f5c4c" },
     { name: "Internet / Tech", value: 9, color: "#4d9b7f" },
@@ -15,6 +55,28 @@ const data = [
 
 
 function Reports() {
+
+    const [averageResTime, setAverageResTime] = useState("");
+
+    useEffect(() => {
+        async function fetchAnalyticsData() {
+            try{
+                const result = await apiRequest("/analytics/average/days");
+                // console.log(result);
+                
+                setAverageResTime(result);
+                
+                
+
+            }
+            catch(error) {
+                console.error("Failed to fetch the required informations!")
+            }            
+        }
+        fetchAnalyticsData();
+
+    }, []);
+    console.log(averageResTime[0]);
     return (
         <div className="p-4">
             <div className="">
@@ -69,8 +131,8 @@ function Reports() {
                 </div>
                 
             </div>
-        </div>
-    )
+        </div> 
+    ) 
 }
 
 

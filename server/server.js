@@ -9,6 +9,7 @@ import categoriesRouter from "./routes/categories.routes.js";
 import authRouter from "./routes/auth.routes.js"
 import { errorHandler } from './middleware/error.middleware.js';
 import dashboardRouter from './routes/dashboard.routes.js';
+import analyticsRouter from './routes/analytics.routes.js'
 
 const app = express();
 const port = 3000;
@@ -35,6 +36,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/dashboard", dashboardRouter);
+app.use("/api/analytics", analyticsRouter);
 
 app.use(errorHandler);
 
