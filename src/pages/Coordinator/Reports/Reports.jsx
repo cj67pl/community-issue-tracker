@@ -57,16 +57,18 @@ const data = [
 function Reports() {
 
     const [averageResTime, setAverageResTime] = useState("");
-    const [resolutionRate, setResolutionRate] = useState("")
+    const [resolutionRate, setResolutionRate] = useState("");
+    const [monthlyReports, setMonthlyReports] = useState("");
+    
     useEffect(() => {
         async function fetchAnalyticsData() {
             try{
-                const analyticsData = await apiRequest("/analytics/average/days");
+                const analyticsData = await apiRequest("/analytics/kpi");
                 // console.log(aveResulotionTime);
                 
                 setAverageResTime(analyticsData.averageResolution);
-                setResolutionRate(analyticsData.resolutionRate)
-                
+                setResolutionRate(analyticsData.resolutionRate);
+                setMonthlyReports(analyticsData.totalMonthlyReports);
             }
             catch(error) {
                 console.error("Failed to fetch the required informations!")
@@ -88,7 +90,8 @@ function Reports() {
             : "Loading...",
         resolution_rate:resolutionRate ? `${resolutionRate.rate}%` : "Loading...",
         resolution_rate_description: resolutionRate ? `A ${resolutionRate.resolved} off ${resolutionRate.allIssues} issues solved` : "Loading...",
-        reps_this_month:"2",
+        reps_this_month: monthlyReports ? monthlyReports.currentMonthRep : "Loading...",
+        reps_this_month_description: monthlyReports ? `${monthlyReports.percentageDifference}% vs last month` : "Loading...",
         reps_this_month:"2",
         top_location:"2"
 

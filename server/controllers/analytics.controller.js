@@ -16,57 +16,60 @@ export const getAverage = async (req, res, next) => {
 	}
 };
 
-export const getAverageDays = async (req, res, next) => {
+export const getAnalyticsKpi = async (req, res, next) => {
 	
 
 	try {
-		// const allIssues = await pool.query(`
-		//     SELECT COUNT(*) FROM issues
+		
+        /*const allIssues = await pool.query(`
+		    SELECT COUNT(*) FROM issues
 
-		// `);
+		`);
 
-		// const resolvedDays = await pool.query (`
-		//     SELECT updated_at
-		//         FROM issues
-		//         LEFT JOIN statuses
-		//             ON issues.status_id = statuses.id
-		//         WHERE statuses.status_name = $1;
+		const resolvedDays = await pool.query (`
+		    SELECT updated_at
+		        FROM issues
+		        LEFT JOIN statuses
+		            ON issues.status_id = statuses.id
+		        WHERE statuses.status_name = $1;
 
-		//     `, ["Resolved"]);
+		    `, ["Resolved"]);
 
-		// console.log(resolvedDays.rows.updated_at);
-		// const daysList = resolvedDays.rows.map((row) => row.updated_at);
-		// let totalDays = 0;
-		// const msPerDay = 1000 * 60 * 60 * 24;
+		console.log(resolvedDays.rows.updated_at);
+		const daysList = resolvedDays.rows.map((row) => row.updated_at);
+		let totalDays = 0;
+		const msPerDay = 1000 * 60 * 60 * 24;
 
-		// for(let i=1; i<daysList.length; i++) {
-		//     const date1 = new Date(daysList[i - 1]);
-		//     const date2 = new Date(daysList[i]);
-		//     const diffInMs = Math.abs(date2 - date1);
-		//     totalDays += diffInMs / msPerDay;
-		// }
+		for(let i=1; i<daysList.length; i++) {
+		    const date1 = new Date(daysList[i - 1]);
+		    const date2 = new Date(daysList[i]);
+		    const diffInMs = Math.abs(date2 - date1);
+		    totalDays += diffInMs / msPerDay;
+		}
 
-		// const average = totalDays / (daysList.length - 1);
-		// console.log(Math.round(average * 100) / 100);
+		const average = totalDays / (daysList.length - 1);
+		console.log(Math.round(average * 100) / 100);
 
-		// const averageResolution = await pool.query(
-		// 	`
-		//         SELECT
-		//             id,
-		//             reported_at,
-		//             updated_at,
-		//             updated_at - reported_at AS resolution_interval,
-		//             EXTRACT(EPOCH FROM (updated_at - reported_at)) / 86400 AS resolution_days
-		//         FROM issues
-		//         JOIN statuses
-		//             ON issues.status_id = statuses.id
-		//         WHERE statuses.status_name = $1;
-		// `,
-		// 	["Resolved"],
-		// );
-		// const average_days = averageResolution.rows[0].average_days
-		// Get the current date
-		const now = new Date();
+		const averageResolution = await pool.query(
+			`
+		        SELECT
+		            id,
+		            reported_at,
+		            updated_at,
+		            updated_at - reported_at AS resolution_interval,
+		            EXTRACT(EPOCH FROM (updated_at - reported_at)) / 86400 AS resolution_days
+		        FROM issues
+		        JOIN statuses
+		            ON issues.status_id = statuses.id
+		        WHERE statuses.status_name = $1;
+		`,
+			["Resolved"],
+		);
+		const average_days = averageResolution.rows[0].average_days
+		*/
+
+		//Resolution Time
+        const now = new Date();
 
 		
 		const currentMonthStart = new Date(
@@ -140,12 +143,15 @@ export const getAverageDays = async (req, res, next) => {
 
 		// console.log(averageResolution);
 
+
+
+        //--------Resolution Rate
         const allIssues = await pool.query(
 			`
                SELECT COUNT(*) FROM issues 
             `,
 		);
-        console.log(allIssues.rows[0].count);
+        // console.log(allIssues.rows[0].count);
         
         const allResolved = await pool.query (
             `
@@ -154,19 +160,59 @@ export const getAverageDays = async (req, res, next) => {
                 WHERE status_id = $1
             ` ,[2]
         )
-        console.log(allResolved.rows[0].count);
+        // console.log(allResolved.rows[0].count);
         const resRate = ((allResolved.rows[0].count / allIssues.rows[0].count) * 100).toFixed(2)
         
-        console.log(resRate);
+        // console.log(resRate);
         const resolutionRate = {
 			rate: resRate,
 			allIssues: allIssues.rows[0].count,
 			resolved: allResolved.rows[0].count,
 		};
+
+
+        // Total Reports for current month
+        const currentMonthReps = await pool.query (
+            `
+                SELECT COUNT(*) 
+                    FROM issues
+                WHERE reported_at >= $1
+                    AND reported_at < $2
+
+            `, [currentMonthStart, nextMonthStart]
+        )
+        // console.log(currentMonthReps.rows[0].count);
+        const lastMonthReps = await pool.query(
+			`
+                SELECT COUNT(*) 
+                    FROM issues
+                WHERE reported_at >= $1
+                    AND reported_at < $2
+
+            `,
+			[previousMonthStart, currentMonthStart],
+		);
+        // console.log(lastMonthReps.rows[0].count);
+        const percentageDifference =
+			(((currentMonthReps.rows[0].count - lastMonthReps.rows[0].count) /
+				lastMonthReps.rows[0].count) *
+			100).toFixed(2);
+        // console.log(percentageDifference);
+
+        const totalMonthlyReports = {
+			currentMonthReps: currentMonthReps.rows[0].count,
+			percentageDifference:
+				percentageDifference < 0
+					? percentageDifference
+					: `+${percentageDifference}`,
+		};
+        
+        // console.log(totalMonthlyReports);
         
 		res.json({
 			averageResolution,
 			resolutionRate,
+            totalMonthlyReports,
 		});
 	} catch (error) {
 		next(error);
