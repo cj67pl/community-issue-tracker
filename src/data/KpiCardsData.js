@@ -1,38 +1,52 @@
-import { CheckCircle2, Clock3, CircleAlert, FilePlus2 } from "lucide-react";
+import {
+	ClipboardList,
+	CircleAlert,
+	RefreshCw,
+	CheckCircle2,
+	TriangleAlert,
+} from "lucide-react";
 
-export const reportsKpiCardsData = [
+const kpiCardsData = [
 	{
-		name: "Avg. Resolution Time",
-		icon: Clock3,
+		name: "Total Issues",
+		key: "total_issues",
+		icon: ClipboardList,
 		color: "text-green-700",
 		background: "bg-green-700/10",
-		statsData: "3.4d",
-		statsDescription: "Down from 4.1d last month",
+		statsDescription: "All reported issues",
 	},
 	{
-		name: "Resolution Rate",
-		icon: CheckCircle2,
+		name: "Pending",
+		key: "pending_issues",
+		icon: CircleAlert,
 		color: "text-sky-700",
 		background: "bg-sky-700/10",
-		statsData: "76%",
-		statsDescription: "29 of 38 issues resolved",
+		statsDescription: "Awaiting response",
 	},
 	{
-		name: "Reports This Month",
-		icon: FilePlus2,
+		name: "In Progress",
+		key: "in_progress_issues",
+		icon: RefreshCw,
 		color: "text-purple-500",
 		background: "bg-purple-500/10",
-		statsData: "14",
-		statsDescription: "22% more than last month",
+		statsDescription: "Being addressed",
 	},
 	{
-		name: "Open Issues",
-		icon: CircleAlert,
+		name: "Resolved",
+		key: "resolved_issues",
+		icon: CheckCircle2,
+		color: "text-green-600",
+		background: "bg-green-600/10",
+		statsDescription: "This month",
+	},
+	{
+		name: "Critical",
+		key: "critical_issues",
+		icon: TriangleAlert,
 		color: "text-red-700",
 		background: "bg-red-700/10",
-		statsData: "7",
-		statsDescription: "12% fewer than last month",
+		statsDescription: "Needs immediate action",
 	},
 ];
 
-export default reportsKpiCardsData;
+export default kpiCardsData;

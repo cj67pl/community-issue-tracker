@@ -6,7 +6,7 @@ import IssuesGraph from "../../../components/Dashboard/IssuesGraph.jsx";
 import IssuedByStatus from "../../../components/ReportPage/IssuedBySats.jsx";
 import MonthlyVolume from "../../../components/ReportPage/MonthlyVolume.jsx";
 
-import { CheckCircle2, Clock3, CircleAlert, FilePlus2 } from "lucide-react";
+
 
 import { apiRequest } from "../../../api/api.js";
 import { use } from "react";
@@ -61,13 +61,12 @@ function Reports() {
     useEffect(() => {
         async function fetchAnalyticsData() {
             try{
-                const result = await apiRequest("/analytics/average/days");
-                // console.log(result);
+                const aveResulotionTime = await apiRequest("/analytics/average/days");
+                // console.log(aveResulotionTime);
                 
-                setAverageResTime(result);
+                setAverageResTime(aveResulotionTime);
                 
                 
-
             }
             catch(error) {
                 console.error("Failed to fetch the required informations!")
@@ -76,7 +75,23 @@ function Reports() {
         fetchAnalyticsData();
 
     }, []);
-    console.log(averageResTime[0]);
+    console.log("Average Resolution Time: ", averageResTime);
+
+    const kpis = {
+        ave_res_time: averageResTime
+            ? `${averageResTime.current}d`
+            : "Loading...",
+
+        ave_res_time_description: averageResTime
+            ? `${averageResTime.direction === "down" ? "Down" : "Up"} from ${averageResTime.change}d last month`
+            : "Loading...",
+        resolution_rate:"55",
+        reps_this_month:"2",
+        reps_this_month:"2",
+        top_location:"2"
+
+    }
+
     return (
         <div className="p-4">
             <div className="">
@@ -114,7 +129,14 @@ function Reports() {
                             <KPICard
 
                                 key={card.name}
-                                card={card}
+                                
+                                card={{
+                                    ...card,
+                                    statsData: kpis ? kpis[card.key] : "Loading...",
+                                    statsDescription: kpis
+                                        ? kpis[`${card.key}_description`]
+                                        : "Loading...",
+                                }}
 
                             />
 

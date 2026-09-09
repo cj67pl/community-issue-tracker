@@ -301,11 +301,15 @@ export const updateIssue = async (req, res, next) => {
             UPDATE issues
             SET status_id = $1,
                 updated_at = CURRENT_TIMESTAMP,
-				updated_by = $2
+				updated_by = $2,
+				resolved_at = CASE
+					WHEN $4 = 'Resolved' THEN CURRENT_TIMESTAMP
+					ELSE NULL
+				END
             WHERE id = $3
             RETURNING *;
         `,
-			[status_id, req.user.id, id],
+			[status_id, req.user.id, id, status_name],
 		);
 
 		if (result.rowCount === 0) {
