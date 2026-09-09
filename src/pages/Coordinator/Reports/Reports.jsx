@@ -57,15 +57,15 @@ const data = [
 function Reports() {
 
     const [averageResTime, setAverageResTime] = useState("");
-
+    const [resolutionRate, setResolutionRate] = useState("")
     useEffect(() => {
         async function fetchAnalyticsData() {
             try{
-                const aveResulotionTime = await apiRequest("/analytics/average/days");
+                const analyticsData = await apiRequest("/analytics/average/days");
                 // console.log(aveResulotionTime);
                 
-                setAverageResTime(aveResulotionTime);
-                
+                setAverageResTime(analyticsData.averageResolution);
+                setResolutionRate(analyticsData.resolutionRate)
                 
             }
             catch(error) {
@@ -76,7 +76,8 @@ function Reports() {
 
     }, []);
     console.log("Average Resolution Time: ", averageResTime);
-
+    console.log("ResolutionRate: ", resolutionRate);
+    
     const kpis = {
         ave_res_time: averageResTime
             ? `${averageResTime.current}d`
@@ -85,7 +86,8 @@ function Reports() {
         ave_res_time_description: averageResTime
             ? `${averageResTime.direction === "down" ? "Down" : "Up"} from ${averageResTime.change}d last month`
             : "Loading...",
-        resolution_rate:"55",
+        resolution_rate:resolutionRate ? `${resolutionRate.rate}%` : "Loading...",
+        resolution_rate_description: resolutionRate ? `A ${resolutionRate.resolved} off ${resolutionRate.allIssues} issues solved` : "Loading...",
         reps_this_month:"2",
         reps_this_month:"2",
         top_location:"2"

@@ -155,11 +155,19 @@ export const getAverageDays = async (req, res, next) => {
             ` ,[2]
         )
         console.log(allResolved.rows[0].count);
+        const resRate = ((allResolved.rows[0].count / allIssues.rows[0].count) * 100).toFixed(2)
         
-
+        console.log(resRate);
+        const resolutionRate = {
+			rate: resRate,
+			allIssues: allIssues.rows[0].count,
+			resolved: allResolved.rows[0].count,
+		};
+        
 		res.json({
-            averageResolution,
-        });
+			averageResolution,
+			resolutionRate,
+		});
 	} catch (error) {
 		next(error);
 	}
