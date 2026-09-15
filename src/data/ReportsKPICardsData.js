@@ -24,7 +24,7 @@ export const reportsKpiCardsData = [
 		// statsDescription: "A29 of 38 issues closed",
 	},
 	{
-		name: "Reports This Month",
+		name: "Reports in Period",
 		key: "reps_this_month",
 		icon: TbReportSearch,
 		color: "text-purple-500",

@@ -22,17 +22,14 @@ function FilterSelect({ name, placeholder, options = [], value, onChange }) {
                     focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20
                 "
             >
-                <option key="placeholder" value="">{placeholder}</option>
                 {options.map((option, index) => {
-                    const optionValue = typeof option === "object" ? option.value : option; 
+                    const optionValue = typeof option === "object" ? option.value : option;
                     const optionLabel = typeof option === "object" ? option.label : option;
-                    return(
-                        <option key={`${name}-${optionValue}-${index}`} value={option.value}>
+                    return (
+                        <option key={`${name}-${optionValue}-${index}`} value={optionValue}>
                             {optionLabel}
                         </option>
-
-                    )
-                    
+                    );
                 })}
             </select> 
             <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3 text-slate-500">

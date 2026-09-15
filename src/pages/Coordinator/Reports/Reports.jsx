@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { BsDownload } from "react-icons/bs";
 import KPICard from "../../../common/KPICard.jsx";
 import reportsKpiCardsData  from "../../../data/ReportsKPICardsData.js"
-import IssuesGraph from "../../../components/Dashboard/IssuesGraph.jsx";
+// import IssuesGraph from "../../../components/Dashboard/IssuesGraph.jsx";
 import IssuedByStatus from "../../../components/ReportPage/IssuedBySats.jsx";
-import MonthlyVolume from "../../../components/ReportPage/MonthlyVolume.jsx";
+import IssuesGraphReport from "../../../components/ReportPage/IssuesGraphReport.jsx";
+// import ReportDateFilter from "../../../components/ReportPage/ReportDateFilter.jsx";
+// import FilterSelect from "../../../common/FilterSelect";
 
 
 
@@ -53,13 +55,22 @@ const data = [
     { name: "Other", value: 4, color: "#7fb3d5" },
 ];
 
+const dateRangeOptions = [
+    { value: "7", label: "Last 7 days" },
+    { value: "30", label: "Last 30 days" },
+    { value: "90", label: "Last 90 days" },
+    { value: "this_month", label: "This month" },
+    { value: "last_month", label: "Last month" },
+    { value: "this_year", label: "This year" },
+];
 
 function Reports() {
 
     const [averageResTime, setAverageResTime] = useState("");
     const [resolutionRate, setResolutionRate] = useState("");
     const [monthlyReports, setMonthlyReports] = useState("");
-    
+    const [dateRange, setDateRange] = useState("30");
+
     useEffect(() => {
         async function fetchAnalyticsData() {
             try{
@@ -102,27 +113,56 @@ function Reports() {
             <div className="">
                 <div className="flex justify-between mb-10">
                     <div className="grid gap-2">
-                        <h2 className="text-2xl font-bold">Reports & Analytics</h2>
-                        <span className="text-sm text-neutral-500">Tell us what needs attention.</span>
+                        <h2 className="text-2xl font-bold">
+                            Reports & Analytics
+                        </h2>
+
+                        <span className="text-sm text-neutral-500">
+                            Monitor issue trends and resolution performance.
+                        </span>
                     </div>
 
-                    <button className="
-                                flex items-center justify-center
-                                gap-3
-                                rounded-md
-                                text-small
-                                border
-                                border-gray-300
-                                font-semibold
+                    <div className="flex items-center gap-3">
+                        
+                        <select
+                            value={dateRange}
+                            onChange={(e) => setDateRange(e.target.value)}
+                            className="
+                                rounded-lg
+                                border border-slate-200
                                 bg-white
-                                h-10
-                                px-5
-                                hover:bg-teal-800/10
-                    "   
-                    >
-                        <BsDownload IoIosAdd size={18}/>
-                        <span className="hidden sm:inline">Export CSV</span>
-                    </button>
+                                px-3 py-2
+                                text-sm
+                                text-slate-600
+                                outline-none
+                                cursor-pointer
+                            "
+                        >
+                            {dateRangeOptions.map((opt) => (
+                                <option key={opt.value} value={opt.value}>
+                                    {opt.label}
+                                </option>
+                            ))}
+                        </select>
+
+                        <button
+                            className="
+                                flex items-center gap-2
+                                rounded-lg
+                                bg-[#2E6F62]
+                                px-4 py-2
+                                text-sm font-semibold
+                                text-white
+                                transition
+                                hover:bg-[#255C51]
+                            "
+                        >
+                            <BsDownload size={18} />
+                            <span className="hidden sm:inline">
+                                Export CSV
+                            </span>
+                        </button>
+                    </div>
                 </div>
                 
                 <div className="
@@ -149,13 +189,15 @@ function Reports() {
 
                 </div>
                 <div className="grid xl:grid-cols-2  md:grid-cols-1 gap-6">
-                    <IssuesGraph />
+                    <IssuesGraphReport 
+                        dateRange={dateRange}
+                    />
                     <IssuedByStatus />
                 </div>
 
-                <div className="my-5">
+                {/* <div className="my-5">
                     <MonthlyVolume />
-                </div>
+                </div> */}
                 
             </div>
         </div> 
