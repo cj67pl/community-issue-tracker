@@ -1,23 +1,45 @@
-// import BarChartCard from "../../common/BarChartCard.jsx";
 
-// const statusData = [
-//     { label: "Open", value: 16, color: "bg-blue-700" },
-//     { label: "In Progress", value: 8, color: "bg-purple-500" },
-//     { label: "Resolved", value: 14, color: "bg-emerald-700" },
-//     { label: "Closed", value: 10, color: "bg-neutral-500" },
-// ];
+import { useState, useEffect } from "react";
+import { apiRequest } from "../../api/api";
 
-const statusData = [
-    { label: "Open", value: 16, color: "bg-teal-700" },
-    { label: "In Progress", value: 8, color: "bg-cyan-500" },
-    { label: "Resolved", value: 14, color: "bg-emerald-600" },
-    { label: "Closed", value: 10, color: "bg-slate-500" },
-];
 
-function IssuesByStatus() {
+
+function IssuesByStatus({ dateRange }) {
     
-    const maxValue = Math.max(...statusData.map((d) => d.value));
 
+    const [issueData, setIssueData] = useState([]);
+
+    useEffect(() => {
+        async function fetchIssueTrends() {
+
+            try {
+                const data = await apiRequest(`/analytics/by-status?range=${dateRange}`);
+                
+                // console.log("Issue trends by status:", data);
+                setIssueData(data);
+            }
+            catch(error) {
+                console.error(
+                    "Failed to fetch issue tends: ", error
+                );
+            }
+        }
+        fetchIssueTrends();
+    }, [dateRange]);
+
+    const statusData = [
+        { label: "Pending", color: "bg-amber-500" },     
+        { label: "In Progress", color: "bg-indigo-500" },  
+        { label: "Resolved", color: "bg-teal-600" },       
+        { label: "Rejected", color: "bg-stone-400" }, 
+    ].map((item) => {
+        const total = issueData
+            .filter((row) => row.status === item.label)
+            .reduce((sum, row) => sum + row.count, 0);
+        return { ...item, value: total };
+    })
+
+    const maxValue = Math.max(...statusData.map((row) => row.value), 1);
     return (
         <div className="w-full rounded-xl border border-gray-200 bg-white shadow-sm">
             <div className="border-b border-slate-200 px-6 py-4">

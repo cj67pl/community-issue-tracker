@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
     BarChart,
     Bar,
@@ -8,6 +8,8 @@ import {
     Tooltip,
     ResponsiveContainer,
 } from "recharts";
+
+import { apiRequest } from "../../api/api.js";
 
 const dateRangeOptions = [
     { value: "7", label: "Last 7 days" },
@@ -31,65 +33,65 @@ const MONTH_LABELS = [
 
 // --- Mock data generators. Replace with real API calls keyed by range. ---
 
-function mockCountFor(seed) {
-    const x = Math.sin(seed * 999) * 10000;
-    return Math.floor((x - Math.floor(x)) * 22) + 2;
-}
+// function mockCountFor(seed) {
+//     const x = Math.sin(seed * 999) * 10000;
+//     return Math.floor((x - Math.floor(x)) * 22) + 2;
+// }
 
-function generateDailyData(numDays) {
-    const data = [];
-    const today = new Date();
-    for (let i = numDays - 1; i >= 0; i--) {
-        const d = new Date(today);
-        d.setDate(today.getDate() - i);
-        data.push({
-            name: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
-            count: mockCountFor(d.getTime()),
-        });
-    }
-    return data;
-}
+// function generateDailyData(numDays) {
+//     const data = [];
+//     const today = new Date();
+//     for (let i = numDays - 1; i >= 0; i--) {
+//         const d = new Date(today);
+//         d.setDate(today.getDate() - i);
+//         data.push({
+//             name: d.toLocaleDateString("en-US", { month: "short", day: "numeric" }),
+//             count: mockCountFor(d.getTime()),
+//         });
+//     }
+//     return data;
+// }
 
-function generateMonthRangeData(monthOffset) {
-    const today = new Date();
-    const target = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
-    const daysInMonth = new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate();
-    const data = [];
-    for (let day = 1; day <= daysInMonth; day++) {
-        data.push({
-            name: String(day),
-            count: mockCountFor(target.getFullYear() * 100 + target.getMonth() * 31 + day),
-        });
-    }
-    return data;
-}
+// function generateMonthRangeData(monthOffset) {
+//     const today = new Date();
+//     const target = new Date(today.getFullYear(), today.getMonth() + monthOffset, 1);
+//     const daysInMonth = new Date(target.getFullYear(), target.getMonth() + 1, 0).getDate();
+//     const data = [];
+//     for (let day = 1; day <= daysInMonth; day++) {
+//         data.push({
+//             name: String(day),
+//             count: mockCountFor(target.getFullYear() * 100 + target.getMonth() * 31 + day),
+//         });
+//     }
+//     return data;
+// }
 
-function generateYearData() {
-    const year = new Date().getFullYear();
-    return MONTH_LABELS.map((name, idx) => ({
-        name,
-        count: mockCountFor(year * 12 + idx),
-    }));
-}
+// function generateYearData() {
+//     const year = new Date().getFullYear();
+//     return MONTH_LABELS.map((name, idx) => ({
+//         name,
+//         count: mockCountFor(year * 12 + idx),
+//     }));
+// }
 
-function getDataForRange(range) {
-    switch (range) {
-        case "7":
-            return generateDailyData(7);
-        case "30":
-            return generateDailyData(30);
-        case "90":
-            return generateDailyData(90);
-        case "this_month":
-            return generateMonthRangeData(0);
-        case "last_month":
-            return generateMonthRangeData(-1);
-        case "this_year":
-            return generateYearData();
-        default:
-            return generateDailyData(7);
-    }
-}
+// function getDataForRange(range) {
+//     switch (range) {
+//         case "7":
+//             return generateDailyData(7);
+//         case "30":
+//             return generateDailyData(30);
+//         case "90":
+//             return generateDailyData(90);
+//         case "this_month":
+//             return generateMonthRangeData(0);
+//         case "last_month":
+//             return generateMonthRangeData(-1);
+//         case "this_year":
+//             return generateYearData();
+//         default:
+//             return generateDailyData(7);
+//     }
+// }
 
 // --- Bar shape with rounded top + rotating teal fill ---
 
@@ -119,15 +121,38 @@ function IssuesGraphReport({dateRange}) {
     console.log(dateRange);
     
 
-    const activeData = useMemo(() => getDataForRange(dateRange), [dateRange]);
+    // const activeData = useMemo(() => getDataForRange(dateRange), [dateRange]);
 
     // Show roughly 10 labels max, regardless of range length
+
+
+    const [issueData, setIssueData] = useState([]);
+
+    useEffect(() => {
+        async function fetchIssueTrends() {
+
+            try {
+                const data = await apiRequest(`/analytics/trends?range=${dateRange}`);
+                
+                console.log("Issue trends:", data);
+                setIssueData(data);
+            }
+            catch(error) {
+                console.error(
+                    "Failed to fetch issue tends: ", error
+                );
+            }
+        }
+        fetchIssueTrends();
+    }, [dateRange]);
+   
+
     const maxTicks = 10;
     const tickInterval =
-        activeData.length > maxTicks
-            ? Math.ceil(activeData.length / maxTicks)
+        issueData.length > maxTicks
+            ? Math.ceil(issueData.length / maxTicks)
             : 0;
-    const isDense = activeData.length > maxTicks;
+    const isDense = issueData.length > maxTicks;
 
     return (
         <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
@@ -166,7 +191,7 @@ function IssuesGraphReport({dateRange}) {
             <div className="mt-6 h-72">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
-                        data={activeData}
+                        data={issueData}
                         margin={{
                             top: 5,
                             right: 10,
@@ -180,7 +205,7 @@ function IssuesGraphReport({dateRange}) {
                         />
 
                         <XAxis
-                            dataKey="name"
+                            dataKey="label"
                             tickLine={false}
                             axisLine={false}
                             interval={tickInterval}

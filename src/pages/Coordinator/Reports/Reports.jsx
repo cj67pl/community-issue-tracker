@@ -3,14 +3,13 @@ import { BsDownload } from "react-icons/bs";
 import KPICard from "../../../common/KPICard.jsx";
 import reportsKpiCardsData  from "../../../data/ReportsKPICardsData.js"
 // import IssuesGraph from "../../../components/Dashboard/IssuesGraph.jsx";
-import IssuedByStatus from "../../../components/ReportPage/IssuedBySats.jsx";
+import IssuedByStatus from "../../../components/ReportPage/IssuedByStats.jsx";
 import IssuesGraphReport from "../../../components/ReportPage/IssuesGraphReport.jsx";
 // import ReportDateFilter from "../../../components/ReportPage/ReportDateFilter.jsx";
-// import FilterSelect from "../../../common/FilterSelect";
+import FilterSelect from "../../../common/FilterSelect";
 
 
-
-import { apiRequest } from "../../../api/api.js";
+import { apiRequest, buildApiUrl } from "../../../api/api.js";
 import { use } from "react";
 
 // export const reportsKpiCardsData = [
@@ -47,13 +46,13 @@ import { use } from "react";
 //         statsDescription: "12% fewer than last month",
 //     },
 // ];
-const data = [
-    { name: "Avg. Resolution Time", value: 13, color: "#0f5c4c" },
-    { name: "Internet / Tech", value: 9, color: "#4d9b7f" },
-    { name: "Infrastructure", value: 7, color: "#c8792a" },
-    { name: "Safety", value: 5, color: "#7c5cbf" },
-    { name: "Other", value: 4, color: "#7fb3d5" },
-];
+// const data = [
+//     { name: "Avg. Resolution Time", value: 13, color: "#0f5c4c" },
+//     { name: "Internet / Tech", value: 9, color: "#4d9b7f" },
+//     { name: "Infrastructure", value: 7, color: "#c8792a" },
+//     { name: "Safety", value: 5, color: "#7c5cbf" },
+//     { name: "Other", value: 4, color: "#7fb3d5" },
+// ];
 
 const dateRangeOptions = [
     { value: "7", label: "Last 7 days" },
@@ -70,16 +69,18 @@ function Reports() {
     const [resolutionRate, setResolutionRate] = useState("");
     const [monthlyReports, setMonthlyReports] = useState("");
     const [dateRange, setDateRange] = useState("30");
+    const [topLocation, setTopLocation] = useState("");
 
     useEffect(() => {
         async function fetchAnalyticsData() {
             try{
-                const analyticsData = await apiRequest("/analytics/kpi");
+                const analyticsData = await apiRequest(`/analytics/kpi?range=${dateRange}`);
                 // console.log(aveResulotionTime);
-                
+                console.log("analyticsData:", analyticsData);
                 setAverageResTime(analyticsData.averageResolution);
                 setResolutionRate(analyticsData.resolutionRate);
                 setMonthlyReports(analyticsData.totalMonthlyReports);
+                setTopLocation(analyticsData.topReportedLocation);
             }
             catch(error) {
                 console.error("Failed to fetch the required informations!")
@@ -87,31 +88,91 @@ function Reports() {
         }
         fetchAnalyticsData();
 
-    }, []);
+    }, [dateRange]);
     console.log("Average Resolution Time: ", averageResTime);
     console.log("ResolutionRate: ", resolutionRate);
     
     const kpis = {
-        ave_res_time: averageResTime
-            ? `${averageResTime.current}d`
+        ave_res_time:
+            averageResTime && averageResTime.current > 0
+                ? `${averageResTime.current}d`
+                : "No data",
+
+        ave_res_time_description:
+            averageResTime && averageResTime.current > 0
+                ? `${averageResTime.direction === "down" ? "Down" : "Up"} from ${averageResTime.change}d last period`
+                : "No resolutions in this period",
+
+        resolution_rate:
+            resolutionRate && resolutionRate.rate !== null
+                ? `${resolutionRate.rate}%`
+                : "No data",
+
+        resolution_rate_description:
+            resolutionRate && resolutionRate.allIssues > 0
+                ? `${resolutionRate.resolved} of ${resolutionRate.allIssues} issues solved`
+                : "No issues reported",
+
+        reps_this_month: monthlyReports ? monthlyReports.currentMonthReps : "Loading...",
+
+        reps_this_month_description: monthlyReports
+            ? monthlyReports.currentMonthReps > 0
+                ? `${monthlyReports.percentageDifference}% vs last period`
+                : "No reports in this period"
             : "Loading...",
 
-        ave_res_time_description: averageResTime
-            ? `${averageResTime.direction === "down" ? "Down" : "Up"} from ${averageResTime.change}d last month`
-            : "Loading...",
-        resolution_rate:resolutionRate ? `${resolutionRate.rate}%` : "Loading...",
-        resolution_rate_description: resolutionRate ? `A ${resolutionRate.resolved} off ${resolutionRate.allIssues} issues solved` : "Loading...",
-        reps_this_month: monthlyReports ? monthlyReports.currentMonthRep : "Loading...",
-        reps_this_month_description: monthlyReports ? `${monthlyReports.percentageDifference}% vs last month` : "Loading...",
-        reps_this_month:"2",
-        top_location:"2"
+        top_location: topLocation ? topLocation.location : "Loading...",
 
-    }
+        top_location_description:
+            topLocation && topLocation.count > 0
+                ? `${topLocation.count} reports`
+                : "No reports in this period",
+    };
+
+
+    
+    const handleExport = async () => {
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await fetch(
+                buildApiUrl(`/analytics/export?range=${dateRange}`),
+                {
+                    headers: {
+                        ...(token && { Authorization: `Bearer ${token}` }),
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to export CSV");
+            }
+
+            // Pull the filename the server generated, fallback if missing
+            const disposition = response.headers.get("Content-Disposition");
+            const match = disposition && disposition.match(/filename="(.+?)"/);
+            const filename = match ? match[1] : `reports-${dateRange}.csv`;
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Export failed:", error);
+        }
+    };
+
 
     return (
         <div className="p-4">
             <div className="">
-                <div className="flex justify-between mb-10">
+                <div className="flex flex-col gap-3 md:flex-row md:justify-between mb-10">
                     <div className="grid gap-2">
                         <h2 className="text-2xl font-bold">
                             Reports & Analytics
@@ -124,7 +185,7 @@ function Reports() {
 
                     <div className="flex items-center gap-3">
                         
-                        <select
+                        {/* <select
                             value={dateRange}
                             onChange={(e) => setDateRange(e.target.value)}
                             className="
@@ -143,9 +204,18 @@ function Reports() {
                                     {opt.label}
                                 </option>
                             ))}
-                        </select>
+                        </select> */}
+                        
+                        <FilterSelect
+                            name="dateRange"
+                            options={dateRangeOptions}
+                            value={dateRange}
+                            onChange={setDateRange}
+                        />
+                        
 
                         <button
+                            onClick={handleExport}
                             className="
                                 flex items-center gap-2
                                 rounded-lg
@@ -192,7 +262,9 @@ function Reports() {
                     <IssuesGraphReport 
                         dateRange={dateRange}
                     />
-                    <IssuedByStatus />
+                    <IssuedByStatus 
+                        dateRange={dateRange}
+                    />
                 </div>
 
                 {/* <div className="my-5">
