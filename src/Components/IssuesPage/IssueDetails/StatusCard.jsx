@@ -9,36 +9,52 @@ import { apiRequest } from "../../../api/api.js";
 
 const inactiveStyle = "bg-gray-100 text-gray-400 border border-gray-200";
 
-function StatusCard({ issueStats, setIssueStatus, issue }) {
-    
+function StatusCard({
+    issueStats,
+    setIssueStatus,
+    issue,
+    priority,
+    setIssuePriority
+}) {
     
     const [status, setStatus] = useState(issueStats);
     const [statusOptions, setStatusOptions] = useState([]);
-
-
-
-        useEffect(() => {
-            const fetchStatusOptions = async () => {
-                try {
-                    const response = await apiRequest("/issues/filter-options");
+    const [localPriority, setLocalPriority] = useState(priority ?? issue.priority);
+    const [priorityOptions, setPriorityOptions] = useState([]);
     
-                    // console.log("FILTER OPTIONS:", response.statuses);
-    
-                    
-                    setStatusOptions(response.statuses);
-    
-                } catch (error) {
-                    console.error("Failed to fetch filter options:", error);
-                }
-            };
-            fetchStatusOptions();
-        }, []);
+    useEffect(() => {
+            setStatus(issueStats);
+        }, [issueStats]);
+
+    useEffect(() => {
+        const fetchStatusOptions = async () => {
+            try {
+                const response = await apiRequest("/issues/filter-options");
+
+                console.log("FILTER OPTIONS:", response.statuses);
+
+                
+                setStatusOptions(response.statuses);
+                setPriorityOptions(response.priorities);
+            } catch (error) {
+                console.error("Failed to fetch filter options:", error);
+            }
+        };
+        fetchStatusOptions();
+    }, []);
     // console.log(statusOptions);
-    
+    useEffect(() => {
+        setLocalPriority(priority ?? issue.priority);
+    }, [issue.priority, priority]);
 
     const currentStatusIndex = statusOptions.findIndex(
         (stats) => stats.name === status
     );
+
+    const handlePriorityChange = (newPriority) => {
+        setLocalPriority(newPriority);
+        setIssuePriority(issue.id, newPriority);
+    };
     return(
         <div className="flex flex-col my-5 w-full max-w-md min-w-md h-auto rounded-xl border border-gray-200 bg-white shadow-sm ">
 
@@ -61,7 +77,7 @@ function StatusCard({ issueStats, setIssueStatus, issue }) {
                     }))} 
                     value={status} 
                     onChange={(newStatus) => { 
-                        setStatus(newStatus), 
+                        setStatus(newStatus); 
                         setIssueStatus(issue, newStatus)}} 
                 />
             </div>
@@ -91,6 +107,26 @@ function StatusCard({ issueStats, setIssueStatus, issue }) {
 
             </div>
             {/* <div className="border-t border-slate-200"></div> */}
+            <div className="border-b border-slate-200 px-6 py-4">
+                <h3 className="text-lg font-bold text-gray-900">
+                    Priority
+                </h3>
+            </div>
+            <span className="text-xs text-slate-500 font-semibold mx-6 my-5 ">
+                Update Priority
+            </span>
+            <div className="px-6 pb-5 my-2">
+                <FilterSelect
+                    name="priority"
+                    placeholder="All Priorities"
+                    options={priorityOptions.map((p) => ({
+                        value: p.name,
+                        label: p.name
+                    }))}
+                    value={localPriority}
+                    onChange={handlePriorityChange}
+                />
+            </div>
 
         </div>
     )

@@ -15,46 +15,37 @@ import { apiRequest } from "../../../api/api.js";
 
 // const getInitials = (str) => str.trim().split(/\s+/).map(w=>[0]).join("").toUpperCase();
 
-function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddComment, onEditComment, onDeleteComment }) {
+function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddComment, onEditComment, onDeleteComment, onEditIssuePriority }) {
     // console.log("Issue ID:", issue);
     
     const [issueData, setIssueData] = useState(null);
     const [issueNotes, setIssueNotes] = useState([]);
 
     useEffect(() => {
-        const fetchIssue = async () => {
-            try {
-                    const data = await apiRequest(`/issues/${issue}`);
-                    // console.log("FULL RESPONSE:", data);
-                    // console.log("data.issue:", data?.issue);
+        if (!issue) {
+            setIssueData(null);
+            return;
+        }
 
-                    // console.log(data.issue);   
-                    setIssueData(data.issue);
-            }
-            catch (error) {
-                console.error("Failed to fetch issues!");
-            }
-        } 
-        fetchIssue();
+        setIssueData(issue);
     }, [issue]);
-
 
     useEffect(() => {
+        if (!issue?.id) return;
+
         const fetchComments = async () => {
             try {
-                const data = await apiRequest(`/issues/${issue}/comments`)
-                // console.log(data);
+                const data = await apiRequest(`/issues/${issue.id}/comments`);
                 setIssueNotes(data);
-                
+            } catch (error) {
+                console.error("Failed to fetch comments!", error);
             }
-            catch (error) {
-                console.error("Failed to fetch comments!")
-            }
-        }
-        fetchComments();
-    }, [issue]);
+        };
 
-    
+        fetchComments();
+    }, [issue?.id]);
+
+
     // if (issueData) console.log("Issue info: ", issueData);
     // if (issueNotes) console.log("Issue Notes: ", issueNotes);
     if (!issueData) {
@@ -156,9 +147,15 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddCom
                     notes={issueData.notes}
                     updatedBy={issueData.updated_by}
                 />
-                <StatusCard 
+                <StatusCard
+                    issue={issueData}
+                    issueStats={issueData.status}
+                    priority={issueData.priority}
                     setIssueStatus={async (issueID, newStatus) => {
-                        const updatedIssue = await onEditIssueStatus(issueID, newStatus);
+                        const updatedIssue = await onEditIssueStatus(
+                            issueID,
+                            newStatus
+                        );
 
                         if (updatedIssue) {
                             setIssueData((currentIssue) => ({
@@ -167,8 +164,20 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddCom
                             }));
                         }
                     }}
-                    issue={issue}
-                    issueStats={issueData.status}/>
+                    setIssuePriority={async (issueID, newPriority) => {
+                        const updatedIssue = await onEditIssuePriority(
+                            issueID,
+                            newPriority
+                        );
+
+                        if (updatedIssue) {
+                            setIssueData((currentIssue) => ({
+                                ...currentIssue,
+                                ...updatedIssue
+                            }));
+                        }
+                    }}
+                />
                     
                 
             </div>

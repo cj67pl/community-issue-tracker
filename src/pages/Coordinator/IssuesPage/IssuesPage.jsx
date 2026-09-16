@@ -123,9 +123,16 @@ function IssuesPage({currentRole, onNavigate}) {
 
         // }
 
-        const handleIssueClick = (issue) => {
-            setIsSelected(issue);
+        const handleIssueClick = async (issueID) => {
             setShowIssueDetails(true);
+            setIsSelected(null);
+            try {
+                const data = await apiRequest(`/issues/${issueID}`);
+                setIsSelected(data.issue);
+            } catch (error) {
+                console.error("Failed to fetch issue details:", error);
+                setShowIssueDetails(false);
+            }
         };
 
         const handleDeleteIssue = async (issueID) => {
@@ -135,7 +142,7 @@ function IssuesPage({currentRole, onNavigate}) {
                 });
 
                 setIssuesList((currentIssues) =>
-                    currentIssues.filter((issue) => issue.id != issue.id)
+                    currentIssues.filter((issue) => issue.id != issueID)
                 );
             }
             catch (error) {
@@ -250,6 +257,49 @@ function IssuesPage({currentRole, onNavigate}) {
         }
 
     }
+
+    const handleEditIssuePriority = async (issueID, newPriority) => {
+        console.log("EDIT ID:", issueID);
+        console.log("EDIT PRIORITY:", newPriority);
+
+        try {
+            await apiRequest(`/issues/${issueID}/priority`, {
+                method: "PATCH",
+                body: JSON.stringify({
+                    priority_name: newPriority
+                })
+            });
+            const updatedData = await apiRequest(`/issues/${issueID}`);
+
+            console.log("REFRESHED ISSUE:", updatedData.issue);
+
+            setIssuesList((currentIssues) =>
+                currentIssues.map((issue) =>
+                    Number(issue.id) === Number(issueID)
+                        ? {
+                            ...issue,
+                            priority: updatedData.issue.priority,
+                            priority_level_id: updatedData.issue.priority_level_id
+                        }
+                        : issue
+                )
+            );
+
+            // Keep the open modal's selected issue in sync too
+            setIsSelected((current) =>
+                current && Number(current.id) === Number(issueID)
+                    ? { ...current, priority: updatedData.issue.priority, priority_level_id: updatedData.issue.priority_level_id }
+                    : current
+            );
+
+            return updatedData.issue;
+        }
+        catch (error) {
+            console.log("Failed to edit the priority!", error);
+            return null;
+        }
+    };
+
     return (
         <div className="p-4">
             <div className={`${showIssueDetails ? "hidden" : " " }`}>
@@ -316,6 +366,7 @@ function IssuesPage({currentRole, onNavigate}) {
                 setIsSelected={setIsSelected}
                 onDeleteIssue={handleDeleteIssue}
                 onEditIssueStatus={ handlEditIssueStatus }
+                onEditIssuePriority={handleEditIssuePriority}
                 onAddComment={handleAddComment}
                 onEditComment={handleEditComment}
                 onDeleteComment={handleDeleteComment}

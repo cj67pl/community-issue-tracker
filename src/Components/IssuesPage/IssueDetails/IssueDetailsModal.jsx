@@ -3,7 +3,7 @@ import IssueDetails from "../../../components/IssuesPage/IssueDetails/IssueDetai
 
 
 
-function IssueDetailsModal({ isOpen, onClose, isSelected, onDeleteIssue, onEditIssueStatus, onAddComment, onEditComment, onDeleteComment }) {
+function IssueDetailsModal({ isOpen, onClose, isSelected, onDeleteIssue, onEditIssueStatus, onAddComment, onEditComment, onDeleteComment, onEditIssuePriority }) {
     if (!isOpen) return null;
 
     return (
@@ -31,6 +31,7 @@ function IssueDetailsModal({ isOpen, onClose, isSelected, onDeleteIssue, onEditI
                     onAddComment={onAddComment}
                     onEditComment={onEditComment}
                     onDeleteComment={onDeleteComment}
+                    onEditIssuePriority={onEditIssuePriority}
                     //  showBackButton={false}  
                     
                     style="" />

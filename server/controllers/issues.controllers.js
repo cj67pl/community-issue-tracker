@@ -328,6 +328,89 @@ export const updateIssue = async (req, res, next) => {
 };
 
 
+export const updateIssuePriority = async (req, res, next) => {
+	const { id } = req.params;
+	const { priority_name } = req.body;
+
+	if (!isValidId(id)) {
+		return res.status(400).json({
+			error: "Invalid issue ID",
+		});
+	}
+
+	if (!priority_name || typeof priority_name !== "string") {
+		return res.status(400).json({
+			error: "Invalid priority name",
+		});
+	}
+
+	try {
+		const issueResult = await pool.query(
+			`
+            SELECT id, reported_by
+            FROM issues
+            WHERE id = $1
+            `,
+			[id],
+		);
+
+		if (issueResult.rowCount === 0) {
+			return res.status(404).json({
+				error: "Issue not found",
+			});
+		}
+
+		const issue = issueResult.rows[0];
+		if (req.user.role_id !== 1 && req.user.role_id !== 2) {
+			return res.status(403).json({
+				error: "You do not have permission to update this issue",
+			});
+		}
+
+		const priorityResult = await pool.query(
+			`
+            SELECT id
+            FROM priority_levels
+            WHERE priority_name = $1
+            `,
+			[priority_name],
+		);
+
+		if (priorityResult.rowCount === 0) {
+			return res.status(400).json({
+				error: "Invalid priority",
+			});
+		}
+		const priority_level_id = priorityResult.rows[0].id;
+
+		const result = await pool.query(
+			`
+            UPDATE issues
+            SET priority_level_id = $1,
+                updated_at = CURRENT_TIMESTAMP,
+                updated_by = $2
+            WHERE id = $3
+            RETURNING *;
+        `,
+			[priority_level_id, req.user.id, id],
+		);
+
+		if (result.rowCount === 0) {
+			return res.status(404).json({
+				error: "Issue not found",
+			});
+		}
+
+		res.status(200).json({
+			message: "Issue priority updated successfully",
+			issue: result.rows[0],
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+
 export const deleteIssue =  async (req, res, next) => {
 	const { id } = req.params;
     if (!isValidId(id)) {

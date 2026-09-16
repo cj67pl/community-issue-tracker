@@ -38,19 +38,19 @@ function IssueFilters({
         fetchFilterOptions();
     }, []);
 
-    const categoryOptions = categories.map((category) => ({
-        value: category.id,
-        label: category.name,
+    const categoryOptions = categories.map((c) => ({
+        value: c.id,
+        label: c.name,
     }));
 
-    const priorityOptions = priorities.map((priority) => ({
-        value: priority.id,
-        label: priority.name,
+    const priorityOptions = priorities.map((p) => ({
+        value: p.id,
+        label: p.name,
     }));
 
-    const statusOptions = statuses.map((status) => ({
-        value: status.id,
-        label: status.name,
+    const statusOptions = statuses.map((s) => ({
+        value: s.id,
+        label: s.name,
     }));
     
     // console.log("RAW STATUSES:", statuses);

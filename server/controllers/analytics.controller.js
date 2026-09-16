@@ -263,7 +263,12 @@ export const getAnalyticsKpi = async (req, res, next) => {
 			previousPeriod.rows[0].average_days || 0,
 		);
 		const difference = currentAverage - previousAverage;
-		const direction = currentAverage > previousAverage ? "down" : "up";
+		const direction =
+			currentAverage > previousAverage
+				? "up"
+				: currentAverage < previousAverage
+					? "down"
+					: "same";
 
 		const averageResolution = {
 			current: currentAverage,
@@ -543,7 +548,7 @@ export const exportReportsCsv = async (req, res, next) => {
 			["Total Reports in Period", totalCount],
 			[
 				"Top Reported Location",
-				`${escapeCsvField(topLocationName)} (${topLocationCount})`,
+				escapeCsvField(`${topLocationName} (${topLocationCount})`),
 			],
 			[], // blank line separates summary from raw data
 		];
@@ -582,9 +587,16 @@ export const exportReportsCsv = async (req, res, next) => {
 
 function escapeCsvField(field) {
 	if (field == null) return "";
-	const str = String(field);
+
+	let str = String(field);
+
+	if (/^[=+\-@]/.test(str)) {
+		str = `'${str}`;
+	}
+
 	if (str.includes(",") || str.includes('"') || str.includes("\n")) {
 		return `"${str.replace(/"/g, '""')}"`;
 	}
+
 	return str;
 }

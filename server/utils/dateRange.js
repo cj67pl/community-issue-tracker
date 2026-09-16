@@ -19,7 +19,7 @@ export const getRangeCondition = (range) => {
 	switch (range) {
 		case "7":
 			interval = "day";
-			dateCondition = `reported_at >= CURRENT_DATE - INTERVAL '6 days'`;
+			dateCondition = `issues.reported_at >= CURRENT_DATE - INTERVAL '6 days'`;
 			previousDateCondition = `
 				reported_at >= CURRENT_DATE - INTERVAL '13 days'
 				AND reported_at < CURRENT_DATE - INTERVAL '6 days'
@@ -73,6 +73,8 @@ export const getRangeCondition = (range) => {
 				AND reported_at < DATE_TRUNC('year', CURRENT_DATE)
 			`;
 			break;
+		default:
+			return null;
 	}
 
 	const allowedIntervals = ["day", "week", "month"];
