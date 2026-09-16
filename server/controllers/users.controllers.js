@@ -29,7 +29,7 @@ export const getUsers = async (req, res, next) => {
 	}
 };
 
-export const getUserById = async (req, res) => {
+export const getUserById = async (req, res, next) => {
 	const { id } = req.params;
 
 	if (!isValidId(id)) {
@@ -45,6 +45,7 @@ export const getUserById = async (req, res) => {
                         users.id,
                         users.name,
                         users.email,
+						users.phone,
                         roles.role_name AS role,
                         users.created_at,
                         users.updated_at
@@ -290,6 +291,67 @@ export const updateUserRole = async (req, res, next) => {
 
 		res.status(200).json({
 			message: "Role updated successfully",
+			user: result.rows[0],
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const updateUserProfile = async (req, res, next) => {
+	const { id } = req.params;
+	const { name, email, phone } = req.body;
+
+	if (!isValidId(id)) {
+		return res.status(400).json({
+			error: "Invalid user ID",
+		});
+	}
+
+	if (req.user.role_id !== 1 && Number(id) !== req.user.id) {
+		return res.status(403).json({
+			error: "You can only update your own profile",
+		});
+	}
+
+	try {
+		const userResult = await pool.query(
+			`
+				SELECT id
+				FROM users
+				WHERE id = $1
+			`,
+			[id],
+		);
+
+		if (userResult.rowCount === 0) {
+			return res.status(404).json({
+				error: "User not found",
+			});
+		}
+
+		const result = await pool.query(
+			`
+				UPDATE users
+				SET
+					name = $1,
+					email = $2,
+					phone = $3,
+					updated_at = CURRENT_TIMESTAMP
+				WHERE id = $4
+				RETURNING
+					id,
+					name,
+					email,
+					phone,
+					role_id,
+					updated_at;
+			`,
+			[name, email, phone || null, id],
+		);
+
+		res.status(200).json({
+			message: "Profile updated successfully",
 			user: result.rows[0],
 		});
 	} catch (error) {

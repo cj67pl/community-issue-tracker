@@ -1,16 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FormField from "../../../common/FormField.jsx";
 import { inputClass, disabledInputClass } from "../../../common/formStyles.jsx";
 import NotificationRow from "../../../components/SettingsPage/NotificationRow.jsx.jsx";
+import { apiRequest } from "../../../api/api.js";
 
 function SettingsPage() {
 
-    const [fullName, setFullName] = useState("Maria Santos");
-    const [email, setEmail] = useState("maria.santos@tugon.edu.ph");
-    const [phone, setPhone] = useState("0917 123 4567");
-    // Role is read-only here — it comes from account/permissions data,
-    // not something the user edits from this form.
-    const role = "Coordinator";
+    const [fullName, setFullName] = useState("");
+    const [email, setEmail] = useState("");
+    const [phone, setPhone] = useState("");
+    const [role, setRole] = useState("");
 
     const [notifications, setNotifications] = useState({
         email: true,
@@ -18,13 +17,48 @@ function SettingsPage() {
         weeklySummary: false,
     });
 
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userId = user.id;
+
+    async function getUser() {
+        try {
+            const data = await apiRequest(`/users/${userId}`);
+            setFullName(data.user.name);
+            setEmail(data.user.email);
+            setPhone(data.user.phone ?? "");
+            setRole(data.user.role);
+        }
+        catch (error) {
+            console.error("Failed to fetch user:", error);
+        }
+    }
+
+    useEffect(() => {
+        getUser();
+    }, []);
+
     function toggleNotification(key) {
         setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
     }
 
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
         e.preventDefault();
         console.log({ fullName, email, phone, notifications });
+        try {
+            const data = await apiRequest(`/users/${userId}/update-user`, {
+                method: "PATCH",
+                body: JSON.stringify({
+                    name: fullName,
+                    email,
+                    phone,
+                }),
+            });
+
+            console.log(data);
+
+        } catch (error) {
+            console.error("Failed to update profile:", error);
+        }
     }
     return (
         <form onSubmit={handleSubmit} className="p-4 sm:p-6">

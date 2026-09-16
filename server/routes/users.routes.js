@@ -1,5 +1,5 @@
 import express from "express";
-import { getUsers, getUserById, createUser, updateUserPassword, updateUserRole, reactivateUser, deactivateUser } from "../controllers/users.controllers.js";
+import { getUsers, getUserById, createUser, updateUserPassword, updateUserRole, reactivateUser, deactivateUser, updateUserProfile } from "../controllers/users.controllers.js";
 import { authenticateToken } from "../middleware/auth.middleware.js";
 import { authorizedRoles } from "../middleware/role.middleware.js";
 
@@ -12,6 +12,7 @@ router.post("/", authenticateToken, authorizedRoles(1), createUser);
 router.patch("/:id/password", authenticateToken, updateUserPassword);
 router.patch("/:id/role", authenticateToken, authorizedRoles(1), updateUserRole);
 router.patch("/:id/reactivate", authenticateToken, authorizedRoles(1), reactivateUser);
+router.patch("/:id/update-user", authenticateToken, updateUserProfile);
 router.delete("/:id", authenticateToken, authorizedRoles(1), deactivateUser);
 
 
