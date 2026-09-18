@@ -95,6 +95,8 @@ function App() {
 	
 
 	function handleLogout() {
+		localStorage.removeItem("token");
+		localStorage.removeItem("user");
 		setCurrentUser(null);
 	}
 
