@@ -354,6 +354,7 @@ export const getAnalyticsKpi = async (req, res, next) => {
 	}
 };
 
+
 export const getIssueTrends = async (req, res, next) => {
 	const { range = "30" } = req.query;
 

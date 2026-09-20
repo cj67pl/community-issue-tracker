@@ -186,10 +186,10 @@ function IssuesPage({currentRole, onNavigate}) {
     };
 
     const handleAddComment = async (issueID, newComment) => {
-        console.log("3. PAGE ISSUE ID:", issueID);
+        console.log("3. PAGE ISSUE ID:", issueID.id);
         console.log("3. PAGE COMMENT:", newComment);
         try {
-            await apiRequest(`/issues/${issueID}/comments`, {
+            await apiRequest(`/issues/${issueID.id}/comments`, {
                 method: "POST", 
                 body: JSON.stringify({
                     content: newComment
@@ -197,7 +197,7 @@ function IssuesPage({currentRole, onNavigate}) {
             });
 
             const updatedComments = await apiRequest(
-                `/issues/${issueID}/comments`
+                `/issues/${issueID.id}/comments`
             )
 
             return updatedComments;

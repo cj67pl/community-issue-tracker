@@ -161,9 +161,15 @@ function App() {
 					{currentUser.role === "reporter" && (
 						<>
 							{/* Creates a specific landing component or reuses Dashboard */}
-							{currentPage === "reporterdashboard" && <ReporterDashboard />}
-							{currentPage === "reporterreports" && <ReporterReports currentUser={currentUser}/>} {/* "My Reports" view */}
-							{currentPage === "report" && <ReportIssue />}
+							{currentPage === "reporterdashboard" && <ReporterDashboard 
+																		currentRole={currentUser.role} 
+																		onNavigate={setCurrentPage} />}
+							{currentPage === "reporterreports" && <ReporterReports 
+																		currentRole={currentUser.role}
+																		onNavigate={setCurrentPage} />}
+							{currentPage === "report" && <ReportIssue 
+																currentRole={currentUser.role} 
+																onNavigate={setCurrentPage}/>}
 							{currentPage === "settings" && <SettingsPage />}
 							{currentPage === "help" && <HelpPage />}
 						</>

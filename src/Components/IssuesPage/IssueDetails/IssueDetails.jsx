@@ -153,7 +153,7 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddCom
                     priority={issueData.priority}
                     setIssueStatus={async (issueID, newStatus) => {
                         const updatedIssue = await onEditIssueStatus(
-                            issueID,
+                            issueID.id,
                             newStatus
                         );
 
@@ -166,7 +166,7 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddCom
                     }}
                     setIssuePriority={async (issueID, newPriority) => {
                         const updatedIssue = await onEditIssuePriority(
-                            issueID,
+                            issueID.id,
                             newPriority
                         );
 

@@ -46,7 +46,48 @@ export const getIssues = async (req, res, next) => {
 	}
 };
 
+export const getUserIssues = async (req, res, next) => {
+	const userId = req.user.id
+	try {
+		const result = await pool.query(`SELECT 
+                                    issues.id,
+                                    issues.title,
+                                    issues.description,
+                                    issues.location,
+                                    issues.reported_at,
 
+									issues.category_id,
+									issues.priority_level_id,
+									issues.status_id,
+
+                                    categories.category_name AS category,
+                                    priority_levels.priority_name AS priority,
+                                    statuses.status_name AS status,
+                                    users.name AS reported_by
+                                FROM issues
+                                JOIN categories
+                                    ON issues.category_id = categories.id
+                                JOIN statuses
+                                    ON issues.status_id = statuses.id
+                                JOIN priority_levels
+                                    ON issues.priority_level_id = priority_levels.id
+                                JOIN users
+                                    ON issues.reported_by = users.id
+								WHERE users.id = $1	
+								ORDER by reported_at DESC
+
+                                `, [userId]);
+
+		res.json(result.rows);
+	} catch (error) {
+		//     console.error(error);
+		//     res.status(500).json({
+		//         error: "Failed to retrieve issues",
+		//     });
+		// }
+		next(error);
+	}
+};
 export const getIssueById = async (req, res, next) => {
 	const { id } = req.params;
 
@@ -289,13 +330,14 @@ export const updateIssue = async (req, res, next) => {
             `,
 			[status_name],
 		);
-		const status_id = statusResult.rows[0].id;
+		
 
 		if (statusResult.rowCount === 0) {
 			return res.status(400).json({
 				error: "Invalid status",
 			});
 		}
+		const status_id = statusResult.rows[0].id;
 		const result = await pool.query(
 			`
             UPDATE issues
@@ -411,27 +453,74 @@ export const updateIssuePriority = async (req, res, next) => {
 };
 
 
-export const deleteIssue =  async (req, res, next) => {
+export const deleteIssue = async (req, res, next) => {
 	const { id } = req.params;
-    if (!isValidId(id)) {
+	if (!isValidId(id)) {
 		return res.status(400).json({
 			error: "Invalid issue ID",
 		});
 	}
 
 	try {
+		const issueResult = await pool.query(
+			`
+			SELECT
+				issues.id,
+				issues.reported_by,
+				statuses.status_name AS status
+			FROM issues
+			JOIN statuses
+				ON issues.status_id = statuses.id
+			WHERE issues.id = $1;
+			`,
+			[id],
+		);
+
+		if (issueResult.rowCount === 0) {
+			return res.status(404).json({
+				error: "Issue not found",
+			});
+		}
+
+		const issue = issueResult.rows[0];
+
+		// only pending issues can be deleted
+		if (issue.status !== "Pending") {
+			return res.status(403).json({
+				error: "Only pending issues can be deleted",
+			});
+		}
+
+		// reporter can only delete their own issue
+		if (req.user.role_id === 3 && issue.reported_by !== req.user.id) {
+			return res.status(403).json({
+				error: "You can only delete your own reports",
+			});
+		}
+
+		// Admin, Coordinator, and Reporter are allowed
+		if (
+			req.user.role_id !== 1 &&
+			req.user.role_id !== 2 &&
+			req.user.role_id !== 3
+		) {
+			return res.status(403).json({
+				error: "You do not have permission to delete this issue",
+			});
+		}
+
 		const result = await pool.query(
 			`
-            DELETE FROM issues
-            WHERE id = $1
-            Returning *;    
-        `,
+			DELETE FROM issues
+			WHERE id = $1
+			RETURNING *;
+			`,
 			[id],
 		);
 
 		if (result.rowCount === 0) {
 			return res.status(404).json({
-				error: " Issue not found",
+				error: "Issue not found",
 			});
 		}
 

@@ -8,9 +8,9 @@ import { priorityStyles, statusStyles } from "../issuesData.js";
 
 const columns = ["Issue", "Category", "Location", "Priority", "Status", "Reported", ""];
 
-function IssuesTable({ issues, onSelectIssue, onDeleteIssue }) {
+function IssuesTable({ issues, onSelectIssue, onDeleteIssue, currentRole }) {
     
-
+;
     return (
         <div className="w-full rounded-xl border border-gray-200 bg-white shadow-sm my-5">
             {/* <div
@@ -53,21 +53,26 @@ function IssuesTable({ issues, onSelectIssue, onDeleteIssue }) {
                                 </td>
                                 <td className="px-6 py-3 text-sm text-gray-500">{row.reported_by}</td>
                                 <td className="flex items-center justify-center gap-3 px-6 py-3">
-                                    <button 
-                                        onClick={() => {onDeleteIssue(row.id)}}
-                                        className="p-2 border border-slate-200 rounded-lg hover:bg-red-500/10 hover:text-red-700 cursor-pointer">
+                                    {row.status === "Pending" && (
+                                        <button
+                                            onClick={() => onDeleteIssue(row.id)}
+                                            className="p-2 border border-slate-200 rounded-lg hover:bg-red-500/10 hover:text-red-700 cursor-pointer"
+                                        >
                                             <Trash2 size={16} />
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                                    onSelectIssue(row.id)
-                                                }}
-                                        
-                                        className="p-2 border border-slate-200 rounded-lg hover:bg-green-500/10 hover:text-green-700 cursor-pointer">
-                                            <Pencil 
-                                                
-                                                size={16} />
-                                    </button>
+                                        </button>
+                                    )}
+
+                                    {(currentRole !== "reporter" || row.status === "Pending") && (
+                                        <button
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onSelectIssue(row.id);
+                                            }}
+                                            className="p-2 border border-slate-200 rounded-lg hover:bg-green-500/10 hover:text-green-700 cursor-pointer"
+                                        >
+                                            <Pencil size={16} />
+                                        </button>
+                                    )}
                                 </td>
                             </tr>
                         ))}
