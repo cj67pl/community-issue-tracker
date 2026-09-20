@@ -1,9 +1,9 @@
 import { X } from "lucide-react";
 import IssueDetails from "../../../components/IssuesPage/IssueDetails/IssueDetails.jsx"
 
+ 
 
-
-function IssueDetailsModal({ isOpen, onClose, isSelected, onDeleteIssue, onEditIssueStatus, onAddComment, onEditComment, onDeleteComment, onEditIssuePriority }) {
+function IssueDetailsModal({ isOpen, onClose, isSelected, onDeleteIssue, onEditIssueStatus, onAddComment, onEditComment, onDeleteComment, onEditIssuePriority, currentRole }) {
     if (!isOpen) return null;
 
     return (
@@ -32,6 +32,7 @@ function IssueDetailsModal({ isOpen, onClose, isSelected, onDeleteIssue, onEditI
                     onEditComment={onEditComment}
                     onDeleteComment={onDeleteComment}
                     onEditIssuePriority={onEditIssuePriority}
+                    currentRole={currentRole}
                     //  showBackButton={false}  
                     
                     style="" />

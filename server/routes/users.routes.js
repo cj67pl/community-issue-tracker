@@ -7,7 +7,7 @@ import { authorizedRoles } from "../middleware/role.middleware.js";
 const router = express.Router();
 
 router.get("/", authenticateToken, authorizedRoles(1,2), getUsers);
-router.get("/:id", authenticateToken, authorizedRoles(1, 2), getUserById);
+router.get("/:id", authenticateToken, authorizedRoles(1, 2, 3), getUserById);
 router.post("/", authenticateToken, authorizedRoles(1), createUser);
 router.patch("/:id/password", authenticateToken, updateUserPassword);
 router.patch("/:id/role", authenticateToken, authorizedRoles(1), updateUserRole);

@@ -13,8 +13,6 @@ import {
 export const mainNavItems = [
     { key: "dashboard", label: "Dashboard", icon: LayoutDashboard, roles: ["coordinator"] },
     { key: "reporterdashboard", label: "Reporter Dashboard", icon: LayoutDashboard, roles: ["reporter"] },
-    { key: "reporterreports", label: "My Reports", icon: LayoutDashboard, roles: ["reporter"] },
-    { key: "issues", label: "Issues", icon: FileText, roles: ["coordinator", "admin"] },
     { key: "report", label: "Report Issues", icon: PlusCircle, roles: ["coordinator", "reporter", "admin"] },
     { key: "adminUsers", label: "Admin Users", icon: Users, roles: ["admin"] },
 ];

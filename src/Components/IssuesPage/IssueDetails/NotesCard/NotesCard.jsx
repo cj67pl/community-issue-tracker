@@ -13,7 +13,7 @@ function Notes({ notes, onAddComment, currentUser, onEditComment, onDeleteCommen
     //     if (!inputCommentValue.trim()) return; 
     //     await onAddComment(inputCommentValue);
     //     setInputCommentValue("");  
-    // };
+    // }; 
     const handlePost = () => {
         if (!inputCommentValue.trim()) return;
 

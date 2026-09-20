@@ -6,11 +6,10 @@ import IssuesPage from "./pages/Coordinator/IssuesPage/IssuesPage.jsx";
 import Dashboard from "./pages/Coordinator/Dashboard/Dashboard.jsx";
 import ReportIssue from "./pages/Coordinator/ReportIssue/ReportIssue.jsx";
 import Reports from "./pages/Coordinator/Reports/Reports.jsx";
-import SettingsPage from "./pages/Coordinator/SettingsPage/SettingsPage.jsx";
-import HelpPage from "./pages/Coordinator/HelpPage/HelpPage.jsx";
+import SettingsPage from "./pages/SupportPages/SettingsPage/SettingsPage.jsx";
+import HelpPage from "./pages/SupportPages/HelpPage/HelpPage.jsx";
 import AdminUsers from "./pages/Admin/Admin.jsx";
 import ReporterDashboard from "./pages/User/ReporterDashboard/ReporterDashboard.jsx"
-import ReporterReports from "./pages/User/ReporterReports/ReporterReports.jsx"
 import "./App.css";
 import { apiRequest } from "./api/api.js";
 
@@ -164,9 +163,7 @@ function App() {
 							{currentPage === "reporterdashboard" && <ReporterDashboard 
 																		currentRole={currentUser.role} 
 																		onNavigate={setCurrentPage} />}
-							{currentPage === "reporterreports" && <ReporterReports 
-																		currentRole={currentUser.role}
-																		onNavigate={setCurrentPage} />}
+
 							{currentPage === "report" && <ReportIssue 
 																currentRole={currentUser.role} 
 																onNavigate={setCurrentPage}/>}

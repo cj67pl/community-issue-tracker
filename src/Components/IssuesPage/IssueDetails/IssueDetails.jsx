@@ -15,7 +15,7 @@ import { apiRequest } from "../../../api/api.js";
 
 // const getInitials = (str) => str.trim().split(/\s+/).map(w=>[0]).join("").toUpperCase();
 
-function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddComment, onEditComment, onDeleteComment, onEditIssuePriority }) {
+function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddComment, onEditComment, onDeleteComment, onEditIssuePriority, currentRole }) {
     // console.log("Issue ID:", issue);
     
     const [issueData, setIssueData] = useState(null);
@@ -70,7 +70,7 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddCom
             setIssueNotes(updatedComments);
         }
     };
-    const handleEditComment = async (commentId, editComment) => {
+    const handleEditComment = async (commentId, editComment, currentRole) => {
         // console.log("2. DETAILS COMMENT:", newComment);
 
         const updatedComments = await onEditComment(issue, commentId, editComment);
@@ -151,6 +151,7 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddCom
                     issue={issueData}
                     issueStats={issueData.status}
                     priority={issueData.priority}
+                    currentRole={currentRole}
                     setIssueStatus={async (issueID, newStatus) => {
                         const updatedIssue = await onEditIssueStatus(
                             issueID.id,
@@ -166,7 +167,7 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddCom
                     }}
                     setIssuePriority={async (issueID, newPriority) => {
                         const updatedIssue = await onEditIssuePriority(
-                            issueID.id,
+                            issueID,
                             newPriority
                         );
 

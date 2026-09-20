@@ -150,7 +150,9 @@ function IssuesPage({currentRole, onNavigate}) {
             }
         }
 
-    const handlEditIssueStatus = async (issueID, newStatus) => {
+    const handlEditIssueStatus = async (issue, newStatus) => {
+        const issueID = typeof issue === "object" ? issue.id : issue;
+
         console.log("EDIT ID:", issueID);
         console.log("EDIT STATUS:", newStatus);
 
@@ -161,25 +163,36 @@ function IssuesPage({currentRole, onNavigate}) {
                     status_name: newStatus
                 })
             });
+
             const updatedData = await apiRequest(`/issues/${issueID}`);
 
             console.log("REFRESHED ISSUE:", updatedData.issue);
 
             setIssuesList((currentIssues) =>
-                currentIssues.map((issue) =>
-                    Number(issue.id) === Number(issueID)
+                currentIssues.map((currentIssue) =>
+                    Number(currentIssue.id) === Number(issueID)
                         ? {
-                            ...issue,
+                            ...currentIssue,
                             status: updatedData.issue.status,
                             status_id: updatedData.issue.status_id
                         }
-                        : issue
+                        : currentIssue
                 )
             );
 
+            setIsSelected((current) =>
+                current && Number(current.id) === Number(issueID)
+                    ? {
+                        ...current,
+                        status: updatedData.issue.status,
+                        status_id: updatedData.issue.status_id
+                    }
+                    : current
+            );
+
             return updatedData.issue;
-        }
-        catch (error) {
+
+        } catch (error) {
             console.log("Failed to edit the issue!", error);
             return null;
         }
@@ -209,11 +222,11 @@ function IssuesPage({currentRole, onNavigate}) {
         
     }
     const handleEditComment = async (issueID, commentID, newCommentUpdate) => {
-        console.log("3. PAGE ISSUE ID:", issueID);
+        console.log("3. PAGE ISSUE ID:", issueID.id);
         console.log("3. PAGE COMMENT ID:", commentID);
         console.log("3. PAGE COMMENT:", newCommentUpdate);
         try {
-            await apiRequest(`/issues/${issueID}/comments/${commentID}`, {
+            await apiRequest(`/issues/${issueID.id}/comments/${commentID}`, {
                 method: "PATCH",
                 body: JSON.stringify({
                     content: newCommentUpdate
@@ -221,7 +234,7 @@ function IssuesPage({currentRole, onNavigate}) {
             });
 
             const updatedComments = await apiRequest(
-                `/issues/${issueID}/comments/`
+                `/issues/${issueID.id}/comments/`
             )
 
             return updatedComments;
@@ -234,11 +247,11 @@ function IssuesPage({currentRole, onNavigate}) {
     }
 
     const handleDeleteComment = async (issueID, commentID) => {
-        console.log("3. PAGE ISSUE ID:", issueID);
+        console.log("3. PAGE ISSUE ID:", issueID.id);
         console.log("3. PAGE COMMENT ID:", commentID);
 
         try {
-            await apiRequest(`/issues/${issueID}/comments/${commentID}`, {
+            await apiRequest(`/issues/${issueID.id}/comments/${commentID}`, {
                 method: "DELETE",
                 body: JSON.stringify({
                     id: commentID
@@ -246,13 +259,13 @@ function IssuesPage({currentRole, onNavigate}) {
             });
 
             const updatedComments = await apiRequest(
-                `/issues/${issueID}/comments/`
+                `/issues/${issueID.id}/comments/`
             )
 
             return updatedComments;
         }
         catch (error) {
-            console.error("Failed to add comment!", error);
+            console.error("Failed to remove comment!", error);
 
         }
 
@@ -349,7 +362,7 @@ function IssuesPage({currentRole, onNavigate}) {
                     issues={filteredIssues}
                     onSelectIssue={handleIssueClick}
                     onDeleteIssue={handleDeleteIssue}
-                    
+                    currentRole={currentRole}
                     onNavigate={onNavigate}
                 />
                 <div></div>
@@ -362,6 +375,7 @@ function IssuesPage({currentRole, onNavigate}) {
                 onClose={() => { 
                     setShowIssueDetails(false); 
                 }}
+                currentRole={currentRole}
                 isSelected={isSelected}
                 setIsSelected={setIsSelected}
                 onDeleteIssue={handleDeleteIssue}

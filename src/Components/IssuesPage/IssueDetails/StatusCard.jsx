@@ -4,7 +4,7 @@ import Badge from "../../../common/Badge.jsx";
 // import {statusOptions} from "../../filterOptions.js";
 import {statusStyles} from "../../issuesData.js"
 import { IoIosArrowRoundForward } from "react-icons/io";
-
+ 
 import { apiRequest } from "../../../api/api.js";
 
 const inactiveStyle = "bg-gray-100 text-gray-400 border border-gray-200";
@@ -14,7 +14,8 @@ function StatusCard({
     setIssueStatus,
     issue,
     priority,
-    setIssuePriority
+    setIssuePriority,
+    currentRole
 }) {
     
     const [status, setStatus] = useState(issueStats);
@@ -55,6 +56,9 @@ function StatusCard({
         setLocalPriority(newPriority);
         setIssuePriority(issue.id, newPriority);
     };
+
+    
+    
     return(
         <div className="flex flex-col my-5 w-full max-w-md min-w-md h-auto rounded-xl border border-gray-200 bg-white shadow-sm ">
 
@@ -106,27 +110,41 @@ function StatusCard({
             })}
 
             </div>
-            {/* <div className="border-t border-slate-200"></div> */}
+
             <div className="border-b border-slate-200 px-6 py-4">
                 <h3 className="text-lg font-bold text-gray-900">
-                    Priority
+                    Priority Level
                 </h3>
             </div>
-            <span className="text-xs text-slate-500 font-semibold mx-6 my-5 ">
-                Update Priority
-            </span>
-            <div className="px-6 pb-5 my-2">
-                <FilterSelect
-                    name="priority"
-                    placeholder="All Priorities"
-                    options={priorityOptions.map((p) => ({
-                        value: p.name,
-                        label: p.name
-                    }))}
-                    value={localPriority}
-                    onChange={handlePriorityChange}
-                />
-            </div>
+            {/* <div className="border-t border-slate-200"></div> */}
+            {currentRole !== "reporter" ? (
+                
+                <>
+                    <span className="text-xs text-slate-500 font-semibold mx-6 my-5">
+                        Update Priority
+                    </span>
+
+                    <div className="px-6 pb-5 my-2">
+                        <FilterSelect
+                            name="priority"
+                            placeholder="All Priorities"
+                            options={priorityOptions.map((p) => ({
+                                value: p.name,
+                                label: p.name
+                            }))}
+                            value={localPriority}
+                            onChange={handlePriorityChange}
+                        />
+                    </div>
+                </>
+            ) : (
+                <div className="flex items-center justify-center m-5"> 
+                    <h3 className="text-lg font-bold text-gray-900">
+                        {localPriority}
+                    </h3>
+                </div>
+                
+            )}
 
         </div>
     )

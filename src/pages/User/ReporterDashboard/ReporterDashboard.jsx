@@ -153,7 +153,78 @@ function ReporterDashboard({ currentRole, onNavigate }) {
             console.error("Failed to delete issue.")
         }
     }
+    const handleAddComment = async (issueID, newComment) => {
+        console.log("3. PAGE ISSUE ID:", issueID.id);
+        console.log("3. PAGE COMMENT:", newComment);
+        try {
+            await apiRequest(`/issues/${issueID.id}/comments`, {
+                method: "POST",
+                body: JSON.stringify({
+                    content: newComment
+                })
+            });
 
+            const updatedComments = await apiRequest(
+                `/issues/${issueID.id}/comments`
+            )
+
+            return updatedComments;
+        }
+        catch (error) {
+            console.error("Failed to add comment!", error);
+
+        }
+
+    }
+    const handleEditComment = async (issueID, commentID, newCommentUpdate) => {
+        console.log("3. PAGE ISSUE ID:", issueID.id);
+        console.log("3. PAGE COMMENT ID:", commentID);
+        console.log("3. PAGE COMMENT:", newCommentUpdate);
+        try {
+            await apiRequest(`/issues/${issueID.id}/comments/${commentID}`, {
+                method: "PATCH",
+                body: JSON.stringify({
+                    content: newCommentUpdate
+                })
+            });
+
+            const updatedComments = await apiRequest(
+                `/issues/${issueID.id}/comments/`
+            )
+
+            return updatedComments;
+        }
+        catch (error) {
+            console.error("Failed to add comment!", error);
+
+        }
+
+    }
+
+    const handleDeleteComment = async (issueID, commentID) => {
+        console.log("3. PAGE ISSUE ID:", issueID.id);
+        console.log("3. PAGE COMMENT ID:", commentID);
+
+        try {
+            await apiRequest(`/issues/${issueID.id}/comments/${commentID}`, {
+                method: "DELETE",
+                body: JSON.stringify({
+                    id: commentID
+                })
+            });
+
+            const updatedComments = await apiRequest(
+                `/issues/${issueID.id}/comments/`
+            )
+
+            return updatedComments;
+        }
+        catch (error) {
+            console.error("Failed to remove comment!", error);
+
+        }
+
+    }
     return (
         <div className="p-4  ">
             <div className="flex justify-between
@@ -232,7 +303,17 @@ function ReporterDashboard({ currentRole, onNavigate }) {
                 
             </div>
             <IssueDetailsModal
-                            
+                isOpen={showIssueDetails}
+                onClose={() => {
+                    setShowIssueDetails(false);
+                }} 
+                currentRole={currentRole}
+                isSelected={isSelected}
+                setIsSelected={setIsSelected}
+                onDeleteIssue={handleDeleteIssue}
+                onAddComment={handleAddComment}
+                onEditComment={handleEditComment}
+                onDeleteComment={handleDeleteComment}            
             />
             
         </div>
