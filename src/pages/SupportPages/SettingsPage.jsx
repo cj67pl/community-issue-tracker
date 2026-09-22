@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import FormField from "../../../common/FormField.jsx";
-import { inputClass, disabledInputClass } from "../../../common/formStyles.jsx";
-import NotificationRow from "../../../components/SettingsPage/NotificationRow.jsx.jsx";
-import { apiRequest } from "../../../api/api.js";
+import FormField from "../../common/FormField.jsx";
+import { inputClass, disabledInputClass } from "../../common/formStyles.jsx";
+import NotificationRow from "../../components/SettingsPage/NotificationRow.jsx.jsx";
+import { apiRequest } from "../../api/api.js";
 
 function SettingsPage() {
 

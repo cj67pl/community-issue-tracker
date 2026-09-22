@@ -1,15 +1,15 @@
 import { useEffect, useState,  } from "react";
 
 import { Plus } from "lucide-react";
-import SearchInput from "../../../components/IssuesPage/SearchInput.jsx";
-import IssueFilters from "../../../components/IssuesPage/IssueFilters.jsx";
-import IssuesTable from "../../../components/IssuesPage/IssuesTable.jsx";
-import IssueDetailsModal from "../../../components/IssuesPage/IssueDetails/IssueDetailsModal.jsx"
+import SearchInput from "../../components/IssuesPage/SearchInput.jsx";
+import IssueFilters from "../../components/IssuesPage/IssueFilters.jsx";
+import IssuesTable from "../../components/IssuesPage/IssuesTable.jsx";
+import IssueDetailsModal from "../../components/IssuesPage/IssueDetails/IssueDetailsModal.jsx"
 
 
-import { apiRequest } from "../../../api/api.js";
+import { apiRequest } from "../../api/api.js";
 
-function IssuesPage({currentRole, onNavigate}) {
+function AdminIssues({currentRole, onNavigate}) {
 
     const [showIssueDetails, setShowIssueDetails] = useState(false);
     const [isSelected, setIsSelected] = useState(null)
@@ -392,4 +392,4 @@ function IssuesPage({currentRole, onNavigate}) {
     );
 }
 
-export default IssuesPage;
+export default AdminIssues;

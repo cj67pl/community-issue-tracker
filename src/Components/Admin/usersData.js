@@ -47,4 +47,5 @@ export const roleStyles = {
 export const statusStyles = {
 	Active: "bg-emerald-600/10 text-emerald-700",
 	Invited: "bg-amber-500/10 text-amber-600",
+	Inactive: "bg-red-600/10 text-red-700",
 };

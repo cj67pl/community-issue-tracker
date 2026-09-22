@@ -2,17 +2,17 @@
 
 
 import { useState, useEffect } from "react";
-import KPICard from "../../../common/KPICard";
-import IssueDetailsModal from "../../../components/IssuesPage/IssueDetails/IssueDetailsModal.jsx";
-import RecentIssues from "../../../components/Dashboard/RecentIssues.jsx";
-import IssueFilters from "../../../components/IssuesPage/IssueFilters.jsx";
-import IssuesTable from "../../../components/IssuesPage/IssuesTable.jsx";
+import KPICard from "../../common/KPICard.jsx";
+import IssueDetailsModal from "../../components/IssuesPage/IssueDetails/IssueDetailsModal.jsx";
+import RecentIssues from "../../components/Dashboard/RecentIssues.jsx";
+import IssueFilters from "../../components/IssuesPage/IssueFilters.jsx";
+import IssuesTable from "../../components/IssuesPage/IssuesTable.jsx";
 import { IoIosAdd } from "react-icons/io";
 
 
-import reporterKpiCardsData from '../../../data/ReporterKpiCardsData.js'
+import reporterKpiCardsData from '../../data/ReporterKpiCardsData.js'
 
-import { apiRequest } from "../../../api/api.js";
+import { apiRequest } from "../../api/api.js";
 
 function ReporterDashboard({ currentRole, onNavigate }) {
 
@@ -292,7 +292,7 @@ function ReporterDashboard({ currentRole, onNavigate }) {
                 Showing {filteredIssues.length} issues
             </span>
 
-            <div className="grid xl:grid-cols-2  md:grid-cols-1 gap-6">
+            <div className="">
                 <IssuesTable
                     issues={filteredIssues}
                     onSelectIssue={handleIssueClick}

@@ -73,7 +73,7 @@ function IssueFilters({
     const filters = [
         {
             key: "category",
-            roles: ["coordinator", "reporter"],
+            roles: ["coordinator", "reporter", "admin"],
             element: (
                 <FilterSelect
                     name="category"
@@ -86,7 +86,7 @@ function IssueFilters({
         },
         {
             key: "priority",
-            roles: ["coordinator"],
+            roles: ["coordinator", "reporter", "admin"],
             element: (
                 <FilterSelect
                     name="priority"
@@ -99,7 +99,7 @@ function IssueFilters({
         },
         {
             key: "status",
-            roles: ["coordinator"],
+            roles: ["coordinator", "reporter", "admin"],
             element: (
                 <FilterSelect
                     name="status"
@@ -112,7 +112,7 @@ function IssueFilters({
         },
         {
             key: "sort",
-            roles: ["coordinator", "reporter"],
+            roles: ["coordinator", "reporter", "admin"],
             element: (
                 <FilterSelect
                     name="sort"

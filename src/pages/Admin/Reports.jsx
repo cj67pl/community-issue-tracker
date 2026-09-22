@@ -1,15 +1,15 @@
 import { useState, useEffect } from "react";
 import { BsDownload } from "react-icons/bs";
-import KPICard from "../../../common/KPICard.jsx";
-import reportsKpiCardsData  from "../../../data/ReportsKPICardsData.js"
+import KPICard from "../../common/KPICard.jsx";
+import reportsKpiCardsData  from "../../data/ReportsKPICardsData.js"
 // import IssuesGraph from "../../../components/Dashboard/IssuesGraph.jsx";
-import IssuedByStatus from "../../../components/ReportPage/IssuedByStats.jsx";
-import IssuesGraphReport from "../../../components/ReportPage/IssuesGraphReport.jsx";
+import IssuedByStatus from "../../components/ReportPage/IssuedByStats.jsx";
+import IssuesGraphReport from "../../components/ReportPage/IssuesGraphReport.jsx";
 // import ReportDateFilter from "../../../components/ReportPage/ReportDateFilter.jsx";
-import FilterSelect from "../../../common/FilterSelect";
+import FilterSelect from "../../common/FilterSelect.jsx";
 
 
-import { apiRequest, buildApiUrl } from "../../../api/api.js";
+import { apiRequest, buildApiUrl } from "../../api/api.js";
 import { use } from "react";
 
 // export const reportsKpiCardsData = [

@@ -2,14 +2,19 @@ import { useState, useEffect } from "react";
 import AuthPage from "./pages/Auth/AuthPage.jsx";
 import Sidebar from "./components/Sidebar/Sidebar.jsx";
 import Topbar from "./components/Topbar/Topbar.jsx";
-import IssuesPage from "./pages/Coordinator/IssuesPage/IssuesPage.jsx";
-import Dashboard from "./pages/Coordinator/Dashboard/Dashboard.jsx";
-import ReportIssue from "./pages/Coordinator/ReportIssue/ReportIssue.jsx";
-import Reports from "./pages/Coordinator/Reports/Reports.jsx";
-import SettingsPage from "./pages/SupportPages/SettingsPage/SettingsPage.jsx";
-import HelpPage from "./pages/SupportPages/HelpPage/HelpPage.jsx";
-import AdminUsers from "./pages/Admin/Admin.jsx";
-import ReporterDashboard from "./pages/User/ReporterDashboard/ReporterDashboard.jsx"
+import IssuesPage from "./pages/Shared/IssuesPage.jsx";
+import Dashboard from "./pages/Coordinator/Dashboard.jsx";
+import ReportIssue from "./pages/Shared/ReportIssue.jsx";
+import Reports from "./pages/Coordinator/Reports.jsx";
+import SettingsPage from "./pages/SupportPages/SettingsPage.jsx";
+import HelpPage from "./pages/SupportPages/HelpPage.jsx";
+import ReporterDashboard from "./pages/User/ReporterDashboard.jsx"
+import AdminDashboard from "./pages/Admin/AdminDashboard.jsx";
+import AdminUsers from "./pages/Admin/AdminUsers.jsx";
+import AdminCategories from "./pages/Admin/AdminCategories.jsx";
+// import AdminIssues from "./pages/Admin/AdminIssues.jsx";
+import AdminAnalytics from "./pages/Admin/AdminAnalytics.jsx";
+
 import "./App.css";
 import { apiRequest } from "./api/api.js";
 
@@ -51,6 +56,7 @@ function App() {
 					name: user.name,
 					email: user.email,
 					role: role,
+					
 				};
 				setCurrentUser(currentUser);
 				setCurrentPage(defaultPageByRole[currentUser.role] ?? "dashboard");
@@ -68,24 +74,24 @@ function App() {
 
 
 	function handleLoginSuccess(userData) {
-		// console.log("🔥 handleLoginSuccess CALLED");
+		// console.log("handleLoginSuccess CALLED");
 		// console.log("USER DATA:", userData);
 		localStorage.setItem("token", userData.token);
 		localStorage.setItem("user", JSON.stringify(userData.user));
 		// console.log("USER:", JSON.parse(localStorage.getItem("user")));
 		const user = userData.user;
-		const role = roleNameById[user.role_id]
+		const role = roleNameById[user.role_id];
 		const currentUser = {
 			id:user.id,
 			name:user.name,
 			email:user.email,
-			role: roleNameById[user.role_id],
+			role: role,
 			token: userData.token,
 
 		}
 		
 		setCurrentUser(currentUser);
-		setCurrentPage(defaultPageByRole[userData.user.role] ?? "dashboard");
+		setCurrentPage(defaultPageByRole[role] ?? "dashboard");
 		
 	}
 
@@ -151,8 +157,29 @@ function App() {
 					{/* ADMIN VIEWS */}
 					{currentUser.role === "admin" && (
 						<>
-							{currentPage === "adminUsers" && <AdminUsers />}
-							{currentPage === "settings" && <SettingsPage />}
+							{currentPage === "adminDashboard" && <AdminDashboard 
+																	currentRole={currentUser.role}
+																	onNavigate={setCurrentPage} />}
+							{currentPage === "report" && <ReportIssue
+																	currentRole={currentUser.role}
+																	onNavigate={setCurrentPage} />}
+							{currentPage === "adminUsers" && <AdminUsers 
+																	currentRole={currentUser.role}
+																	onNavigate={setCurrentPage} />}
+							{currentPage === "adminCategories" && <AdminCategories 
+																	currentRole={currentUser.role}
+																	onNavigate={setCurrentPage} />}
+							{currentPage === "issues" && <IssuesPage
+																	currentRole={currentUser.role}
+																	onNavigate={setCurrentPage} />}
+							{currentPage === "adminAnalytics" && <AdminAnalytics 
+																	currentRole={currentUser.role}
+																	onNavigate={setCurrentPage} />}
+							
+							{currentPage === "settings" && <SettingsPage 
+																	currentRole={currentUser.role}
+																	onNavigate={setCurrentPage} />}
+							{currentPage === "help" && <HelpPage />} 
 						</>
 					)}
 

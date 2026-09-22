@@ -11,7 +11,7 @@ function AdminUsers() {
             prev.map((user) => (user.id === id ? { ...user, role: newRole } : user))
         );
     }
-
+ 
     function handleRemove(id) {
         setUsers((prev) => prev.filter((user) => user.id !== id));
     }

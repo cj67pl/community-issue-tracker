@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
 
 
-import KPICard from "../../../common/KPICard";
-import IssuesGraph from "../../../components/Dashboard/IssuesGraph";
-import UrgentsList from "../../../components/Dashboard/UrgentsList.jsx";
-import RecentIssues from "../../../components/Dashboard/RecentIssues.jsx";
+import KPICard from "../../common/KPICard.jsx";
+import IssuesGraph from "../../components/Dashboard/IssuesGraph.jsx";
+import UrgentsList from "../../components/Dashboard/UrgentsList.jsx";
+import RecentIssues from "../../components/Dashboard/RecentIssues.jsx";
 import { IoIosAdd } from "react-icons/io";
 
-import { apiRequest } from "../../../api/api.js";
+import { apiRequest } from "../../api/api.js";
 
-import kpiCardsData from '../../../data/KpiCardsData'
+import kpiCardsData from '../../data/KpiCardsData.js'
 
 
 function Dashboard({onNavigate}) {

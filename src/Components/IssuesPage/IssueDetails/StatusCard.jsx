@@ -68,50 +68,62 @@ function StatusCard({
                     Status
                 </h3>
             </div>
-            <span className="text-xs text-slate-500 font-semibold mx-6 my-5 ">
-                Update Status
-            </span>
-            <div className="px-6 pb-5 my-2">
-                <FilterSelect 
-                    name="status" 
-                    placeholder="All Statuses" 
-                    options={statusOptions.map((stats) => ({
-                        value: stats.name,
-                        label: stats.name
-                    }))} 
-                    value={status} 
-                    onChange={(newStatus) => { 
-                        setStatus(newStatus); 
-                        setIssueStatus(issue, newStatus)}} 
-                />
-            </div>
-            <div className="flex justify-center items-center mb-8">
-                {statusOptions.map((stats, key) => {
+            {currentRole !== "reporter" ? (
 
-                    const isPastOrCurrent = key <= currentStatusIndex;
-                    const styleToApply = isPastOrCurrent
-                        ? statusStyles[stats.name]
-                        : inactiveStyle;
-                return (
-                    <div
-                         
-                        key={key} className="flex items-center gap-2">
-                        <Badge label={stats.name} styles={styleToApply} size="md" />
-                        {key < statusOptions.length - 1 && (
-                            <IoIosArrowRoundForward
-                                className={`text-xl ${key < currentStatusIndex
-                                    ? "text-gray-700"
-                                    : "text-gray-300"
-                                    }`}
-                            />
-                        )}
-                    </div>
-                )
-            })}
+                <>
+                <span className="text-xs text-slate-500 font-semibold mx-6 my-5 ">
+                    Update Status
+                </span>
+                <div className="px-6 pb-5 my-2">
+                    <FilterSelect 
+                        name="status" 
+                        placeholder="All Statuses" 
+                        options={statusOptions.map((stats) => ({
+                            value: stats.name,
+                            label: stats.name
+                        }))} 
+                        value={status} 
+                        onChange={(newStatus) => { 
+                            setStatus(newStatus); 
+                            setIssueStatus(issue, newStatus)}} 
+                    />
+                </div>
+                <div className="flex justify-center items-center mb-8">
+                    {statusOptions.map((stats, key) => {
 
-            </div>
+                        const isPastOrCurrent = key <= currentStatusIndex;
+                        const styleToApply = isPastOrCurrent
+                            ? statusStyles[stats.name]
+                            : inactiveStyle;
+                    return (
+                        <div
+                            
+                            key={key} className="flex items-center gap-2">
+                            <Badge label={stats.name} styles={styleToApply} size="md" />
+                            {key < statusOptions.length - 1 && (
+                                <IoIosArrowRoundForward
+                                    className={`text-xl ${key < currentStatusIndex
+                                        ? "text-gray-700"
+                                        : "text-gray-300"
+                                        }`}
+                                />
+                            )}
+                        </div>
+                    )
+                })}
 
-            <div className="border-b border-slate-200 px-6 py-4">
+                </div>
+            </>
+            ) : (
+                <div className="flex items-center justify-center m-5 mb-10 mt-10"> 
+                    <h3 className="text-lg font-bold text-gray-900">
+                        {status}
+                    </h3>
+                </div>
+                
+            )}
+
+            <div className="border-y border-slate-200 px-6 py-4">
                 <h3 className="text-lg font-bold text-gray-900">
                     Priority Level
                 </h3>
@@ -138,7 +150,7 @@ function StatusCard({
                     </div>
                 </>
             ) : (
-                <div className="flex items-center justify-center m-5"> 
+                <div className="flex items-center justify-center m-5 mt-10"> 
                     <h3 className="text-lg font-bold text-gray-900">
                         {localPriority}
                     </h3>

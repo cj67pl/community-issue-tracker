@@ -5,7 +5,7 @@ function FilterSelect({ name, placeholder, options = [], value, onChange }) {
     // console.log("VALUE: ", value);
     
     return (
-        <div className='relative flex justify-between w-full sm:w-auto'>
+        <div className="relative w-full sm:w-auto">
             <select
                 name={name}
                 value={value}

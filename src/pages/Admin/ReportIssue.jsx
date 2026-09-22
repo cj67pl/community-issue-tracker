@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import FormField from "../../../components/ReportingPage/FormField.jsx";
+import FormField from "../../components/ReportingPage/FormField.jsx";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
-import { apiRequest } from "../../../api/api.js";
+import { apiRequest } from "../../api/api.js";
 
 const inputClass =
     "w-full rounded-lg border border-slate-200 px-4 py-2.5 text-sm text-gray-700 outline-none placeholder:text-slate-400 focus:border-teal-700 focus:ring-2 focus:ring-teal-700/20";
