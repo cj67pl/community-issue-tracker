@@ -1,21 +1,49 @@
 import express from "express";
-import { getUsers, getUserById, createUser, updateUserPassword, updateUserRole, reactivateUser, deactivateUser, updateUserProfile } from "../controllers/users.controllers.js";
+
+import {
+	getUsers,
+	getUserById,
+	createUser,
+	updateUserPassword,
+	updateUserRole,
+	updateUserProfile,
+	updateUserStatus,
+	deactivateUser,
+} from "../controllers/users.controllers.js";
+
 import { authenticateToken } from "../middleware/auth.middleware.js";
 import { authorizedRoles } from "../middleware/role.middleware.js";
 
-
 const router = express.Router();
 
-router.get("/", authenticateToken, authorizedRoles(1,2), getUsers);
+
+router.get("/", authenticateToken, authorizedRoles(1, 2), getUsers);
+
+
 router.get("/:id", authenticateToken, authorizedRoles(1, 2, 3), getUserById);
+
+
 router.post("/", authenticateToken, authorizedRoles(1), createUser);
+
+router.patch("/:id", authenticateToken, authorizedRoles(1), updateUserProfile);
+
+router.patch(
+	"/:id/role",
+	authenticateToken,
+	authorizedRoles(1),
+	updateUserRole,
+);
+
+router.patch(
+	"/:id/status",
+	authenticateToken,
+	authorizedRoles(1),
+	updateUserStatus,
+);
+
 router.patch("/:id/password", authenticateToken, updateUserPassword);
-router.patch("/:id/role", authenticateToken, authorizedRoles(1), updateUserRole);
-router.patch("/:id/reactivate", authenticateToken, authorizedRoles(1), reactivateUser);
-router.patch("/:id/update-user", authenticateToken, updateUserProfile);
+
+
 router.delete("/:id", authenticateToken, authorizedRoles(1), deactivateUser);
 
-
-
 export default router;
- 

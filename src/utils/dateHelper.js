@@ -20,7 +20,7 @@ export function formatRelativeTime(dateInput) {
 
         if (count >= 1) {
             const plural = count > 1 && !["s", "min", "h"].includes(interval.label);
-            return `${count}${interval.label}${plural ? 's' : ''} ago`;
+            return `${count} ${interval.label}${plural ? 's' : ''} ago`;
         }
 
     }

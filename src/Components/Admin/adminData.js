@@ -1,10 +1,10 @@
 import {
 	Users,
 	UserCheck,
+	UserPlus,
 	ClipboardList,
-	Clock,
-	Loader,
-	CircleCheck,
+	AlertTriangle,
+	CalendarDays,
 } from "lucide-react";
 
 export const adminKPIData = [
@@ -24,40 +24,39 @@ export const adminKPIData = [
 		background: "bg-green-600/10",
 		statsDescription: "Currently active accounts",
 	},
+	// {
+	// 	name: "New Users",
+	// 	key: "new_users",
+	// 	icon: UserPlus,
+	// 	color: "text-blue-600",
+	// 	background: "bg-blue-600/10",
+	// 	statsDescription: "Registered this month",
+	// },
 	{
-		name: "Total Issues",
-		key: "total_issues",
+		name: "Active Issues",
+		key: "active_issues",
 		icon: ClipboardList,
-		color: "text-blue-700",
-		background: "bg-blue-700/10",
-		statsDescription: "All reported issues",
+		color: "text-purple-600",
+		background: "bg-purple-600/10",
+		statsDescription: "Currently unresolved",
 	},
 	{
-		name: "Pending Issues",
-		key: "pending_issues",
-		icon: Clock,
+		name: "High Priority Issues",
+		key: "high_priority_issues",
+		icon: AlertTriangle,
+		color: "text-red-600",
+		background: "bg-red-600/10",
+		statsDescription: "Currently active",
+	},
+	{
+		name: "Reports This Month",
+		key: "reports_this_month",
+		icon: CalendarDays,
 		color: "text-amber-600",
 		background: "bg-amber-500/10",
-		statsDescription: "Waiting for action",
-	},
-	{
-		name: "In Progress",
-		key: "in_progress_issues",
-		icon: Loader,
-		color: "text-purple-600",
-		background: "bg-purple-500/10",
-		statsDescription: "Currently being handled",
-	},
-	{
-		name: "Resolved",
-		key: "resolved_issues",
-		icon: CircleCheck,
-		color: "text-green-600",
-		background: "bg-green-600/10",
-		statsDescription: "Successfully resolved",
+		statsDescription: "Reported this month",
 	},
 ];
-
 
 export const recentIssuesData = [
 	{

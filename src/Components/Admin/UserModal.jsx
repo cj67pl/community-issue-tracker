@@ -5,6 +5,7 @@ import { roleOptions } from "./usersData.js";
 function UserModal({ isOpen, user, onClose, onSave }) {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [role, setRole] = useState("Reporter");
     const [status, setStatus] = useState("Active");
 
@@ -12,11 +13,13 @@ function UserModal({ isOpen, user, onClose, onSave }) {
         if (user) {
             setName(user.name);
             setEmail(user.email);
+            setPassword("");
             setRole(user.role);
             setStatus(user.status);
         } else {
             setName("");
             setEmail("");
+            setPassword("");
             setRole("Reporter");
             setStatus("Active");
         }
@@ -33,17 +36,31 @@ function UserModal({ isOpen, user, onClose, onSave }) {
             return;
         }
 
-        onSave({
-            name: name.trim(),
-            email: email.trim(),
-            role,
-            status,
-        });
-    }
+        if (!user && !password.trim()) {
+            return;
+        }
 
+        if (user) {
+            // EDIT
+            onSave({
+                name: name.trim(),
+                email: email.trim(),
+            });
+        } else {
+            // CREATE
+            onSave({
+                name: name.trim(),
+                email: email.trim(),
+                password,
+                role,
+                status,
+            });
+        }
+    }
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
             <div className="w-full max-w-md rounded-xl bg-white shadow-xl">
+
                 <div className="flex items-center justify-between border-b border-slate-200 px-6 py-4">
                     <h3 className="text-lg font-bold text-gray-900">
                         {user ? "Edit User" : "Add User"}
@@ -58,7 +75,10 @@ function UserModal({ isOpen, user, onClose, onSave }) {
                     </button>
                 </div>
 
+
                 <form onSubmit={handleSubmit} className="space-y-4 p-6">
+
+                    {/* Full Name */}
                     <div>
                         <label className="mb-1 block text-sm font-semibold text-gray-700">
                             Full Name
@@ -74,6 +94,8 @@ function UserModal({ isOpen, user, onClose, onSave }) {
                         />
                     </div>
 
+
+                    {/* Email */}
                     <div>
                         <label className="mb-1 block text-sm font-semibold text-gray-700">
                             Email
@@ -89,6 +111,31 @@ function UserModal({ isOpen, user, onClose, onSave }) {
                         />
                     </div>
 
+
+                    {/* Password - Create only */}
+                    {!user && (
+                        <div>
+                            <label className="mb-1 block text-sm font-semibold text-gray-700">
+                                Password
+                            </label>
+
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Enter password"
+                                className="w-full rounded-md border border-slate-200 px-3 py-2 text-sm outline-none focus:border-teal-700"
+                                required
+                            />
+
+                            <p className="mt-1 text-xs text-gray-500">
+                                A password is required to create the account.
+                            </p>
+                        </div>
+                    )}
+
+
+                    {/* Role */}
                     <div>
                         <label className="mb-1 block text-sm font-semibold text-gray-700">
                             Role
@@ -107,6 +154,8 @@ function UserModal({ isOpen, user, onClose, onSave }) {
                         </select>
                     </div>
 
+
+                    {/* Status */}
                     <div>
                         <label className="mb-1 block text-sm font-semibold text-gray-700">
                             Status
@@ -119,10 +168,11 @@ function UserModal({ isOpen, user, onClose, onSave }) {
                         >
                             <option value="Active">Active</option>
                             <option value="Inactive">Inactive</option>
-                            <option value="Invited">Invited</option>
                         </select>
                     </div>
 
+
+                    {/* Buttons */}
                     <div className="flex justify-end gap-2 pt-2">
                         <button
                             type="button"
@@ -139,6 +189,7 @@ function UserModal({ isOpen, user, onClose, onSave }) {
                             {user ? "Save Changes" : "Add User"}
                         </button>
                     </div>
+
                 </form>
             </div>
         </div>

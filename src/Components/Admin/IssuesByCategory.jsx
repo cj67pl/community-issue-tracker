@@ -1,12 +1,17 @@
 function IssuesByCategory({ data }) {
     const maxCount = Math.max(...data.map((item) => item.count));
-    const categoryStyles = {
-        Infrastructure: "bg-teal-700",
-        "IT Equipment": "bg-blue-600",
-        Cleanliness: "bg-violet-600",
-        Security: "bg-red-600",
-        Other: "bg-slate-500",
-    };
+    const categoryColors = [
+        "bg-teal-700",
+        "bg-blue-600",
+        "bg-violet-600",
+        "bg-red-600",
+        "bg-amber-500",
+        "bg-cyan-600",
+        "bg-pink-600",
+        "bg-indigo-600",
+        "bg-emerald-600",
+        "bg-orange-500",
+    ];
     return (
         <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
             <div>
@@ -20,11 +25,13 @@ function IssuesByCategory({ data }) {
             </div>
 
             <div className="mt-6 space-y-5">
-                {data.map((item) => {
+                {data.map((item, index) => {
                     const percentage =
                         maxCount > 0
                             ? (item.count / maxCount) * 100
                             : 0;
+
+                    const color = categoryColors[index % categoryColors.length];
 
                     return (
                         <div key={item.category}>
@@ -40,7 +47,7 @@ function IssuesByCategory({ data }) {
 
                             <div className="h-2 w-full overflow-hidden rounded-full bg-slate-100">
                                 <div
-                                    className={`h-full rounded-full ${categoryStyles[item.category] || "bg-teal-700"
+                                    className={`h-full rounded-full ${color} || "bg-teal-700"
                                         }`}
                                     style={{
                                         width: `${percentage}%`,

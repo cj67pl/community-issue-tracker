@@ -5,19 +5,23 @@ import { isNonEmptyString, isValidId, isValidEmail, isValidPassword } from "../u
 export const getUsers = async (req, res, next) => {
 	try {
 		const result = await pool.query(`
-                    SELECT
-                        users.id,
-                        users.name,
-                        users.email,
-                        roles.role_name AS role,
-                        users.created_at,
-                        users.updated_at
-                    FROM users
-                    JOIN roles
-                        ON users.role_id = roles.id
-                    WHERE is_active = true    
-                    ORDER BY users.id;
-
+				SELECT
+					users.id,
+					users.name,
+					users.email,
+					users.role_id,
+					roles.role_name AS role,
+					users.is_active,
+					CASE
+						WHEN users.is_active = true THEN 'Active'
+						ELSE 'Inactive'
+					END AS status,
+					users.created_at,
+					users.updated_at
+				FROM users
+				LEFT JOIN roles
+					ON users.role_id = roles.id
+				ORDER BY users.id;
             `);
 
 		res.json(result.rows);
@@ -75,7 +79,7 @@ export const getUserById = async (req, res, next) => {
 };
 
 export const createUser = async (req, res, next) => {
-	const { name, password, role, email } = req.body;
+	const { name, password, role, email, is_active = true } = req.body;
 
 	if (!isNonEmptyString(name)) {
 		return res.status(400).json({
@@ -139,15 +143,24 @@ export const createUser = async (req, res, next) => {
 
 		const result = await pool.query(
 			`
-            INSERT INTO
-                    users (name, password, role_id, email)
-            VALUES ($1, $2, $3, $4)
-            RETURNING 
-            id, name, email, role_id, created_at, updated_at;
-            
-            
-        `,
-			[cleanName, hashedPassword, role, cleanEmail],
+				INSERT INTO users (
+					name,
+					password,
+					role_id,
+					email,
+					is_active
+				)
+				VALUES ($1, $2, $3, $4, $5)
+				RETURNING
+					id,
+					name,
+					email,
+					role_id,
+					is_active,
+					created_at,
+					updated_at;
+			`,
+			[cleanName, hashedPassword, role, cleanEmail, is_active],
 		);
 
 		res.status(201).json(
@@ -229,6 +242,7 @@ export const updateUserPassword = async (req, res, next) => {
 export const updateUserRole = async (req, res, next) => {
 	const { id } = req.params;
 	const { role } = req.body;
+
 	if (!isValidId(id)) {
 		return res.status(400).json({
 			error: "Invalid user ID",
@@ -244,10 +258,10 @@ export const updateUserRole = async (req, res, next) => {
 	try {
 		const roleResult = await pool.query(
 			`
-            SELECT id
-            FROM roles
-            WHERE id = $1
-        `,
+                SELECT id
+                FROM roles
+                WHERE id = $1
+            `,
 			[role],
 		);
 
@@ -259,34 +273,51 @@ export const updateUserRole = async (req, res, next) => {
 
 		const userResult = await pool.query(
 			`
-                    SELECT id 
-                    FROM users
-                    WHERE id = $1
+                SELECT id
+                FROM users
+                WHERE id = $1
             `,
 			[id],
 		);
 
 		if (userResult.rowCount === 0) {
-			return res.status(400).json({
+			return res.status(404).json({
 				error: "User not found",
 			});
 		}
 
-		const result = await pool.query(
+		await pool.query(
 			`
                 UPDATE users
-                SET role_id = $1, 
+                SET
+                    role_id = $1,
                     updated_at = CURRENT_TIMESTAMP
                 WHERE id = $2
-                RETURNING
-                    id,
-                    name,
-                    email,
-                    role_id,
-                    updated_at;
-
-        `,
+            `,
 			[role, id],
+		);
+
+		const result = await pool.query(
+			`
+                SELECT
+                    users.id,
+                    users.name,
+                    users.email,
+                    users.role_id,
+                    roles.role_name AS role,
+                    users.is_active,
+                    CASE
+                        WHEN users.is_active THEN 'Active'
+                        ELSE 'Inactive'
+                    END AS status,
+                    users.created_at,
+                    users.updated_at
+                FROM users
+                JOIN roles
+                    ON users.role_id = roles.id
+                WHERE users.id = $1
+            `,
+			[id],
 		);
 
 		res.status(200).json({
@@ -298,9 +329,9 @@ export const updateUserRole = async (req, res, next) => {
 	}
 };
 
-export const updateUserProfile = async (req, res, next) => {
+export const updateUserStatus = async (req, res, next) => {
 	const { id } = req.params;
-	const { name, email, phone } = req.body;
+	const { is_active } = req.body;
 
 	if (!isValidId(id)) {
 		return res.status(400).json({
@@ -308,19 +339,19 @@ export const updateUserProfile = async (req, res, next) => {
 		});
 	}
 
-	if (req.user.role_id !== 1 && Number(id) !== req.user.id) {
-		return res.status(403).json({
-			error: "You can only update your own profile",
+	if (typeof is_active !== "boolean") {
+		return res.status(400).json({
+			error: "is_active must be a boolean",
 		});
 	}
 
 	try {
 		const userResult = await pool.query(
 			`
-				SELECT id
-				FROM users
-				WHERE id = $1
-			`,
+                SELECT id
+                FROM users
+                WHERE id = $1
+            `,
 			[id],
 		);
 
@@ -332,26 +363,113 @@ export const updateUserProfile = async (req, res, next) => {
 
 		const result = await pool.query(
 			`
-				UPDATE users
-				SET
-					name = $1,
-					email = $2,
-					phone = $3,
-					updated_at = CURRENT_TIMESTAMP
-				WHERE id = $4
-				RETURNING
-					id,
-					name,
-					email,
-					phone,
-					role_id,
-					updated_at;
-			`,
-			[name, email, phone || null, id],
+                UPDATE users
+                SET
+                    is_active = $1,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = $2
+                RETURNING
+                    id,
+                    name,
+                    email,
+                    role_id,
+                    is_active,
+                    created_at,
+                    updated_at;
+            `,
+			[is_active, id],
 		);
 
 		res.status(200).json({
-			message: "Profile updated successfully",
+			message: is_active
+				? "User activated successfully"
+				: "User deactivated successfully",
+			user: result.rows[0],
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const updateUserProfile = async (req, res, next) => {
+	const { id } = req.params;
+	const { name, email } = req.body;
+
+	if (!isValidId(id)) {
+		return res.status(400).json({
+			error: "Invalid user ID",
+		});
+	}
+
+	if (!isNonEmptyString(name)) {
+		return res.status(400).json({
+			error: "Name is required",
+		});
+	}
+
+	if (!isValidEmail(email)) {
+		return res.status(400).json({
+			error: "Invalid email format",
+		});
+	}
+
+	try {
+		const cleanName = name.trim();
+		const cleanEmail = email.trim().toLowerCase();
+
+		const userResult = await pool.query(
+			`
+                SELECT id
+                FROM users
+                WHERE id = $1
+            `,
+			[id],
+		);
+
+		if (userResult.rowCount === 0) {
+			return res.status(404).json({
+				error: "User not found",
+			});
+		}
+
+		const existingEmail = await pool.query(
+			`
+                SELECT id
+                FROM users
+                WHERE email = $1
+                  AND id != $2
+            `,
+			[cleanEmail, id],
+		);
+
+		if (existingEmail.rowCount > 0) {
+			return res.status(409).json({
+				error: "Email is already registered",
+			});
+		}
+
+		const result = await pool.query(
+			`
+                UPDATE users
+                SET
+                    name = $1,
+                    email = $2,
+                    updated_at = CURRENT_TIMESTAMP
+                WHERE id = $3
+                RETURNING
+                    id,
+                    name,
+                    email,
+                    role_id,
+                    is_active,
+                    created_at,
+                    updated_at;
+            `,
+			[cleanName, cleanEmail, id],
+		);
+
+		res.status(200).json({
+			message: "User updated successfully",
 			user: result.rows[0],
 		});
 	} catch (error) {

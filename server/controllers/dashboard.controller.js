@@ -44,14 +44,11 @@ export const getUserDashboardKPIs = async (req, res, next) => {
 	try {
 		console.log(req.user.role_id);
         const userId = req.user.id;
-		// if (
-		//     req.user.role_id !== 1 &&
-		//     req.user.role_id !== 2
-		// ) {
-		//     return res.status(403).json({
-		//         error: "You do not have permission to this portion",
-		//     });
-		// }
+		if (!userId) {
+			return res.status(403).json({
+				error: "You do not have permission to this portion",
+			});
+		}
 		const result = await pool.query(
 			`
                 SELECT
@@ -82,6 +79,98 @@ export const getUserDashboardKPIs = async (req, res, next) => {
 		next(error);
 	}
 };
+
+export const getAdminKPIs = async (req, res, next) => {
+	try {
+		console.log(req.user.role_id);
+
+		if (
+		    req.user.role_id !== 1
+		) {
+		    return res.status(403).json({
+		        error: "You do not have permission to this portion",
+		    });
+		}
+		const issuesResult = await pool.query(
+			`
+				SELECT
+					COUNT(*) FILTER (
+						WHERE status_id IN ($1, $2)
+					) AS active_issues,
+
+					COUNT(*) FILTER (
+						WHERE priority_level_id = $3
+						AND status_id IN ($1, $2)
+					) AS high_priority_issues,
+
+					COUNT(*) FILTER (
+						WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)
+					) AS reports_this_month
+				FROM issues;
+			`,
+			[1, 2, 4],
+		);
+
+		const usersResult = await pool.query (
+			`
+				SELECT
+					COUNT(*) as total_users,
+					Count(*) FILTER (
+						WHERE is_active = $1)
+						AS active_users
+				FROM users;
+			`,
+			[true],
+		);
+		res.status(200).json({
+			kpis: {
+				...usersResult.rows[0],
+				...issuesResult.rows[0],
+			},
+		});
+	} catch (error) {
+		next(error);
+	}
+}
+
+export const getIssuesCount = async (req, res, next) => {
+	try{
+		const issuesByCategory = await pool.query(`
+                SELECT
+					c.category_name AS category,
+					COUNT(i.id) AS count
+				FROM issues i
+				JOIN categories c
+					ON i.category_id = c.id
+				GROUP BY c.category_name
+				ORDER BY count DESC;
+		`);
+		const issuesByStatus = await pool.query(`
+                SELECT
+                    COUNT(*) FILTER (
+                        WHERE status_id = $1)::int 
+                        AS pending_issues,
+                    COUNT(*) FILTER (
+                        WHERE status_id = $2)::int 
+                        AS in_progress_issues,
+                    COUNT(*) FILTER (
+                        WHERE status_id = $3)::int 
+                        AS resolved_issues,
+                    COUNT(*) FILTER (
+                        WHERE status_id  = $4)::int 
+                        AS rejected_issues
+                FROM issues;
+		`, [1,2,3,4]);
+
+		res.status(200).json({
+			issues_by_category: issuesByCategory.rows,
+			issues_by_status: issuesByStatus.rows[0],
+		});
+	}
+	catch (error) {
+		next(error);
+	}
+}
 
 export const getIssuesByCategory = async (req, res, next) => {
 	try {

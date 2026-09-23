@@ -36,7 +36,12 @@ export const usersData = [
 	},
 ];
 
-export const roleOptions = ["Admin", "Coordinator", "Reporter"];
+// export const roleOptions = ["Admin", "Coordinator", "Reporter"];
+export const roleOptions = [
+	{ id: 1, name: "Admin" },
+	{ id: 2, name: "Coordinator" },
+	{ id: 3, name: "Reporter" },
+];
 
 export const roleStyles = {
 	Admin: "bg-purple-600/10 text-purple-700",

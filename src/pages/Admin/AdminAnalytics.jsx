@@ -1,3 +1,9 @@
+import { useEffect, useState } from "react";
+import FilterSelect from "../../common/FilterSelect.jsx";
+import { BsDownload } from "react-icons/bs";
+
+import { apiRequest } from "../../api/api.js";
+
 import KPICard from "../../common/KPICard.jsx";
 
 import IssuesTrend from "../../components/Admin/IssuesTrend.jsx";
@@ -11,8 +17,17 @@ import {
     analyticsKPIData,
 } from "../../components/Admin/adminAnalyticsData.js";
 
-function AdminAnalytics() {
 
+const dateRangeOptions = [
+    { value: "7", label: "Last 7 days" },
+    { value: "30", label: "Last 30 days" },
+    { value: "90", label: "Last 90 days" },
+    { value: "this_month", label: "This month" },
+    { value: "last_month", label: "Last month" },
+    { value: "this_year", label: "This year" },
+];
+function AdminAnalytics() {
+    const [dateRange, setDateRange] = useState("30");
     // Temporary backend-style response
     const analyticsData = {
         kpis: {
@@ -92,15 +107,47 @@ function AdminAnalytics() {
         <div className="p-4 sm:p-6">
 
             {/* Header */}
-            <div>
-                <h2 className="text-2xl font-bold text-gray-900">
-                    Analytics
-                </h2>
+            <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
 
-                <p className="mt-1 text-sm text-neutral-500">
-                    Track issue trends, categories, priority, locations,
-                    and resolution performance.
-                </p>
+                <div>
+                    <h2 className="text-2xl font-bold text-gray-900">
+                        Analytics
+                    </h2>
+
+                    <p className="mt-1 text-sm text-neutral-500">
+                        Track issue trends, categories, priority, locations,
+                        and resolution performance.
+                    </p>
+                </div>
+                <div className="flex items-center gap-3">
+
+                    <FilterSelect
+                        name="dateRange"
+                        options={dateRangeOptions}
+                        value={dateRange}
+                        onChange={setDateRange}
+                    />
+                    <button
+                        // onClick={handleExport}
+                        className="
+                            flex items-center gap-2
+                            rounded-lg
+                            bg-[#2E6F62]
+                            px-4 py-2
+                            text-sm font-semibold
+                            text-white
+                            transition
+                            hover:bg-[#255C51]
+                        "
+                    >
+                        <BsDownload size={18} />
+                        <span className="hidden sm:inline">
+                            Export CSV
+                        </span>
+                    </button>
+                </div>
+
+
             </div>
 
 
