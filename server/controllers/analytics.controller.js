@@ -10,7 +10,7 @@ export const getAverage = async (req, res, next) => {
             SELECT COUNT(*) FROM issues
             
         `);
-		console.log(total_issues.rows);
+		// console.log(total_issues.rows);
 		res.json(total_issues.rows);
 	} catch (error) {
 		next(error);
@@ -244,7 +244,7 @@ export const getAnalyticsKpi = async (req, res, next) => {
 			JOIN statuses ON issues.status_id = statuses.id
 			WHERE statuses.status_name = 'Resolved'
 				AND ${dateCondition};
-		`);
+		`,);
 
 		// Resolution Time — previous period
 		const previousPeriod = await pool.query(`
@@ -379,7 +379,7 @@ export const getIssueTrends = async (req, res, next) => {
 			
 		`);
 
-		console.log(result.rows);
+		// console.log(result.rows);
 
 		const trends = result.rows.map((row) => ({
 			label: new Date(row.period).toLocaleDateString("en-US", {
@@ -422,7 +422,7 @@ export const getIssueTrendsByStatus = async (req, res, next) => {
 			
 		`);
 
-		console.log(result.rows);
+		// console.log(result.rows);
 
 		const trends = result.rows.map((row) => ({
 			status: row.status,
@@ -434,6 +434,85 @@ export const getIssueTrendsByStatus = async (req, res, next) => {
 		}));
 
 		res.json(trends);
+	} catch (error) {
+		next(error);
+	}
+};
+
+
+export const getIssuesByCategory = async (req, res, next) => {
+	const { range = "30" } = req.query;
+
+	const parsed = getRangeCondition(range);
+
+	if (!parsed) {
+		return res.status(400).json({
+			error: "Invalid date range",
+		});
+	}
+
+	const { dateCondition } = parsed;
+
+	try {
+		const result = await pool.query(`
+            SELECT
+                c.id,
+                c.category_name AS category,
+                COUNT(i.id)::int AS count
+            FROM issues i
+            JOIN categories c
+                ON i.category_id = c.id
+            WHERE ${dateCondition}
+            GROUP BY
+                c.id,
+                c.category_name
+            ORDER BY
+                count DESC,
+                category ASC;
+        `);
+
+		// console.log("Issues by category:", result.rows);
+
+		res.json(result.rows);
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const getIssuesByPriority = async (req, res, next) => {
+	const { range = "30" } = req.query;
+
+	const parsed = getRangeCondition(range);
+
+	if (!parsed) {
+		return res.status(400).json({
+			error: "Invalid date range",
+		});
+	}
+
+	const { dateCondition } = parsed;
+
+	try {
+		const result = await pool.query(`
+            SELECT
+                p.id,
+                p.priority_name AS priority,
+                COUNT(i.id)::int AS count
+            FROM issues i
+            JOIN priority_levels p
+                ON i.priority_level_id = p.id
+            WHERE ${dateCondition}
+            GROUP BY
+                p.id,
+                p.priority_name
+            ORDER BY
+                count DESC,
+                priority ASC;
+        `);
+
+		console.log("Issues by priority:", result.rows);
+
+		res.json(result.rows);
 	} catch (error) {
 		next(error);
 	}

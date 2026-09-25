@@ -3,10 +3,11 @@ import FilterSelect from "../../common/FilterSelect.jsx";
 import { BsDownload } from "react-icons/bs";
 
 import { apiRequest } from "../../api/api.js";
-
+ 
 import KPICard from "../../common/KPICard.jsx";
 
-import IssuesTrend from "../../components/Admin/IssuesTrend.jsx";
+// import IssuesTrend from "../../components/Admin/IssuesTrend.jsx";
+import IssuesGraphReport from "../../components/ReportPage/IssuesGraphReport.jsx";
 import IssuesByCategory from "../../components/Admin/IssuesByCategory.jsx";
 import IssuesByPriority from "../../components/Admin/IssuesByPriority.jsx";
 import IssuesByLocation from "../../components/Admin/IssuesByLocation.jsx";
@@ -28,6 +29,90 @@ const dateRangeOptions = [
 ];
 function AdminAnalytics() {
     const [dateRange, setDateRange] = useState("30");
+
+    const [averageResTime, setAverageResTime] = useState("");
+    const [resolutionRate, setResolutionRate] = useState("");
+    const [monthlyReports, setMonthlyReports] = useState("");
+    const [topLocation, setTopLocation] = useState("");
+
+    useEffect(() => {
+        async function fetchAnalyticsData() {
+            try {
+                const analyticsData = await apiRequest(`/analytics/kpi?range=${dateRange}`);
+                // console.log(aveResulotionTime);
+                console.log("analyticsData:", analyticsData);
+                setAverageResTime(analyticsData.averageResolution);
+                setResolutionRate(analyticsData.resolutionRate);
+                setMonthlyReports(analyticsData.totalMonthlyReports);
+                setTopLocation(analyticsData.topReportedLocation);
+            }
+            catch (error) {
+                console.error("Failed to fetch the required informations!")
+            }
+        }
+        fetchAnalyticsData();
+
+    }, [dateRange]);
+    console.log("Average Resolution Time: ", averageResTime);
+    console.log("ResolutionRate: ", resolutionRate);
+
+
+    function pluralize(count, singular, plural = `${singular}s`) {
+        return count === 1 ? singular : plural;
+    }
+
+
+
+    const kpis = {
+        ave_res_time:
+            averageResTime && averageResTime.current > 0
+                ? `${averageResTime.current}d`
+                : "No data",
+
+        ave_res_time_description:
+            averageResTime && averageResTime.current > 0
+                ? `${averageResTime.direction === "down" ? "Down" : "Up"} from ${averageResTime.change}d last period`
+                : "No resolutions in this period",
+
+        resolution_rate:
+            resolutionRate && resolutionRate.rate !== null
+                ? `${resolutionRate.rate}%`
+                : "No data",
+
+        resolution_rate_description:
+            resolutionRate && resolutionRate.allIssues > 0
+                ? `${resolutionRate.resolved} of ${resolutionRate.allIssues
+                } ${pluralize(
+                    resolutionRate.allIssues,
+                    "issue"
+                )} solved`
+                : "No issues reported",
+
+        reps_this_month: monthlyReports
+            ? monthlyReports.currentMonthReps
+            : "Loading...",
+
+        reps_this_month_description: monthlyReports
+            ? monthlyReports.currentMonthReps > 0
+                ? `${monthlyReports.percentageDifference}% vs last period`
+                : "No reports in this period"
+            : "Loading...",
+
+        top_location: topLocation
+            ? topLocation.location
+            : "Loading...",
+
+        top_location_description:
+            topLocation && topLocation.count > 0
+                ? `${topLocation.count} ${pluralize(
+                    topLocation.count,
+                    "report"
+                )}`
+                : "No reports in this period",
+    };
+
+
+
     // Temporary backend-style response
     const analyticsData = {
         kpis: {
@@ -167,7 +252,10 @@ function AdminAnalytics() {
                         card={{
                             ...card,
                             statsData: analyticsData.kpis
-                                ? analyticsData.kpis[card.key]
+                                ? kpis[card.key]
+                                : "Loading...",
+                            statsDescription: kpis
+                                ? kpis[`${card.key}_description`]
                                 : "Loading...",
                         }}
                     />
@@ -178,8 +266,12 @@ function AdminAnalytics() {
 
             {/* Issues Trend */}
             <div className="mt-5">
-                <IssuesTrend
+                {/* <IssuesTrend
                     data={analyticsData.issues_trend}
+                /> */}
+                <IssuesGraphReport 
+                    
+                    dateRange={dateRange}
                 />
             </div>
 
@@ -187,7 +279,8 @@ function AdminAnalytics() {
             {/* Issues by Category */}
             <div className="mt-5">
                 <IssuesByCategory
-                    data={analyticsData.issues_by_category}
+                    // data={analyticsData.issues_by_category}
+                    dateRange={dateRange}
                 />
             </div>
 
@@ -203,6 +296,7 @@ function AdminAnalytics() {
 
                 <IssuesByPriority
                     data={analyticsData.issues_by_priority}
+                    dateRange={dateRange}
                 />
 
                 <IssuesByLocation

@@ -1,6 +1,12 @@
-function IssuesByPriority({ data }) {
+import { useState, useEffect } from "react";
+
+import { apiRequest } from "../../api/api";
+
+function IssuesByPriority({ dateRange }) {
+    
+    const [issueData, setIssueData] = useState([]);
     const maxCount = Math.max(
-        ...data.map((item) => item.count)
+        ...issueData.map((item) => item.count)
     );
 
     const priorityStyles = {
@@ -8,6 +14,28 @@ function IssuesByPriority({ data }) {
         Medium: "bg-amber-500",
         Low: "bg-teal-700",
     };
+
+    
+    
+    
+        useEffect(() => {
+            async function fetchIssueTrends() {
+    
+                try {
+                    const data = await apiRequest(`/analytics/count-priorities?range=${dateRange}`);
+    
+                    console.log("PPRIORITIES COUNT: ", data);
+                    setIssueData(data);
+                }
+                catch (error) {
+                    console.error(
+                        "Failed to fetch issue tends: ", error
+                    );
+                }
+            }
+            fetchIssueTrends();
+        }, [dateRange]);
+    
 
     return (
         <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -22,14 +50,14 @@ function IssuesByPriority({ data }) {
             </div>
 
             <div className="mt-6 space-y-5">
-                {data.map((item) => {
+                {issueData.map((item) => {
                     const percentage =
                         maxCount > 0
                             ? (item.count / maxCount) * 100
                             : 0;
 
                     return (
-                        <div key={item.priority}>
+                        <div key={item.id}>
                             <div className="mb-2 flex items-center justify-between gap-4">
                                 <p className="text-sm font-medium text-gray-700">
                                     {item.priority}

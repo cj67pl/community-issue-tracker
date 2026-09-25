@@ -116,6 +116,8 @@ const ColoredBarWithRadius = (props) => {
     );
 };
 
+
+
 function IssuesGraphReport({dateRange}) {
     // const [dateRange, setDateRange] = useState("30");
     console.log(dateRange);

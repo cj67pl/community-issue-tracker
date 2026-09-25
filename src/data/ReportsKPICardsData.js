@@ -4,7 +4,7 @@ import { VscGraphLine } from "react-icons/vsc";
 import { TbReportSearch } from "react-icons/tb";
 import { LiaLocationArrowSolid } from "react-icons/lia";
 
-export const reportsKpiCardsData = [
+const reportsKpiCardsData = [
 	{
 		name: "Avg. Resolution Time",
 		key:"ave_res_time",

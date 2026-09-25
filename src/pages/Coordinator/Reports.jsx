@@ -7,7 +7,7 @@ import IssuedByStatus from "../../components/ReportPage/IssuedByStats.jsx";
 import IssuesGraphReport from "../../components/ReportPage/IssuesGraphReport.jsx";
 // import ReportDateFilter from "../../../components/ReportPage/ReportDateFilter.jsx";
 import FilterSelect from "../../common/FilterSelect.jsx";
-
+ 
 
 import { apiRequest, buildApiUrl } from "../../api/api.js";
 import { use } from "react";
@@ -92,6 +92,10 @@ function Reports() {
     console.log("Average Resolution Time: ", averageResTime);
     console.log("ResolutionRate: ", resolutionRate);
     
+    function pluralize(count, singular, plural = `${singular}s`) {
+        return count === 1 ? singular : plural;
+    }
+
     const kpis = {
         ave_res_time:
             averageResTime && averageResTime.current > 0
@@ -110,10 +114,16 @@ function Reports() {
 
         resolution_rate_description:
             resolutionRate && resolutionRate.allIssues > 0
-                ? `${resolutionRate.resolved} of ${resolutionRate.allIssues} issues solved`
+                ? `${resolutionRate.resolved} of ${resolutionRate.allIssues
+                } ${pluralize(
+                    resolutionRate.allIssues,
+                    "issue"
+                )} solved`
                 : "No issues reported",
 
-        reps_this_month: monthlyReports ? monthlyReports.currentMonthReps : "Loading...",
+        reps_this_month: monthlyReports
+            ? monthlyReports.currentMonthReps
+            : "Loading...",
 
         reps_this_month_description: monthlyReports
             ? monthlyReports.currentMonthReps > 0
@@ -121,11 +131,16 @@ function Reports() {
                 : "No reports in this period"
             : "Loading...",
 
-        top_location: topLocation ? topLocation.location : "Loading...",
+        top_location: topLocation
+            ? topLocation.location
+            : "Loading...",
 
         top_location_description:
             topLocation && topLocation.count > 0
-                ? `${topLocation.count} reports`
+                ? `${topLocation.count} ${pluralize(
+                    topLocation.count,
+                    "report"
+                )}`
                 : "No reports in this period",
     };
 
