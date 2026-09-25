@@ -6,7 +6,7 @@ function UserModal({ isOpen, user, onClose, onSave }) {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [role, setRole] = useState("Reporter");
+    const [role, setRole] = useState(3);
     const [status, setStatus] = useState("Active");
 
     useEffect(() => {
@@ -14,13 +14,13 @@ function UserModal({ isOpen, user, onClose, onSave }) {
             setName(user.name);
             setEmail(user.email);
             setPassword("");
-            setRole(user.role);
-            setStatus(user.status);
+            setRole(user.role_id);
+            setStatus(user.is_active ? "Active" : "Inactive");
         } else {
             setName("");
             setEmail("");
             setPassword("");
-            setRole("Reporter");
+            setRole(3);
             setStatus("Active");
         }
     }, [user, isOpen]);
@@ -52,8 +52,8 @@ function UserModal({ isOpen, user, onClose, onSave }) {
                 name: name.trim(),
                 email: email.trim(),
                 password,
-                role,
-                status,
+                role: Number(role),
+                is_active: status === "Active",
             });
         }
     }
@@ -136,40 +136,45 @@ function UserModal({ isOpen, user, onClose, onSave }) {
 
 
                     {/* Role */}
-                    <div>
-                        <label className="mb-1 block text-sm font-semibold text-gray-700">
-                            Role
-                        </label>
+                    {!user && (
+                        <div>
+                            <label className="mb-1 block text-sm font-semibold text-gray-700">
+                                Role
+                            </label>
 
-                        <select
-                            value={role}
-                            onChange={(e) => setRole(e.target.value)}
-                            className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-teal-700"
-                        >
-                            {roleOptions.map((option) => (
-                                <option key={option} value={option}>
-                                    {option}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+                            <select
+                                value={role}
+                                onChange={(e) => setRole(Number(e.target.value))}
+                                className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-teal-700"
+                            >
+                                
+                                {roleOptions.map((option) => (
+                                    <option key={option.id} value={option.id}>
+                                        {option.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
 
 
                     {/* Status */}
-                    <div>
-                        <label className="mb-1 block text-sm font-semibold text-gray-700">
-                            Status
-                        </label>
+                    {!user && (
+                        <div>
+                            <label className="mb-1 block text-sm font-semibold text-gray-700">
+                                Status
+                            </label>
 
-                        <select
-                            value={status}
-                            onChange={(e) => setStatus(e.target.value)}
-                            className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-teal-700"
-                        >
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                        </select>
-                    </div>
+                            <select
+                                value={status}
+                                onChange={(e) => setStatus(e.target.value)}
+                                className="w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-teal-700"
+                            >
+                                <option value="Active">Active</option>
+                                <option value="Inactive">Inactive</option>
+                            </select>
+                        </div>
+                    )}
 
 
                     {/* Buttons */}

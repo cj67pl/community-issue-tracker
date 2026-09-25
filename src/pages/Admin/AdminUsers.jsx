@@ -55,7 +55,7 @@ function AdminUsers() {
             if (selectedUser) {
                 // EDIT EXISTING USER
                 // Only name + email
-
+                
                 const response = await apiRequest(
                     `/users/${selectedUser.id}`,
                     {

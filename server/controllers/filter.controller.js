@@ -5,6 +5,7 @@ export const getIssueFilterOptions = async (req, res, next) => {
 		const categories = await pool.query(`
             SELECT id, category_name AS name
             FROM categories
+            WHERE is_active = true
             ORDER BY category_name ASC
         `);
 

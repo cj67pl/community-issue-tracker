@@ -6,7 +6,8 @@ import {
 	getCategories,
 	createCategory,
 	updateCategory,
-	deactivateCategory,
+	updateCategoryStatus,
+	// deactivateCategory,
 } from "../controllers/categories.controller.js";
 
 const router = express.Router();
@@ -19,7 +20,14 @@ router.post("/", authenticateToken, authorizedRoles(1), createCategory);
 
 router.patch("/:id", authenticateToken, authorizedRoles(1), updateCategory);
 
-router.delete("/:id", authenticateToken, authorizedRoles(1), deactivateCategory);
+router.patch(
+	"/:id/status",
+	authenticateToken,
+	authorizedRoles(1),
+	updateCategoryStatus,
+);
+
+// router.delete("/:id", authenticateToken, authorizedRoles(1), deactivateCategory);
 
 
 export default router;

@@ -4,7 +4,7 @@ import { X } from "lucide-react";
 function CategoryModal({ isOpen, category, onClose, onSave }) {
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-
+ 
     useEffect(() => {
         if (category) {
             setName(category.name);

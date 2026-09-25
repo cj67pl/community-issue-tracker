@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus } from "lucide-react";
 
 import CategoryTable from "../../components/Admin/CategoryTable.jsx";
 import CategoryModal from "../../components/Admin/CategoryModal.jsx";
-import { categoriesData } from "../../components/Admin/categoriesData.js";
+// import { categoriesData } from "../../components/Admin/categoriesData.js";
+ 
+import { apiRequest } from "../../api/api.js";
 
 function AdminCategories() {
-    const [categories, setCategories] = useState(categoriesData);
+    const [categories, setCategories] = useState([]);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState(null);
@@ -21,46 +23,104 @@ function AdminCategories() {
         setIsModalOpen(true);
     }
 
-    function handleSave(categoryData) {
-        if (selectedCategory) {
-            // Update existing category
+    async function handleSave(categoryData) {
+        try {
+            if (selectedCategory) {
+                const response = await apiRequest(
+                    `/categories/${selectedCategory.id}`,
+                    {
+                        method: "PATCH",
+                        body: JSON.stringify({
+                            category_name: categoryData.name,
+                            description: categoryData.description,
+                        }),
+                    }
+                );
+
+                setCategories((prev) =>
+                    prev.map((category) =>
+                        category.id === selectedCategory.id
+                            ? {
+                                ...category,
+                                ...response.category,
+                            }
+                            : category
+                    )
+                );
+            } else {
+                const response = await apiRequest("/categories", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        category_name: categoryData.name,
+                        description: categoryData.description,
+                    }),
+                });
+
+                setCategories((prev) => [
+                    ...prev,
+                    response.category,
+                ]);
+            }
+
+            closeModal();
+        } catch (error) {
+            console.error("Failed to save category:", error);
+        }
+    }
+
+
+
+    async function handleToggleStatus(category) {
+        try {
+            const newStatus = !category.is_active;
+
+            const response = await apiRequest(
+                `/categories/${category.id}/status`,
+                {
+                    method: "PATCH",
+                    body: JSON.stringify({
+                        is_active: newStatus,
+                    }),
+                }
+            );
+
             setCategories((prev) =>
-                prev.map((category) =>
-                    category.id === selectedCategory.id
-                        ? { ...category, ...categoryData }
-                        : category
+                prev.map((item) =>
+                    item.id === category.id
+                        ? {
+                            ...item,
+                            ...response.category,
+                        }
+                        : item
                 )
             );
-        } else {
-            // Add new category
-            const newCategory = {
-                id: Date.now(),
-                ...categoryData,
-                status: "Active",
-                issueCount: 0,
-            };
+        } catch (error) {
+            console.error("Failed to update category status:", error);
 
-            setCategories((prev) => [...prev, newCategory]);
+            await fetchCategories();
         }
-
+    }
+    
+    function closeModal() {
         setIsModalOpen(false);
         setSelectedCategory(null);
     }
 
-    function handleToggleStatus(id) {
-        setCategories((prev) =>
-            prev.map((category) =>
-                category.id === id
-                    ? {
-                        ...category,
-                        status:
-                            category.status === "Active"
-                                ? "Inactive"
-                                : "Active",
-                    }
-                    : category
-            )
-        );
+
+    useEffect(() => {
+        fetchCategories();
+    }, []);
+
+    async function fetchCategories() {
+        try {
+            const data = await apiRequest("/categories");
+
+            console.log("CATEGORIES:", data);
+
+            setCategories(data);
+        } catch (error) {
+            console.error("Failed to fetch categories:", error);
+        }
     }
 
     return (

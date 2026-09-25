@@ -2,7 +2,7 @@ import { Edit, Power } from "lucide-react";
 
 import Badge from "../../common/Badge.jsx";
 import { statusStyles } from "./categoriesData.js";
-
+ 
 function CategoryTable({ categories, onEdit, onToggleStatus }) {
     return (
         <div className="w-full rounded-xl border border-gray-200 bg-white shadow-sm">
@@ -70,7 +70,7 @@ function CategoryTable({ categories, onEdit, onToggleStatus }) {
 
                                         <button
                                             onClick={() =>
-                                                onToggleStatus(category.id)
+                                                onToggleStatus(category)
                                             }
                                             className="rounded-lg border border-slate-200 p-2 hover:bg-amber-500/10 hover:text-amber-700"
                                             title={
