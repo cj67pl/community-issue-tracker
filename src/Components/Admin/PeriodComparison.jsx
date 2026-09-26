@@ -1,4 +1,41 @@
-function PeriodComparison({ data }) {
+import { useState, useEffect } from "react";
+
+import { apiRequest } from "../../api/api";
+
+function PeriodComparison({ dateRange }) {
+   
+
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        const fetchPeriodComparison = async () => {
+            try {
+                const response = await apiRequest(
+                    `/analytics/period-comparison?range=${dateRange}`
+                );
+
+                setData(response);
+            } catch (error) {
+                console.error(
+                    "Failed to fetch period comparison:",
+                    error
+                );
+            }
+        };
+
+        fetchPeriodComparison();
+    }, [dateRange]);
+
+    if (!data) {
+        return (
+            <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
+                <p className="text-sm text-gray-500">
+                    Loading period comparison...
+                </p>
+            </div>
+        );
+    }
+
     const { current, previous } = data;
 
     return (
@@ -9,8 +46,7 @@ function PeriodComparison({ data }) {
                 </h3>
 
                 <p className="mt-1 text-sm text-gray-500">
-                    Compare issue activity and resolution performance
-                    with the previous period.
+                    Compare issue activity between the selected and previous period.
                 </p>
             </div>
 
@@ -44,11 +80,21 @@ function PeriodComparison({ data }) {
 
                         <div>
                             <p className="text-xs text-gray-500">
-                                Average Resolution Time
+                                Resolution Rate
                             </p>
 
                             <p className="mt-1 text-xl font-bold text-gray-900">
-                                {current.average_resolution_time}
+                                {current.resolution_rate}
+                            </p>
+                        </div>
+
+                        <div>
+                            <p className="text-xs text-gray-500">
+                                High Priority Issues
+                            </p>
+
+                            <p className="mt-1 text-xl font-bold text-gray-900">
+                                {current.high_priority}
                             </p>
                         </div>
                     </div>
@@ -83,11 +129,21 @@ function PeriodComparison({ data }) {
 
                         <div>
                             <p className="text-xs text-gray-500">
-                                Average Resolution Time
+                                Resolution Rate
                             </p>
 
                             <p className="mt-1 text-xl font-bold text-gray-900">
-                                {previous.average_resolution_time}
+                                {previous.resolution_rate}
+                            </p>
+                        </div>
+
+                        <div>
+                            <p className="text-xs text-gray-500">
+                                High Priority Issues
+                            </p>
+
+                            <p className="mt-1 text-xl font-bold text-gray-900">
+                                {previous.high_priority}
                             </p>
                         </div>
                     </div>

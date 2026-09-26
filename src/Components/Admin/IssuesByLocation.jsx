@@ -1,3 +1,7 @@
+import { useState, useEffect } from "react";
+
+import { apiRequest } from "../../api/api";
+
 const locationBarStyles = [
     "bg-teal-700",
     "bg-blue-600",
@@ -6,10 +10,33 @@ const locationBarStyles = [
     "bg-slate-500",
 ];
 
-function IssuesByLocation({ data }) {
+function IssuesByLocation({ data, dateRange }) {
+
+    const [issueData, setIssueData] = useState([]);
     const maxCount = Math.max(
-        ...data.map((item) => item.count)
+        ...issueData.map((item) => item.count)
     );
+
+    console.log("DATE RANGE: ", dateRange);
+    
+
+    useEffect(() => {
+        async function fetchIssueTrends() {
+
+            try {
+                const data = await apiRequest(`/analytics/count-locations?range=${dateRange}`);
+
+                console.log("LOCATIONS COUNT: ", data);
+                setIssueData(data);
+            }
+            catch (error) {
+                console.error(
+                    "Failed to fetch issue tends: ", error
+                );
+            }
+        }
+        fetchIssueTrends();
+    }, [dateRange]);
 
     return (
         <div className="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
@@ -28,7 +55,7 @@ function IssuesByLocation({ data }) {
 
             {/* Locations */}
             <div className="mt-6 space-y-4">
-                {data.map((item, index) => {
+                {issueData.map((item, index) => {
                     const percentage =
                         maxCount > 0
                             ? (item.count / maxCount) * 100

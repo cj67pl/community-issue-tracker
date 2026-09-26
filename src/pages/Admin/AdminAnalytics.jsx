@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import FilterSelect from "../../common/FilterSelect.jsx";
 import { BsDownload } from "react-icons/bs";
 
-import { apiRequest } from "../../api/api.js";
+import { apiRequest, buildApiUrl } from "../../api/api.js";
+
+
  
 import KPICard from "../../common/KPICard.jsx";
 
@@ -176,16 +178,62 @@ function AdminAnalytics() {
                 label: "September",
                 issues: 78,
                 resolved: 52,
-                average_resolution_time: "4.8 days",
+                resolution_rate: "66.7%",
+                high_priority: 18,
             },
 
             previous: {
                 label: "August",
                 issues: 63,
                 resolved: 41,
-                average_resolution_time: "5.2 days",
+                resolution_rate: "65.1%",
+                high_priority: 14,
             },
         },
+        
+    };
+
+    const handleExport = async () => {
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await fetch(
+                buildApiUrl(`/analytics/analytics-export?range=${dateRange}`),
+                {
+                    headers: {
+                        ...(token && { Authorization: `Bearer ${token}` }),
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                throw new Error("Failed to export CSV");
+            }
+
+            
+            const disposition = response.headers.get("Content-Disposition");
+            const match = disposition && disposition.match(/filename="(.+?)"/);
+
+            const filename = match
+                ? match[1]
+                : `admin-analytics-${dateRange}.csv`;
+
+            const blob = await response.blob();
+
+            const url = window.URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = filename;
+
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error("Export failed:", error);
+        }
     };
 
     return (
@@ -213,7 +261,7 @@ function AdminAnalytics() {
                         onChange={setDateRange}
                     />
                     <button
-                        // onClick={handleExport}
+                        onClick={handleExport}
                         className="
                             flex items-center gap-2
                             rounded-lg
@@ -295,12 +343,13 @@ function AdminAnalytics() {
         ">
 
                 <IssuesByPriority
-                    data={analyticsData.issues_by_priority}
+                    // data={analyticsData.issues_by_priority}
                     dateRange={dateRange}
                 />
 
                 <IssuesByLocation
                     data={analyticsData.issues_by_location}
+                    dateRange={dateRange}
                 />
 
             </div>
@@ -318,6 +367,7 @@ function AdminAnalytics() {
             <div className="mt-5">
                 <PeriodComparison
                     data={analyticsData.period_comparison}
+                    dateRange={dateRange}
                 />
             </div>
 

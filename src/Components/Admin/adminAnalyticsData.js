@@ -79,90 +79,90 @@ export const analyticsKPIData = [
 
 
 
-export const issuesTrendData = [
-	{
-		month: "April",
-		count: 42,
-	},
-	{
-		month: "May",
-		count: 56,
-	},
-	{
-		month: "June",
-		count: 48,
-	},
-	{
-		month: "July",
-		count: 71,
-	},
-	{
-		month: "August",
-		count: 63,
-	},
-	{
-		month: "September",
-		count: 78,
-	},
-];
+// export const issuesTrendData = [
+// 	{
+// 		month: "April",
+// 		count: 42,
+// 	},
+// 	{
+// 		month: "May",
+// 		count: 56,
+// 	},
+// 	{
+// 		month: "June",
+// 		count: 48,
+// 	},
+// 	{
+// 		month: "July",
+// 		count: 71,
+// 	},
+// 	{
+// 		month: "August",
+// 		count: 63,
+// 	},
+// 	{
+// 		month: "September",
+// 		count: 78,
+// 	},
+// ];
 
-export const issuesByCategoryData = [
-	{
-		category: "Infrastructure",
-		count: 85,
-	},
-	{
-		category: "IT Equipment",
-		count: 63,
-	},
-	{
-		category: "Cleanliness",
-		count: 42,
-	},
-	{
-		category: "Security",
-		count: 31,
-	},
-	{
-		category: "Other",
-		count: 18,
-	},
-];
+// export const issuesByCategoryData = [
+// 	{
+// 		category: "Infrastructure",
+// 		count: 85,
+// 	},
+// 	{
+// 		category: "IT Equipment",
+// 		count: 63,
+// 	},
+// 	{
+// 		category: "Cleanliness",
+// 		count: 42,
+// 	},
+// 	{
+// 		category: "Security",
+// 		count: 31,
+// 	},
+// 	{
+// 		category: "Other",
+// 		count: 18,
+// 	},
+// ];
 
-export const issuesByStatusData = [
-	{
-		status: "Pending",
-		count: 86,
-	},
-	{
-		status: "In Progress",
-		count: 71,
-	},
-	{
-		status: "Resolved",
-		count: 185,
-	},
-];
+// export const issuesByStatusData = [
+// 	{
+// 		status: "Pending",
+// 		count: 86,
+// 	},
+// 	{
+// 		status: "In Progress",
+// 		count: 71,
+// 	},
+// 	{
+// 		status: "Resolved",
+// 		count: 185,
+// 	},
+// ];
 
-export const resolutionStatsData = [
-	{
-		label: "Resolved Issues",
-		value: 185,
-		description: "Issues successfully completed",
-	},
-	{
-		label: "Average Resolution Time",
-		value: "4.8 days",
-		description: "Average time from report to resolution",
-	},
-	{
-		label: "Pending Over 7 Days",
-		value: 24,
-		description: "Pending issues older than 7 days",
-	},
-	{
-		label: "Pending Over 30 Days",
-		value: 7,
-		description: "Pending issues older than 30 days",
-	},
-];
+// export const resolutionStatsData = [
+// 	{
+// 		label: "Resolved Issues",
+// 		value: 185,
+// 		description: "Issues successfully completed",
+// 	},
+// 	{
+// 		label: "Average Resolution Time",
+// 		value: "4.8 days",
+// 		description: "Average time from report to resolution",
+// 	},
+// 	{
+// 		label: "Pending Over 7 Days",
+// 		value: 24,
+// 		description: "Pending issues older than 7 days",
+// 	},
+// 	{
+// 		label: "Pending Over 30 Days",
+// 		value: 7,
+// 		description: "Pending issues older than 30 days",
+// 	},
+// ];

@@ -458,10 +458,10 @@ export const getIssuesByCategory = async (req, res, next) => {
             SELECT
                 c.id,
                 c.category_name AS category,
-                COUNT(i.id)::int AS count
-            FROM issues i
+                COUNT(issues.id)::int AS count
+            FROM issues
             JOIN categories c
-                ON i.category_id = c.id
+                ON issues.category_id = c.id
             WHERE ${dateCondition}
             GROUP BY
                 c.id,
@@ -494,13 +494,13 @@ export const getIssuesByPriority = async (req, res, next) => {
 
 	try {
 		const result = await pool.query(`
-            SELECT
+          	SELECT
                 p.id,
                 p.priority_name AS priority,
-                COUNT(i.id)::int AS count
-            FROM issues i
+                COUNT(issues.id)::int AS count
+            FROM issues
             JOIN priority_levels p
-                ON i.priority_level_id = p.id
+                ON issues.priority_level_id = p.id
             WHERE ${dateCondition}
             GROUP BY
                 p.id,
@@ -513,6 +513,280 @@ export const getIssuesByPriority = async (req, res, next) => {
 		console.log("Issues by priority:", result.rows);
 
 		res.json(result.rows);
+	} catch (error) {
+		next(error);
+	}
+};
+
+export const getIssuesByLocation= async (req, res, next) => {
+	const { range = "30" } = req.query;
+
+	const parsed = getRangeCondition(range);
+
+	if (!parsed) {
+		return res.status(400).json({
+			error: "Invalid date range",
+		});
+	}
+
+	const { dateCondition } = parsed;
+
+	try {
+		const result = await pool.query(`
+            SELECT
+                issues.location,
+                COUNT(issues.id)::int AS count
+            FROM issues
+            WHERE ${dateCondition}
+            GROUP BY issues.location
+            ORDER BY count DESC
+            LIMIT 5;
+        `);
+
+
+		console.log("Top Locations:", result.rows);
+
+		res.json(result.rows);
+	} catch (error) {
+		next(error);
+	}
+};
+
+
+export const getResolutionStats = async (req, res, next) => {
+	try {
+		const result = await pool.query(`
+            SELECT
+                COUNT(*) FILTER (
+                    WHERE s.status_name NOT IN ('Resolved', 'Rejected')
+                    AND i.created_at < CURRENT_TIMESTAMP - INTERVAL '7 days'
+                ) AS overdue_issues,
+
+                COUNT(*) FILTER (
+                    WHERE s.status_name = 'Resolved'
+                    AND i.resolved_at IS NOT NULL
+                    AND i.resolved_at <= i.created_at + INTERVAL '7 days'
+                ) AS resolved_within_target,
+
+                COUNT(*) FILTER (
+                    WHERE s.status_name = 'Resolved'
+                ) AS total_resolved,
+
+                MAX(
+                    CASE
+                        WHEN s.status_name NOT IN ('Resolved', 'Rejected')
+                        THEN CURRENT_DATE - i.created_at::date
+                    END
+                ) AS oldest_unresolved_days,
+
+                COUNT(*) FILTER (
+                    WHERE s.status_name = 'Pending'
+                    AND i.created_at < CURRENT_TIMESTAMP - INTERVAL '30 days'
+                ) AS pending_over_30_days
+
+            FROM issues i
+            JOIN statuses s
+                ON i.status_id = s.id;
+        `);
+
+		const stats = result.rows[0];
+
+		const resolvedWithinTarget =
+			Number(stats.total_resolved) > 0
+				? Math.round(
+						(Number(stats.resolved_within_target) /
+							Number(stats.total_resolved)) *
+							100,
+					)
+				: 0;
+
+		res.json({
+			overdue_issues: Number(stats.overdue_issues),
+			resolved_within_target: `${resolvedWithinTarget}%`,
+			oldest_unresolved_days: Number(stats.oldest_unresolved_days || 0),
+			pending_over_30_days: Number(stats.pending_over_30_days),
+		});
+	} catch (error) {
+		next(error);
+	}
+};
+
+
+
+export const getPeriodComparison = async (req, res, next) => {
+	try {
+		const { range = "30" } = req.query;
+
+		let currentStart;
+		let currentEnd;
+		let previousStart;
+		let previousEnd;
+		let currentLabel;
+		let previousLabel;
+
+		switch (range) {
+			case "7":
+				currentStart = "CURRENT_TIMESTAMP - INTERVAL '7 days'";
+				currentEnd = "CURRENT_TIMESTAMP";
+				previousStart = "CURRENT_TIMESTAMP - INTERVAL '14 days'";
+				previousEnd = "CURRENT_TIMESTAMP - INTERVAL '7 days'";
+
+				currentLabel = "Last 7 Days";
+				previousLabel = "Previous 7 Days";
+				break;
+
+			case "30":
+				currentStart = "CURRENT_TIMESTAMP - INTERVAL '30 days'";
+				currentEnd = "CURRENT_TIMESTAMP";
+				previousStart = "CURRENT_TIMESTAMP - INTERVAL '60 days'";
+				previousEnd = "CURRENT_TIMESTAMP - INTERVAL '30 days'";
+
+				currentLabel = "Last 30 Days";
+				previousLabel = "Previous 30 Days";
+				break;
+
+			case "90":
+				currentStart = "CURRENT_TIMESTAMP - INTERVAL '90 days'";
+				currentEnd = "CURRENT_TIMESTAMP";
+				previousStart = "CURRENT_TIMESTAMP - INTERVAL '180 days'";
+				previousEnd = "CURRENT_TIMESTAMP - INTERVAL '90 days'";
+
+				currentLabel = "Last 90 Days";
+				previousLabel = "Previous 90 Days";
+				break;
+
+			case "this_month":
+				currentStart = "DATE_TRUNC('month', CURRENT_DATE)";
+				currentEnd =
+					"DATE_TRUNC('month', CURRENT_DATE) + INTERVAL '1 month'";
+
+				previousStart =
+					"DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '1 month'";
+				previousEnd = "DATE_TRUNC('month', CURRENT_DATE)";
+
+				currentLabel = "September 2026";
+				previousLabel = "August 2026";
+				break;
+
+			case "last_month":
+				currentStart =
+					"DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '1 month'";
+				currentEnd = "DATE_TRUNC('month', CURRENT_DATE)";
+
+				previousStart =
+					"DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '2 months'";
+				previousEnd =
+					"DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '1 month'";
+
+				currentLabel = "August 2026";
+				previousLabel = "July 2026";
+				break;
+
+			case "this_year":
+				currentStart = "DATE_TRUNC('year', CURRENT_DATE)";
+				currentEnd =
+					"DATE_TRUNC('year', CURRENT_DATE) + INTERVAL '1 year'";
+
+				previousStart =
+					"DATE_TRUNC('year', CURRENT_DATE) - INTERVAL '1 year'";
+				previousEnd = "DATE_TRUNC('year', CURRENT_DATE)";
+
+				currentLabel = "2026";
+				previousLabel = "2025";
+				break;
+
+			default:
+				return res.status(400).json({
+					error: "Invalid date range",
+				});
+		}
+
+		const result = await pool.query(`
+            WITH current_period AS (
+                SELECT
+                    COUNT(*) AS issues,
+
+                    COUNT(*) FILTER (
+                        WHERE i.resolved_at IS NOT NULL
+                    ) AS resolved,
+
+                    COUNT(*) FILTER (
+                        WHERE p.priority_name = 'High'
+                    ) AS high_priority
+
+                FROM issues i
+
+                JOIN priority_levels p
+                    ON i.priority_level_id = p.id
+
+                WHERE i.created_at >= ${currentStart}
+                  AND i.created_at < ${currentEnd}
+            ),
+
+            previous_period AS (
+                SELECT
+                    COUNT(*) AS issues,
+
+                    COUNT(*) FILTER (
+                        WHERE i.resolved_at IS NOT NULL
+                    ) AS resolved,
+
+                    COUNT(*) FILTER (
+                        WHERE p.priority_name = 'High'
+                    ) AS high_priority
+
+                FROM issues i
+
+                JOIN priority_levels p
+                    ON i.priority_level_id = p.id
+
+                WHERE i.created_at >= ${previousStart}
+                  AND i.created_at < ${previousEnd}
+            )
+
+            SELECT
+                current_period.issues AS current_issues,
+                current_period.resolved AS current_resolved,
+                current_period.high_priority AS current_high_priority,
+
+                previous_period.issues AS previous_issues,
+                previous_period.resolved AS previous_resolved,
+                previous_period.high_priority AS previous_high_priority
+
+            FROM current_period, previous_period;
+        `);
+
+		const data = result.rows[0];
+
+		const currentIssues = Number(data.current_issues);
+		const currentResolved = Number(data.current_resolved);
+
+		const previousIssues = Number(data.previous_issues);
+		const previousResolved = Number(data.previous_resolved);
+
+		const currentResolutionRate =
+			currentIssues > 0 ? (currentResolved / currentIssues) * 100 : 0;
+
+		const previousResolutionRate =
+			previousIssues > 0 ? (previousResolved / previousIssues) * 100 : 0;
+
+		res.json({
+			current: {
+				label: currentLabel,
+				issues: currentIssues,
+				resolved: currentResolved,
+				resolution_rate: `${currentResolutionRate.toFixed(1)}%`,
+				high_priority: Number(data.current_high_priority),
+			},
+
+			previous: {
+				label: previousLabel,
+				issues: previousIssues,
+				resolved: previousResolved,
+				resolution_rate: `${previousResolutionRate.toFixed(1)}%`,
+				high_priority: Number(data.previous_high_priority),
+			},
+		});
 	} catch (error) {
 		next(error);
 	}
@@ -680,3 +954,94 @@ function escapeCsvField(field) {
 
 	return str;
 }
+
+
+
+// export const getRangeCondition = (range) => {
+//     if (!allowedRanges.includes(range)) {
+//         return null;
+//     }
+
+//     let interval;
+//     let dateCondition;
+//     let previousDateCondition;
+
+//     switch (range) {
+//         case "7":
+//             interval = "day";
+//             dateCondition = `reported_at >= CURRENT_DATE - INTERVAL '6 days'`;
+//             previousDateCondition = `
+//                 reported_at >= CURRENT_DATE - INTERVAL '13 days'
+//                 AND reported_at < CURRENT_DATE - INTERVAL '6 days'
+//             `;
+//             break;
+
+//         case "30":
+//             interval = "week";
+//             dateCondition = `reported_at >= CURRENT_DATE - INTERVAL '29 days'`;
+//             previousDateCondition = `
+//                 reported_at >= CURRENT_DATE - INTERVAL '59 days'
+//                 AND reported_at < CURRENT_DATE - INTERVAL '29 days'
+//             `;
+//             break;
+
+//         case "90":
+//             interval = "week";
+//             dateCondition = `reported_at >= CURRENT_DATE - INTERVAL '89 days'`;
+//             previousDateCondition = `
+//                 reported_at >= CURRENT_DATE - INTERVAL '179 days'
+//                 AND reported_at < CURRENT_DATE - INTERVAL '89 days'
+//             `;
+//             break;
+
+//         case "this_month":
+//             interval = "day";
+//             dateCondition = `
+//                 reported_at >= DATE_TRUNC('month', CURRENT_DATE)
+//             `;
+//             previousDateCondition = `
+//                 reported_at >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
+//                 AND reported_at < DATE_TRUNC('month', CURRENT_DATE)
+//             `;
+//             break;
+
+//         case "last_month":
+//             interval = "day";
+//             dateCondition = `
+//                 reported_at >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
+//                 AND reported_at < DATE_TRUNC('month', CURRENT_DATE)
+//             `;
+//             previousDateCondition = `
+//                 reported_at >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '2 months')
+//                 AND reported_at < DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
+//             `;
+//             break;
+
+//         case "this_year":
+//             interval = "month";
+//             dateCondition = `
+//                 reported_at >= DATE_TRUNC('year', CURRENT_DATE)
+//             `;
+//             previousDateCondition = `
+//                 reported_at >= DATE_TRUNC('year', CURRENT_DATE - INTERVAL '1 year')
+//                 AND reported_at < DATE_TRUNC('year', CURRENT_DATE)
+//             `;
+//             break;
+
+//         default:
+//             return null;
+//     }
+
+//     const allowedIntervals = ["day", "week", "month"];
+
+//     if (!allowedIntervals.includes(interval)) {
+//         return null;
+//     }
+
+//     return {
+//         interval,
+//         dateCondition,
+//         previousDateCondition,
+//     };
+// };
+
