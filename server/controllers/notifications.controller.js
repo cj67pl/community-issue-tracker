@@ -4,11 +4,7 @@ import { isValidId } from "../utils/validation.js";
 export const getUserNotif = async (req, res, next) => {
 	const userId = req.user.id;
 	// console.log(userId);
-	if (!isValidId(notificationId)) {
-		return res.status(400).json({
-			error: "Invalid notification ID",
-		});
-	}
+
 	try {
 		const result = await pool.query(
 			`
@@ -42,7 +38,7 @@ export const markNotifAsRead = async (req, res, next) => {
 	const notificationId = req.params.id;
 	const userId = req.user.id;
 
-	if (!notificationId) {
+	if (!isValidId(notificationId)) {
 		return res.status(400).json({
 			error: "Invalid notification ID",
 		});

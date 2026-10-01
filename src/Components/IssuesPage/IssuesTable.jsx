@@ -14,7 +14,7 @@ function IssuesTable({ issues, onSelectIssue, onDeleteIssue, currentRole }) {
         "Actions",
     ];
 
-    console.log(currentRole);
+    // console.log(currentRole);
 
     return (
         <div className="w-full overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">

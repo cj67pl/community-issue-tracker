@@ -50,7 +50,7 @@ function AdminUsers() {
         try {
             const usersData = await apiRequest("/users");
 
-            console.log("USERS:", usersData);
+            // console.log("USERS:", usersData);
 
             setUsers(usersData);
         } catch (error) {

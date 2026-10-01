@@ -32,7 +32,7 @@ function StatusCard({
             try {
                 const response = await apiRequest("/issues/filter-options");
 
-                console.log("FILTER OPTIONS:", response.statuses);
+                // console.log("FILTER OPTIONS:", response.statuses);
 
                 
                 setStatusOptions(response.statuses);

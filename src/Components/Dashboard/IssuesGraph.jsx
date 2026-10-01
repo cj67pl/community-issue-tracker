@@ -51,7 +51,8 @@ function IssuesGraph({onNavigate}) {
                 setData(categories);
             }
             catch (error) {
-                console.log("Failed to fetch issues by categories");
+                // console.log("Failed to fetch issues by categories");
+                setData([]);
                 
             }
         }

@@ -76,7 +76,7 @@ function Reports() {
             try{
                 const analyticsData = await apiRequest(`/analytics/kpi?range=${dateRange}`);
                 // console.log(aveResulotionTime);
-                console.log("analyticsData:", analyticsData);
+                // console.log("analyticsData:", analyticsData);
                 setAverageResTime(analyticsData.averageResolution);
                 setResolutionRate(analyticsData.resolutionRate);
                 setMonthlyReports(analyticsData.totalMonthlyReports);
@@ -89,8 +89,8 @@ function Reports() {
         fetchAnalyticsData();
 
     }, [dateRange]);
-    console.log("Average Resolution Time: ", averageResTime);
-    console.log("ResolutionRate: ", resolutionRate);
+    // console.log("Average Resolution Time: ", averageResTime);
+    // console.log("ResolutionRate: ", resolutionRate);
     
     const kpis = {
         ave_res_time:

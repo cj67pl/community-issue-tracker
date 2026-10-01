@@ -67,7 +67,7 @@ function AdminDashboard({onNavigate}) {
         const fetchKPIs = async () => {
             try {
                 const data = await apiRequest("/dashboard/admin-kpis");
-                console.log("ADMIN DASHBOARD KPIs: ", data.kpis);
+                // console.log("ADMIN DASHBOARD KPIs: ", data.kpis);
                 setKpis(data.kpis);
 
             }
@@ -86,7 +86,7 @@ function AdminDashboard({onNavigate}) {
             try {
                 const data = await apiRequest("/dashboard/admin-issues-counts");
 
-                console.log("ISSUES BY CATEGORY AND STATUS:", data);
+                // console.log("ISSUES BY CATEGORY AND STATUS:", data);
 
                 setIssuesByCategory(data.issues_by_category);
                 const status = data.issues_by_status;

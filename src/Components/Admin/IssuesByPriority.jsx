@@ -24,7 +24,7 @@ function IssuesByPriority({ dateRange }) {
                 try {
                     const data = await apiRequest(`/analytics/count-priorities?range=${dateRange}`);
     
-                    console.log("PPRIORITIES COUNT: ", data);
+                    // console.log("PPRIORITIES COUNT: ", data);
                     setIssueData(data);
                 }
                 catch (error) {

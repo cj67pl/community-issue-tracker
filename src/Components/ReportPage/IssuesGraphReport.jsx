@@ -120,7 +120,7 @@ const ColoredBarWithRadius = (props) => {
 
 function IssuesGraphReport({dateRange}) {
     // const [dateRange, setDateRange] = useState("30");
-    console.log(dateRange);
+    // console.log(dateRange);
     
 
     // const activeData = useMemo(() => getDataForRange(dateRange), [dateRange]);
@@ -136,7 +136,7 @@ function IssuesGraphReport({dateRange}) {
             try {
                 const data = await apiRequest(`/analytics/trends?range=${dateRange}`);
                 
-                console.log("Issue trends:", data);
+                // console.log("Issue trends:", data);
                 setIssueData(data);
             }
             catch(error) {

@@ -153,8 +153,8 @@ function AdminIssues({currentRole, onNavigate}) {
     const handlEditIssueStatus = async (issue, newStatus) => {
         const issueID = typeof issue === "object" ? issue.id : issue;
 
-        console.log("EDIT ID:", issueID);
-        console.log("EDIT STATUS:", newStatus);
+        // console.log("EDIT ID:", issueID);
+        // console.log("EDIT STATUS:", newStatus);
 
         try {
             await apiRequest(`/issues/${issueID}`, {
@@ -166,7 +166,7 @@ function AdminIssues({currentRole, onNavigate}) {
 
             const updatedData = await apiRequest(`/issues/${issueID}`);
 
-            console.log("REFRESHED ISSUE:", updatedData.issue);
+            // console.log("REFRESHED ISSUE:", updatedData.issue);
 
             setIssuesList((currentIssues) =>
                 currentIssues.map((currentIssue) =>
@@ -193,14 +193,14 @@ function AdminIssues({currentRole, onNavigate}) {
             return updatedData.issue;
 
         } catch (error) {
-            console.log("Failed to edit the issue!", error);
+            // console.log("Failed to edit the issue!", error);
             return null;
         }
     };
 
     const handleAddComment = async (issueID, newComment) => {
-        console.log("3. PAGE ISSUE ID:", issueID.id);
-        console.log("3. PAGE COMMENT:", newComment);
+        // console.log("3. PAGE ISSUE ID:", issueID.id);
+        // console.log("3. PAGE COMMENT:", newComment);
         try {
             await apiRequest(`/issues/${issueID.id}/comments`, {
                 method: "POST", 
@@ -222,9 +222,9 @@ function AdminIssues({currentRole, onNavigate}) {
         
     }
     const handleEditComment = async (issueID, commentID, newCommentUpdate) => {
-        console.log("3. PAGE ISSUE ID:", issueID.id);
-        console.log("3. PAGE COMMENT ID:", commentID);
-        console.log("3. PAGE COMMENT:", newCommentUpdate);
+        // console.log("3. PAGE ISSUE ID:", issueID.id);
+        // console.log("3. PAGE COMMENT ID:", commentID);
+        // console.log("3. PAGE COMMENT:", newCommentUpdate);
         try {
             await apiRequest(`/issues/${issueID.id}/comments/${commentID}`, {
                 method: "PATCH",
@@ -247,8 +247,8 @@ function AdminIssues({currentRole, onNavigate}) {
     }
 
     const handleDeleteComment = async (issueID, commentID) => {
-        console.log("3. PAGE ISSUE ID:", issueID.id);
-        console.log("3. PAGE COMMENT ID:", commentID);
+        // console.log("3. PAGE ISSUE ID:", issueID.id);
+        // console.log("3. PAGE COMMENT ID:", commentID);
 
         try {
             await apiRequest(`/issues/${issueID.id}/comments/${commentID}`, {
@@ -272,8 +272,8 @@ function AdminIssues({currentRole, onNavigate}) {
     }
 
     const handleEditIssuePriority = async (issueID, newPriority) => {
-        console.log("EDIT ID:", issueID);
-        console.log("EDIT PRIORITY:", newPriority);
+        // console.log("EDIT ID:", issueID);
+        // console.log("EDIT PRIORITY:", newPriority);
 
         try {
             await apiRequest(`/issues/${issueID}/priority`, {
@@ -284,7 +284,7 @@ function AdminIssues({currentRole, onNavigate}) {
             });
             const updatedData = await apiRequest(`/issues/${issueID}`);
 
-            console.log("REFRESHED ISSUE:", updatedData.issue);
+            // console.log("REFRESHED ISSUE:", updatedData.issue);
 
             setIssuesList((currentIssues) =>
                 currentIssues.map((issue) =>
@@ -308,7 +308,7 @@ function AdminIssues({currentRole, onNavigate}) {
             return updatedData.issue;
         }
         catch (error) {
-            console.log("Failed to edit the priority!", error);
+            // console.log("Failed to edit the priority!", error);
             return null;
         }
     };

@@ -17,14 +17,14 @@ function Notes({ notes, onAddComment, currentUser, onEditComment, onDeleteCommen
     const handlePost = () => {
         if (!inputCommentValue.trim()) return;
 
-        console.log("1. NOTES COMMENT:", inputCommentValue);
+        // console.log("1. NOTES COMMENT:", inputCommentValue);
 
         onAddComment(inputCommentValue);
 
         setInputCommentValue("");
     };
 
-    console.log(currentUser);
+    // console.log(currentUser);
     
    
     return (

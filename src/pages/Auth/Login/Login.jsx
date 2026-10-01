@@ -1,7 +1,6 @@
 import { useState } from "react";
 import FormField from "../../../common/FormField.jsx";
 import { inputClass } from "../../../common/formStyles.jsx";
-import RoleToggle from "../../../components/AuthPages/RoleToggle.jsx";
 
 import { apiRequest } from "../../../api/api.js";
 
@@ -12,12 +11,11 @@ function Login({ onSwitchToRegister, creds, onLoginSuccess }) {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(true);
-    const [errorMessage, setErrorMessage] = useState('');
+    const [errorMessage, setErrorMessage] = useState("");
+    const [isSubmitting, setIsSubmitting] = useState(false);
     
 
-    function checkEntry({loginInfo}) {
-        
-    }
+   
 
     // function handleSubmit(e) {
     //     e.preventDefault();
@@ -59,28 +57,52 @@ function Login({ onSwitchToRegister, creds, onLoginSuccess }) {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        setErrorMessage("");    
+
+        setErrorMessage("");
+
+        const cleanEmail = email.trim().toLowerCase();
+        const cleanPassword = password.trim();
+
+        // frontend validation
+        if (!cleanEmail) {
+            setErrorMessage("Email is required.");
+            return;
+        }
+
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) {
+            setErrorMessage("Please enter a valid email address.");
+            return;
+        }
+
+        if (!cleanPassword) {
+            setErrorMessage("Password is required.");
+            return;
+        }
+
+        setIsSubmitting(true);
+
         try {
             const data = await apiRequest("/auth/login", {
                 method: "POST",
                 body: JSON.stringify({
-                    email,
-                    password,
+                    email: cleanEmail,
+                    password: cleanPassword,
                 }),
             });
 
-            console.log("LOGIN SUCCESS:", data);
-            
             onLoginSuccess(data);
-        }
-        catch (error) {
+        } catch (error) {
             console.error("LOGIN ERROR:", error);
-            setErrorMessage(error.message || "An error occurred during login.");
-            
+
+            setErrorMessage(
+                error.message === "Failed to fetch"
+                    ? "Unable to connect to the server. Please try again."
+                    : error.message || "Unable to sign in. Please try again."
+            );
+        } finally {
+            setIsSubmitting(false);
         }
-
     }
-
     return (
         <div className="flex min-h-screen items-center justify-center bg-[#F6F4EF] p-4">
             <form
@@ -130,7 +152,7 @@ function Login({ onSwitchToRegister, creds, onLoginSuccess }) {
                     </FormField>
                 </div>
 
-                <div className="mt-4 flex items-center justify-between">
+                {/* <div className="mt-4 flex items-center justify-between">
                     <label className="flex items-center gap-2 text-sm text-gray-700">
                         <input
                             type="checkbox"
@@ -143,18 +165,23 @@ function Login({ onSwitchToRegister, creds, onLoginSuccess }) {
                     <a href="#" className="text-sm font-semibold text-teal-700 hover:underline">
                         Forgot password?
                     </a>
-                </div>
+                </div> */}
 
-                {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+                {errorMessage && (
+                    <p className="mt-3 text-sm text-red-600" role="alert">
+                        {errorMessage}
+                    </p>
+                )}
 
                 <button
                     type="submit"
-                    className="mt-6 w-full rounded-lg bg-teal-700 py-3 text-sm font-bold text-white hover:bg-teal-800"
+                    disabled={isSubmitting}
+                    className="mt-6 w-full rounded-lg bg-teal-700 py-3 text-sm font-bold text-white hover:bg-teal-800 disabled:cursor-not-allowed disabled:opacity-60"
                 >
-                    Sign In
+                    {isSubmitting ? "Signing in..." : "Sign In"}
                 </button>
 
-                <p className="mt-6 text-center text-sm text-neutral-500">
+                {/* <p className="mt-6 text-center text-sm text-neutral-500">
                     Don't have an account?{" "}
                     <button
                         type="button"
@@ -163,15 +190,15 @@ function Login({ onSwitchToRegister, creds, onLoginSuccess }) {
                     >
                         Register
                     </button>
-                </p>
+                </p> */}
 
-                <p className="mt-4 border-t border-slate-100 pt-4 text-center text-xs leading-relaxed text-neutral-400">
+                {/* <p className="mt-4 border-t border-slate-100 pt-4 text-center text-xs leading-relaxed text-neutral-400">
                     Demo mode — any email/password signs you in.
                     <br />
                     <span className="font-semibold text-neutral-500">Coordinator</span> manages all
                     issues · <span className="font-semibold text-neutral-500">Reporter</span> tracks
                     their own reports.
-                </p>
+                </p> */}
             </form>
         </div>
     );

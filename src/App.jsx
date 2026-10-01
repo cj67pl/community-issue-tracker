@@ -37,12 +37,14 @@ function App() {
 	const [currentPage, setCurrentPage] = useState("dashboard");
 	const [isCollapsed, setCollapsed] = useState(false);
 	const [isMobileOpen, setIsMobileOpen] = useState(false);
+	const [isLoading, setIsLoading] = useState(true);
 	
 	useEffect(() => {
 		const restoreSession = async () => {
 			const token = localStorage.getItem("token");
 
 			if (!token) {
+				setIsLoading(false);
 				return;
 			}
 
@@ -70,6 +72,9 @@ function App() {
 				localStorage.removeItem("user");
 				setCurrentUser(null);
 			}
+			finally {
+				setIsLoading(false);
+			}
 		}
 		restoreSession();
 	}, []);
@@ -89,7 +94,6 @@ function App() {
 			email:user.email,
 			role: role,
 			profileColor: user.profile_color,
-			token: userData.token,
 
 		}
 		
@@ -118,13 +122,37 @@ function App() {
 		setIsMobileOpen(false);
 	}
 
-	console.log("CURRENT USER:", currentUser);
-	console.log("PROFILE COLOR:", currentUser?.profileColor);
+	// console.log("CURRENT USER:", currentUser);
+	// console.log("PROFILE COLOR:", currentUser?.profileColor);
+	useEffect(() => {
+		const handleSessionExpired = () => {
+			setCurrentUser(null);
+			setCurrentPage("dashboard");
+			setIsMobileOpen(false);
+		};
+
+		window.addEventListener(
+			"session-expired",
+			handleSessionExpired
+		);
+
+		return () => {
+			window.removeEventListener(
+				"session-expired",
+				handleSessionExpired
+			);
+		};
+	}, []);
+
+	if (isLoading) {
+		return null;
+	}
 
 	if (!currentUser) {
 		return <AuthPage onLoginSuccess={handleLoginSuccess} />;
 	}
-
+	
+	
 	return (
 		<div className="min-h-screen bg-white text-slate-900">
 			<Sidebar

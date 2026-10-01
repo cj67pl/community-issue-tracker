@@ -1,10 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect} from "react";
 import { UserPlus } from "lucide-react";
 import UsersTable from "../../components/Admin/UsersTable.jsx";
-import { usersData } from "../../components/Admin/usersData.js";
+// import { usersData } from "../../components/Admin/usersData.js";
+
+import { apiRequest } from "../../api/api.js";
 
 function AdminUsers() {
-    const [users, setUsers] = useState(usersData);
+    const [users, setUsers] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState("");
+    
 
     function handleRoleChange(id, newRole) {
         setUsers((prev) =>

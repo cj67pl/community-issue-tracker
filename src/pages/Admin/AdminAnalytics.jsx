@@ -42,7 +42,7 @@ function AdminAnalytics() {
             try {
                 const analyticsData = await apiRequest(`/analytics/kpi?range=${dateRange}`);
                 // console.log(aveResulotionTime);
-                console.log("analyticsData:", analyticsData);
+                // console.log("analyticsData:", analyticsData);
                 setAverageResTime(analyticsData.averageResolution);
                 setResolutionRate(analyticsData.resolutionRate);
                 setMonthlyReports(analyticsData.totalMonthlyReports);
@@ -55,8 +55,8 @@ function AdminAnalytics() {
         fetchAnalyticsData();
 
     }, [dateRange]);
-    console.log("Average Resolution Time: ", averageResTime);
-    console.log("ResolutionRate: ", resolutionRate);
+    // console.log("Average Resolution Time: ", averageResTime);
+    // console.log("ResolutionRate: ", resolutionRate);
 
 
     function pluralize(count, singular, plural = `${singular}s`) {

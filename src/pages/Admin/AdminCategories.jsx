@@ -115,7 +115,7 @@ function AdminCategories() {
         try {
             const data = await apiRequest("/categories");
 
-            console.log("CATEGORIES:", data);
+            // console.log("CATEGORIES:", data);
 
             setCategories(data);
         } catch (error) {

@@ -39,11 +39,11 @@ function ReportIssue({currentRole}) {
             try {
                 const response = await apiRequest("/issues/filter-options");
 
-                console.log("FILTER OPTIONS:", response.categories);
+                // console.log("FILTER OPTIONS:", response.categories);
 
                 
                 setCategoryOptions(response.categories);
-                console.log(categoryOptions);
+                // console.log(categoryOptions);
                 
                 setPriorityOptions(response.priorities);
 
@@ -66,7 +66,7 @@ function ReportIssue({currentRole}) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log({ title, description, category, priority, location });
+        // console.log({ title, description, category, priority, location });
         setSubmitError("");
 
         if (!title.trim()) {

@@ -17,7 +17,7 @@ function IssuesByLocation({ data, dateRange }) {
         ...issueData.map((item) => item.count)
     );
 
-    console.log("DATE RANGE: ", dateRange);
+    // console.log("DATE RANGE: ", dateRange);
     
 
     useEffect(() => {
@@ -26,7 +26,7 @@ function IssuesByLocation({ data, dateRange }) {
             try {
                 const data = await apiRequest(`/analytics/count-locations?range=${dateRange}`);
 
-                console.log("LOCATIONS COUNT: ", data);
+                // console.log("LOCATIONS COUNT: ", data);
                 setIssueData(data);
             }
             catch (error) {
