@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Pencil, X, Check, Trash2 } from "lucide-react";
 
-function Note({ id, initials, userName, note, postDate, isOwner, onEditComment, onDeleteComment }) {
+function Note({ id, initials, userName, note, postDate, profileColor = "#2E6F62", isOwner, onEditComment, onDeleteComment }) {
 
     const [isEditing, setIsEditing] = useState(false);
     const [editValue, setEditValue] = useState(note);
@@ -27,7 +27,10 @@ function Note({ id, initials, userName, note, postDate, isOwner, onEditComment, 
     return (
         <div className="flex flex-col rounded-xl border border-stone-200 bg-[#F8F6F1] p-4">
             <div className="flex gap-3">
-                <div className="flex self-center h-9 w-9 shrink-0 items-center justify-center rounded-full bg-green-700/10 text-xs font-semibold text-emerald-800">
+                <div
+                    className="flex self-center h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white"
+                    style={{ backgroundColor: profileColor }}
+                >
                     {initials}
                 </div>
 
@@ -54,7 +57,7 @@ function Note({ id, initials, userName, note, postDate, isOwner, onEditComment, 
                         )
                     }
                 </div>
-                
+                 
             </div>
             {/* {isOwner && (
                 <button 

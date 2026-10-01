@@ -1,6 +1,6 @@
 import UserProfile from "../../../common/UserProfile"
 
-function ReporterCard({initials, name, role, variant}) {
+function ReporterCard({ initials, name, role, profileColor, variant}) {
     return(
         <div className="flex flex-col my-5 w-full max-w-md min-w-md h-auto rounded-xl border border-gray-200 bg-white shadow-sm ">
 
@@ -15,10 +15,11 @@ function ReporterCard({initials, name, role, variant}) {
                     initials={initials}
                     name={name}
                     role={role}
+                    profileColor={profileColor}
                     variant={variant}
                 />
             </div>
-            
+             
         </div>
     )
 }

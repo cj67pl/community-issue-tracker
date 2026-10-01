@@ -44,7 +44,9 @@ export const exportAnalyticsCsv = async (req, res, next) => {
 		const resolvedResult = await pool.query(`
 			SELECT COUNT(*) AS resolved
 			FROM issues
-			WHERE status_id = 2
+			JOIN statuses
+				ON issues.status_id = statuses.id
+			WHERE statuses.status_name = 'Resolved'
 				AND ${dateCondition};
 		`);
 
@@ -121,21 +123,25 @@ export const exportAnalyticsCsv = async (req, res, next) => {
 				COUNT(*) FILTER (
 					WHERE s.status_name NOT IN ('Resolved', 'Rejected')
 					AND i.created_at < CURRENT_TIMESTAMP - INTERVAL '7 days'
+					AND ${dateCondition}
 				) AS overdue_issues,
 
 				COUNT(*) FILTER (
 					WHERE s.status_name = 'Resolved'
 					AND i.resolved_at IS NOT NULL
 					AND i.resolved_at <= i.created_at + INTERVAL '7 days'
+					AND ${dateCondition}
 				) AS resolved_within_target,
 
 				COUNT(*) FILTER (
 					WHERE s.status_name = 'Resolved'
+					AND ${dateCondition}
 				) AS total_resolved,
 
 				MAX(
 					CASE
 						WHEN s.status_name NOT IN ('Resolved', 'Rejected')
+						AND ${dateCondition}
 						THEN CURRENT_DATE - i.created_at::date
 					END
 				) AS oldest_unresolved_days,
@@ -143,6 +149,7 @@ export const exportAnalyticsCsv = async (req, res, next) => {
 				COUNT(*) FILTER (
 					WHERE s.status_name = 'Pending'
 					AND i.created_at < CURRENT_TIMESTAMP - INTERVAL '30 days'
+					AND ${dateCondition}
 				) AS pending_over_30_days
 
 			FROM issues i
@@ -170,7 +177,7 @@ export const exportAnalyticsCsv = async (req, res, next) => {
 				) AS current_issues,
 
 				COUNT(*) FILTER (
-					WHERE status_id = 2
+					WHERE statuses.status_name = 'Resolved'
 					AND ${dateCondition}
 				) AS current_resolved,
 
@@ -178,12 +185,14 @@ export const exportAnalyticsCsv = async (req, res, next) => {
 					WHERE ${previousDateCondition}
 				) AS previous_issues,
 
-				COUNT(*) FILTER (
-					WHERE status_id = 2
-					AND ${previousDateCondition}
-				) AS previous_resolved
+				 COUNT(*) FILTER (
+					WHERE statuses.status_name = 'Resolved'
+					AND ${dateCondition}
+				) AS current_resolved,
 
-			FROM issues;
+			FROM issues
+			JOIN statuses
+				ON issues.status_id = statuses.id;
 		`);
 
 		const period = periodResult.rows[0];

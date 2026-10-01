@@ -3,10 +3,10 @@ import NotificationButton from "./NotificationButton.jsx";
 import UserProfile from "../../common/UserProfile.jsx";
 import MobileMenuButton from "./MobileMenuButton.jsx";
 
-function Topbar({ onMenuClick, currentUserName, currentRole }) {
+function Topbar({ onMenuClick, currentUserName, currentRole, currentUserProfileColor, }) {
     // console.log("TopbarName", currentUserName);
     // console.log("TopbarRole", currentRole);
-
+ 
     return (
         <header className="sticky top-0 z-20 flex h-16 items-center justify-between border-b border-slate-200 bg-white px-4 lg:px-8">
             <div className="flex items-center">
@@ -18,7 +18,7 @@ function Topbar({ onMenuClick, currentUserName, currentRole }) {
                 <NotificationButton />
                 <UserProfile
                     name={currentUserName}
-                    
+                    profileColor={currentUserProfileColor}
                     role={currentRole}
                     variant="compact"
                     hideDetailsOnMobile

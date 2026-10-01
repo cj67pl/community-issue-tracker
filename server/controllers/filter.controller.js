@@ -1,5 +1,5 @@
 import pool from "../config/db.js";
-
+ 
 export const getIssueFilterOptions = async (req, res, next) => {
 	try {
 		const categories = await pool.query(`

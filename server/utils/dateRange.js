@@ -28,7 +28,7 @@ export const getRangeCondition = (range) => {
 
 		case "30":
 			interval = "week";
-			dateCondition = `reported_at >= CURRENT_DATE - INTERVAL '29 days'`;
+			dateCondition = `issues.reported_at >= CURRENT_DATE - INTERVAL '29 days'`;
 			previousDateCondition = `
 				reported_at >= CURRENT_DATE - INTERVAL '59 days'
 				AND reported_at < CURRENT_DATE - INTERVAL '29 days'
@@ -37,7 +37,7 @@ export const getRangeCondition = (range) => {
 
 		case "90":
 			interval = "week";
-			dateCondition = `reported_at >= CURRENT_DATE - INTERVAL '89 days'`;
+			dateCondition = `issues.reported_at >= CURRENT_DATE - INTERVAL '89 days'`;
 			previousDateCondition = `
 				reported_at >= CURRENT_DATE - INTERVAL '179 days'
 				AND reported_at < CURRENT_DATE - INTERVAL '89 days'
@@ -46,7 +46,7 @@ export const getRangeCondition = (range) => {
 
 		case "this_month":
 			interval = "day";
-			dateCondition = `reported_at >= DATE_TRUNC('month', CURRENT_DATE)`;
+			dateCondition = `issues.reported_at >= DATE_TRUNC('month', CURRENT_DATE)`;
 			previousDateCondition = `
 				reported_at >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
 				AND reported_at < DATE_TRUNC('month', CURRENT_DATE)
@@ -56,18 +56,18 @@ export const getRangeCondition = (range) => {
 		case "last_month":
 			interval = "day";
 			dateCondition = `
-				reported_at >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
+				issues.reported_at >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
 				AND reported_at < DATE_TRUNC('month', CURRENT_DATE)
 			`;
 			previousDateCondition = `
-				reported_at >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '2 months')
+				issues.reported_at >= DATE_TRUNC('month', CURRENT_DATE - INTERVAL '2 months')
 				AND reported_at < DATE_TRUNC('month', CURRENT_DATE - INTERVAL '1 month')
 			`;
 			break;
 
 		case "this_year":
 			interval = "month";
-			dateCondition = `reported_at >= DATE_TRUNC('year', CURRENT_DATE)`;
+			dateCondition = `issues.reported_at >= DATE_TRUNC('year', CURRENT_DATE)`;
 			previousDateCondition = `
 				reported_at >= DATE_TRUNC('year', CURRENT_DATE - INTERVAL '1 year')
 				AND reported_at < DATE_TRUNC('year', CURRENT_DATE)

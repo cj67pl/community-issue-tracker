@@ -21,6 +21,8 @@ function IssuesByCategory({ dateRange }) {
         "bg-orange-500",
     ];
     
+    console.log("DATE RANGE: ", dateRange);
+    
 
 
     useEffect(() => {

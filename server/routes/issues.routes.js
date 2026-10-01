@@ -16,7 +16,7 @@ router.get("/:id", authenticateToken, getIssueById);
 router.post("/", authenticateToken, createIssue);
 router.patch("/:id", authenticateToken, authorizedRoles(1, 2), updateIssue);
 router.patch("/:id/priority", authenticateToken, authorizedRoles(1, 2), updateIssuePriority);
-router.delete("/:id", authenticateToken, authorizedRoles(1, 2,3), deleteIssue);
+router.delete("/:id", authenticateToken, authorizedRoles(1, 3), deleteIssue);
 
 
 

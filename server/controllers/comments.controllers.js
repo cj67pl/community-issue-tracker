@@ -17,6 +17,7 @@ export const getIssueComments = async (req, res, next) => {
 					c.content,
 					c.user_id,
 					u.name AS user_name,
+					u.profile_color AS profile_color,
 					c.created_at,
 					c.updated_at
 				FROM comments c
@@ -71,7 +72,24 @@ export const createComment =  async (req, res, next) => {
 		// 		error: "Issue not found",
 		// 	});
 		// }
+		const issueResult = await pool.query(`
+			SELECT
+				id,
+				title,
+				reported_by,
+				assigned_to
+			FROM issues
+			WHERE id = $1
+			`, [id],
+		);
 
+		if (issueResult.rowCount === 0) {
+			return res.status(404).json({
+				error: "Issue not found",
+			});
+		}
+
+		const issue = issueResult.rows[0];
 
 		const result = await pool.query(
 			`
@@ -90,6 +108,71 @@ export const createComment =  async (req, res, next) => {
             `,
 			[id, user_id, content.trim()],
 		);
+		//if reporter comment
+		if (req.user.role_id === 3 && issue.assigned_to) {
+			await pool.query(
+				`
+				INSERT INTO notifications (
+					user_id,
+					issue_id,
+					type,
+					message
+				)
+				VALUES ($1, $2, 'new_comment', $3)
+				`,
+				[
+					issue.assigned_to,
+					id,
+					`A reporter commented on the issue "${issue.title}".`,
+				],
+			);
+		}
+
+		//if coordinator comment
+		if (req.user.role_id === 2 && issue.reported_by !== user_id) {
+			await pool.query(
+				`
+				INSERT INTO notifications (
+					user_id,
+					issue_id,
+					type,
+					message
+				)
+				VALUES ($1, $2, 'new_comment', $3)
+				`,
+				[
+					issue.reported_by,
+					id,
+					`A coordinator commented on your report "${issue.title}".`,
+				],
+			);
+		}
+	
+		//if admin comment
+		if (req.user.role_id === 1) {
+			const recipients = [issue.reported_by, issue.assigned_to].filter(
+				(recipientId) => recipientId && recipientId !== user_id,
+			);
+
+			for (const recipientId of recipients) {
+				await pool.query(
+					`
+					INSERT INTO notifications (
+						user_id,
+						issue_id,
+						type,
+						message
+					)
+					VALUES ($1, $2, 'new_comment', $3)
+					`,
+					[
+						recipientId,
+						id,
+						`An admin commented on the issue "${issue.title}".`,
+					],
+				);
+			}
+		}
 
 		res.status(201).json({
 			message: "Comment created successfully",
@@ -207,8 +290,7 @@ export const deleteComment = async (req, res, next) => {
 			});
 		}
 
-		const result = await pool.query(
-			`
+		await pool.query(`
                 DELETE
                 FROM comments
                 WHERE id = $1

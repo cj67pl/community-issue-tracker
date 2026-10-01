@@ -19,7 +19,7 @@ function UsersTable({
 }) {
     return (
         <div className="w-full rounded-xl border border-gray-200 bg-white shadow-sm">
-            <div className="overflow-x-auto">
+            <div className="max-h-[500px] overflow-auto">
                 <table className="w-full min-w-[800px] border-collapse text-left">
 
                     
@@ -52,7 +52,7 @@ function UsersTable({
                                     className="border-b border-slate-100 last:border-b-0"
                                 >
 
-                                    {/* USER */}
+                                    
                                     <td className="px-6 py-4">
                                         <p className="text-sm font-semibold text-gray-900">
                                             {user.name}
@@ -152,6 +152,7 @@ function UsersTable({
                     </tbody>
 
                 </table>
+
             </div>
         </div>
     );

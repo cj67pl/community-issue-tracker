@@ -1,6 +1,13 @@
 import { capitalizeFirstLetter, getInitials } from "../utils/stringHelpers.js";
 
-function UserProfile({ initials, name, role, variant, hideDetailsOnMobile = false }) {
+function UserProfile({
+    initials,
+    name,
+    role,
+    variant,
+    profileColor = "#2E6F62",
+    hideDetailsOnMobile = false,
+}) {
     const variants = {
         compact: {
             container: `
@@ -12,7 +19,7 @@ function UserProfile({ initials, name, role, variant, hideDetailsOnMobile = fals
             `,
             avatar: `
                 rounded-3xl p-2
-                bg-teal-700 text-white
+                text-white
                 text-sm font-bold
             `,
             name: "font-semibold text-sm",
@@ -25,7 +32,7 @@ function UserProfile({ initials, name, role, variant, hideDetailsOnMobile = fals
             `,
             avatar: `
                 rounded-full p-4
-                bg-teal-700 text-white
+                text-white
                 text-xl font-bold
             `,
             name: "font-bold text-lg",
@@ -39,7 +46,12 @@ function UserProfile({ initials, name, role, variant, hideDetailsOnMobile = fals
 
     return (
         <div className={`flex items-center ${styles.container}`}>
-            <div className={`shrink-0 ${styles.avatar}`}>{initials || getInitials(name)}</div>
+            <div
+                className={`shrink-0 ${styles.avatar}`}
+                style={{ backgroundColor: profileColor }}
+            >
+                {initials || getInitials(name)}
+            </div>
 
             {/* hideDetailsOnMobile is opt-in: pages that always want the name/role
           visible (e.g. a profile page) just don't pass this prop. Only the

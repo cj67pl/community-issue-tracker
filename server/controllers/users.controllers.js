@@ -51,6 +51,7 @@ export const getUserById = async (req, res, next) => {
                         users.email,
 						users.phone,
                         roles.role_name AS role,
+						users.profile_color,
                         users.created_at,
                         users.updated_at
                     FROM users
@@ -393,7 +394,7 @@ export const updateUserStatus = async (req, res, next) => {
 
 export const updateUserProfile = async (req, res, next) => {
 	const { id } = req.params;
-	const { name, email } = req.body;
+	const { name, email, phone, profile_color } = req.body;
 
 	if (!isValidId(id)) {
 		return res.status(400).json({
@@ -410,6 +411,22 @@ export const updateUserProfile = async (req, res, next) => {
 	if (!isValidEmail(email)) {
 		return res.status(400).json({
 			error: "Invalid email format",
+		});
+	}
+
+	if (
+		profile_color !== null &&
+		profile_color !== undefined &&
+		!/^#[0-9A-Fa-f]{6}$/.test(profile_color)
+	) {
+		return res.status(400).json({
+			error: "Invalid profile color",
+		});
+	}
+
+	if (req.user.role_id !== 1 && Number(id) !== req.user.id) {
+		return res.status(403).json({
+			error: "You can only update your own profile",
 		});
 	}
 
@@ -451,21 +468,25 @@ export const updateUserProfile = async (req, res, next) => {
 		const result = await pool.query(
 			`
                 UPDATE users
-                SET
-                    name = $1,
-                    email = $2,
-                    updated_at = CURRENT_TIMESTAMP
-                WHERE id = $3
+				SET
+					name = $1,
+					email = $2,
+					phone = $3,
+					profile_color = $4,
+					updated_at = CURRENT_TIMESTAMP
+				WHERE id = $5
                 RETURNING
                     id,
                     name,
                     email,
+					phone,
+					profile_color,
                     role_id,
                     is_active,
                     created_at,
                     updated_at;
             `,
-			[cleanName, cleanEmail, id],
+			[cleanName, cleanEmail, phone, profile_color, id],
 		);
 
 		res.status(200).json({

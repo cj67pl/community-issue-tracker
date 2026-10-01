@@ -131,6 +131,7 @@ export const updateCategory = async (req, res, next) => {
                 SELECT id
                 FROM categories
                 WHERE id = $1
+					AND is_active = true
             `,
 			[id],
 		);

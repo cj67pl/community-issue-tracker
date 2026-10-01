@@ -22,19 +22,21 @@ export const login = async (req, res) => {
 
     try {
         const cleanEmail = email.trim().toLowerCase();
-        const result = await pool.query(` 
+        const result = await pool.query(
+			` 
                 SELECT
                     id,
                     name,
                     email,
                     password,
                     role_id,
+                    profile_color,
                     is_active
                 FROM users
                 WHERE email = $1
             `,
-                [cleanEmail],
-            );
+			[cleanEmail],
+		);
         if (result.rowCount === 0) {
             return res.status(401).json({
                 error: "Invalid email or password",
@@ -79,6 +81,7 @@ export const login = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role_id: user.role_id,
+                profile_color: user.profile_color,
             },
         });
 
@@ -94,20 +97,22 @@ export const login = async (req, res) => {
     
 
 };
-
+ 
 export const getCurrentUser = async (req, res, next) => {
     try {
         const userId = req.user.id;
-        const result = await pool.query(
-            `SELECT
+        const result = await pool.query(`
+            SELECT
                 id, 
                 name, 
                 email, 
+                profile_color,
                 role_id
             FROM users 
             WHERE id = $1
+                AND is_active = true
             `,
-            [userId]
+            [userId],
         );
         if (result.rowCount === 0) {
             return res.status(404).json({

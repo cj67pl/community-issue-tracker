@@ -138,7 +138,7 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddCom
             <div className="grid grid-cols-1 gap-9 lg:flex">
                 <IssueInfo 
                     category={issueData.category}
-                    reporter={issueData.reported_by}
+                    reporter={issueData.reported_by_name}
                     lastUpdated={formatDate(issueData.updated_at)}
                     location={issueData.location}
                     dateReported={formatDate(issueData.reported_at)}
@@ -192,6 +192,7 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddCom
                     initials={getInitials(issueData.reported_by)}
                     name={issueData.reported_by}
                     role={issueData.position}
+                    profileColor={issueData.reporter_profile_color}
                     variant="large"
                 />
             </div>

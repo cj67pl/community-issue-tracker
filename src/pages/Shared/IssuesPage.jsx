@@ -25,33 +25,37 @@ function IssuesPage({currentRole, onNavigate}) {
   
     const [issueToDelete, setIssueToDelete] = useState("");
 
-
+    const fetchIssues = async () => {
+        // console.log("ISSUES COMPONENT LOADED");
+        try {
+            const data = await apiRequest("/issues");
+            // console.log("API DATA:", data);
+            // console.log("FIRST ISSUE:", data[0]);
+            // console.log("IS ARRAY:", Array.isArray(data));
+            /*console.log("FIRST ISSUE FILTER FIELDS:", {
+                id: data[0].id,
+                category_id: data[0].category_id,
+                priority_level_id: data[0].priority_level_id,
+                status_id: data[0].status_id,
+                category: data[0].category,
+                priority: data[0].priority,
+                status: data[0].status, });*/
+            
+            setIssuesList(Array.isArray(data) ? data : data.issues || []);
+        } catch (error) {
+            console.error("API ERROR:", error);
+        }
+    };
 
     useEffect(() => {
-        // console.log("ISSUES COMPONENT LOADED");
-        const fetchIssues = async () => {
-
-            try {
-                const data = await apiRequest("/issues");
-                // console.log("API DATA:", data);
-                // console.log("FIRST ISSUE:", data[0]);
-                // console.log("IS ARRAY:", Array.isArray(data));
-                /*console.log("FIRST ISSUE FILTER FIELDS:", {
-                    id: data[0].id,
-                    category_id: data[0].category_id,
-                    priority_level_id: data[0].priority_level_id,
-                    status_id: data[0].status_id,
-                    category: data[0].category,
-                    priority: data[0].priority,
-                    status: data[0].status, });*/
-                
-                setIssuesList(Array.isArray(data) ? data : data.issues || []);
-            } catch (error) {
-                console.error("API ERROR:", error);
-            }
-        };
-
         fetchIssues();
+
+
+        const interval = setInterval(() => {
+            fetchIssues();
+        }, 5000);
+
+        return () => clearInterval(interval);
     }, []);
 
     const filteredIssues = [...issuesList]

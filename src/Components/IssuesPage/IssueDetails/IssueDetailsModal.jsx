@@ -5,7 +5,7 @@ import IssueDetails from "../../../components/IssuesPage/IssueDetails/IssueDetai
 
 function IssueDetailsModal({ isOpen, onClose, isSelected, onDeleteIssue, onEditIssueStatus, onAddComment, onEditComment, onDeleteComment, onEditIssuePriority, currentRole }) {
     if (!isOpen) return null;
-
+ 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-8">
 

@@ -2,16 +2,9 @@ import pool from "../config/db.js";
 
 export const getDashboardKPIs = async (req, res, next) => {
 	try {
-		console.log(req.user.role_id);
-
-		// if (
-		//     req.user.role_id !== 1 &&
-		//     req.user.role_id !== 2
-		// ) {
-		//     return res.status(403).json({
-		//         error: "You do not have permission to this portion",
-		//     });
-		// }
+		// console.log(req.user.role_id);
+ 
+		
 		const result = await pool.query(
 			`
                 SELECT
@@ -42,13 +35,9 @@ export const getDashboardKPIs = async (req, res, next) => {
 
 export const getUserDashboardKPIs = async (req, res, next) => {
 	try {
-		console.log(req.user.role_id);
+		// console.log(req.user.role_id);
         const userId = req.user.id;
-		if (!userId) {
-			return res.status(403).json({
-				error: "You do not have permission to this portion",
-			});
-		}
+		
 		const result = await pool.query(
 			`
                 SELECT
@@ -82,7 +71,7 @@ export const getUserDashboardKPIs = async (req, res, next) => {
 
 export const getAdminKPIs = async (req, res, next) => {
 	try {
-		console.log(req.user.role_id);
+		// console.log(req.user.role_id);
 
 		if (
 		    req.user.role_id !== 1

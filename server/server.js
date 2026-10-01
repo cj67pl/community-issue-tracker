@@ -9,7 +9,8 @@ import categoriesRouter from "./routes/categories.routes.js";
 import authRouter from "./routes/auth.routes.js"
 import { errorHandler } from './middleware/error.middleware.js';
 import dashboardRouter from './routes/dashboard.routes.js';
-import analyticsRouter from './routes/analytics.routes.js'
+import analyticsRouter from './routes/analytics.routes.js';
+import notificationsRouter from './routes/notifications.routes.js';
 
 const app = express();
 const port = 3000;
@@ -31,12 +32,13 @@ pool.query('SELECT NOW()', (error, result) => {
 
 
 app.use("/api/issues", issuesRouter);
-app.use('/api/issues/:id/comments', commentsRouter);
+app.use("/api/issues/:id/comments", commentsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/dashboard", dashboardRouter);
 app.use("/api/analytics", analyticsRouter);
+app.use("/api/notifications", notificationsRouter);
 
 app.use(errorHandler);
 

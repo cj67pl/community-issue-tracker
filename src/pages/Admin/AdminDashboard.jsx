@@ -15,7 +15,7 @@ import { apiRequest } from "../../api/api.js";
 
 function AdminDashboard({onNavigate}) {
 
-    // Temporary sample backend response
+
     // const adminDashboardData = {
     //     kpis: {
     //         total_users: 128,
@@ -61,6 +61,7 @@ function AdminDashboard({onNavigate}) {
     const [kpis, setKpis] = useState(null);
     const [issuesByCategory, setIssuesByCategory] = useState([])
     const [issuesByStatusData, setIssuesByStatusData] = useState([]);
+    const [dateRange, setDateRange] = useState("30");
 
     useEffect(() => {
         const fetchKPIs = async () => {
@@ -174,6 +175,7 @@ function AdminDashboard({onNavigate}) {
             */}
                 <IssuesByCategory
                     data={issuesByCategory}
+                    dateRange={dateRange}
                 />
                 <IssuesByStatus
                     data={issuesByStatusData}

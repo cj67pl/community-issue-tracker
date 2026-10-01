@@ -4,7 +4,7 @@ import Note from "./Note.jsx"
 import { useState } from "react";
 
 
-
+ 
 function Notes({ notes, onAddComment, currentUser, onEditComment, onDeleteComment }) {
     // console.log(notes[1].key);
 
@@ -49,6 +49,7 @@ function Notes({ notes, onAddComment, currentUser, onEditComment, onDeleteCommen
                             userName={note.user_name}
                             note={note.content}
                             postDate={formatDate(note.updated_at)}
+                            profileColor={note.profile_color}
                             isOwner={Number(note.user_id) === Number(currentUser?.id)}
                             onEditComment={onEditComment}
                             onDeleteComment={onDeleteComment}

@@ -56,6 +56,7 @@ function App() {
 					name: user.name,
 					email: user.email,
 					role: role,
+					profileColor: user.profile_color,
 					
 				};
 				setCurrentUser(currentUser);
@@ -66,8 +67,9 @@ function App() {
 			catch (error) {
 				console.error("Failed to restore session:", error);
 				localStorage.removeItem("token");
-
-			};
+				localStorage.removeItem("user");
+				setCurrentUser(null);
+			}
 		}
 		restoreSession();
 	}, []);
@@ -86,6 +88,7 @@ function App() {
 			name:user.name,
 			email:user.email,
 			role: role,
+			profileColor: user.profile_color,
 			token: userData.token,
 
 		}
@@ -95,6 +98,7 @@ function App() {
 		
 	}
 
+	
 
 	// console.log(currentUser.name);
 	
@@ -113,6 +117,9 @@ function App() {
 		setCurrentPage(key);
 		setIsMobileOpen(false);
 	}
+
+	console.log("CURRENT USER:", currentUser);
+	console.log("PROFILE COLOR:", currentUser?.profileColor);
 
 	if (!currentUser) {
 		return <AuthPage onLoginSuccess={handleLoginSuccess} />;
@@ -135,6 +142,7 @@ function App() {
 					onMenuClick={() => setIsMobileOpen(true)}
 					currentUserName={currentUser.name}
 					currentRole={currentUser.role}
+					currentUserProfileColor={currentUser.profileColor}
 				 />
 
 				<div className="p-5 bg-[#F6F4EF] h-screen">

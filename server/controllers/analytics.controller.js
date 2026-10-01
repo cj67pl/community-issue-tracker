@@ -1,9 +1,8 @@
 import pool from "../config/db.js";
-import { isNonEmptyString, isValidId } from "../utils/validation.js";
 import { getRangeCondition } from "../utils/dateRange.js";
 
 export const getAverage = async (req, res, next) => {
-	// console.log("cj");
+	// console.log("test");
 
 	try {
 		const total_issues = await pool.query(`
@@ -282,8 +281,11 @@ export const getAnalyticsKpi = async (req, res, next) => {
 		`);
 
 		const allResolved = await pool.query(`
-			SELECT COUNT(*) FROM issues
-			WHERE status_id = 2
+		    SELECT COUNT(*)
+			FROM issues
+			JOIN statuses
+				ON issues.status_id = statuses.id
+			WHERE statuses.status_name = 'Resolved'
 				AND ${dateCondition};
 		`);
 
@@ -510,7 +512,7 @@ export const getIssuesByPriority = async (req, res, next) => {
                 priority ASC;
         `);
 
-		console.log("Issues by priority:", result.rows);
+		// console.log("Issues by priority:", result.rows);
 
 		res.json(result.rows);
 	} catch (error) {
@@ -544,7 +546,7 @@ export const getIssuesByLocation= async (req, res, next) => {
         `);
 
 
-		console.log("Top Locations:", result.rows);
+		// console.log("Top Locations:", result.rows);
 
 		res.json(result.rows);
 	} catch (error) {
@@ -836,8 +838,11 @@ export const exportReportsCsv = async (req, res, next) => {
 			SELECT COUNT(*) FROM issues WHERE ${dateCondition};
 		`);
 		const allResolved = await pool.query(`
-			SELECT COUNT(*) FROM issues
-			WHERE status_id = 2
+			SELECT COUNT(*)
+			FROM issues
+			JOIN statuses
+				ON issues.status_id = statuses.id
+			WHERE statuses.status_name = 'Resolved'
 				AND ${dateCondition};
 		`);
 		const totalCount = Number(allIssues.rows[0].count);
