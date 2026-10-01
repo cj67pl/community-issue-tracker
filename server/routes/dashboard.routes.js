@@ -27,6 +27,6 @@ router.get( "/categories", authenticateToken, authorizedRoles(1, 2), getIssuesBy
 
 router.get("/urgent", authenticateToken, authorizedRoles(2),  getIssuesByUrgency);
 
-router.get("/recent/issues", authenticateToken, authorizedRoles(2), getRecentIssues);
+router.get("/recent/issues", authenticateToken, authorizedRoles(1, 2), getRecentIssues);
 
 export default router;
