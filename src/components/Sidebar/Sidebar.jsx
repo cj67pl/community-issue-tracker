@@ -16,14 +16,14 @@ function Sidebar({ currentPage, onNavigate, isCollapsed, onToggleCollapse, isMob
                 />
             )}
 
-            {/* Using flex-col and h-screen anchors elements to the active viewing screen bounds */}
+          
             <aside className={`fixed inset-y-0 left-0 z-40 flex h-screen w-62 flex-col
               border-r border-slate-200 bg-white
               transition-all duration-300 ease-in-out
               ${isCollapsed ? "lg:w-20" : "lg:w-62"}
               ${isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}`}>
 
-                {/* Logo Section Layout */}
+                
                 <div className="flex h-20 items-center p-6 border-b border-slate-200 flex-shrink-0">
                     <div className="flex bg-teal-700 w-5 h-5 p-4 justify-center items-center rounded-lg">
                         <span className="text-lg font-bold text-neutral-100">T</span>
@@ -36,8 +36,8 @@ function Sidebar({ currentPage, onNavigate, isCollapsed, onToggleCollapse, isMob
                     )}
                 </div>
 
-                {/* Primary Content Scroll Section */}
-                <nav className="p-3 py-5 flex-1 overflow-y-auto">
+                
+                <nav className="min-h-0 flex-1 overflow-y-auto p-3 py-5">
                     {/* Main Nav Items */}
                     {mainNavItems.map((item) => {
                         if (!item.roles.includes(userRole)) return null;
@@ -55,7 +55,7 @@ function Sidebar({ currentPage, onNavigate, isCollapsed, onToggleCollapse, isMob
 
                     <div className="border-b border-slate-200 my-3 mx-2" />
 
-                    {/* Secondary Nav Items */}
+                    
                     {secondaryNavItems.map((item) => {
                         if (!item.roles.includes(userRole)) return null;
                         return (
@@ -72,7 +72,7 @@ function Sidebar({ currentPage, onNavigate, isCollapsed, onToggleCollapse, isMob
                     })}
                 </nav>
 
-                {/* Sidebar Collapse Action Anchor */}
+               
                 <button
                     onClick={onToggleCollapse}
                     className="absolute top-1/2 -right-4.5 p-2 hidden items-center justify-center rounded-full border border-slate-200 text-neutral-500 bg-teal-700/10 hover:bg-teal-700/20 lg:flex z-50"
@@ -80,7 +80,6 @@ function Sidebar({ currentPage, onNavigate, isCollapsed, onToggleCollapse, isMob
                     {isCollapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
                 </button>
 
-                {/* Bottom Footer Items (Pushed to bottom layout boundaries via flex) */}
                 <div className="p-3 mt-auto border-t border-slate-200 bg-white w-full flex-shrink-0 pb-6">
                     {bottomNavItems.map((item) => {
                         if (!item.roles.includes(userRole)) return null;
