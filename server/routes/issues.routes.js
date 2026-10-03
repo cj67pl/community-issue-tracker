@@ -3,6 +3,7 @@ import { getIssues, getIssueById, createIssue, updateIssue, deleteIssue, updateI
 import { authenticateToken } from "../middleware/auth.middleware.js";
 import { authorizedRoles } from "../middleware/role.middleware.js";
 import { getIssueFilterOptions } from "../controllers/filter.controller.js";
+import demoMode from "../middleware/demoMode.js";
 
 const router = express.Router();
 
@@ -13,10 +14,13 @@ router.get("/", authenticateToken, getIssues);
 router.get("/user-issues", authenticateToken, getUserIssues);
 router.get("/filter-options", authenticateToken, getIssueFilterOptions);
 router.get("/:id", authenticateToken, getIssueById);
-router.post("/", authenticateToken, createIssue);
-router.patch("/:id", authenticateToken, authorizedRoles(1, 2), updateIssue);
-router.patch("/:id/priority", authenticateToken, authorizedRoles(1, 2), updateIssuePriority);
-router.delete("/:id", authenticateToken, authorizedRoles(1, 3), deleteIssue);
+router.post("/", authenticateToken, demoMode, createIssue);
+
+router.patch("/:id", authenticateToken, demoMode, authorizedRoles(1, 2), updateIssue);
+
+router.patch("/:id/priority", authenticateToken, demoMode, authorizedRoles(1, 2), updateIssuePriority);
+
+router.delete("/:id", authenticateToken, demoMode, authorizedRoles(1, 3), deleteIssue);
 
 
 

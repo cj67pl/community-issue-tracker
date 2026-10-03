@@ -13,24 +13,48 @@ import {
 
 import { authenticateToken } from "../middleware/auth.middleware.js";
 import { authorizedRoles } from "../middleware/role.middleware.js";
+import demoMode from "../middleware/demoMode.js";
 
 const router = express.Router();
-
 
 router.get("/", authenticateToken, authorizedRoles(1), getUsers);
 
 router.get("/:id", authenticateToken, authorizedRoles(1, 2, 3), getUserById);
 
-router.post("/", authenticateToken, authorizedRoles(1), createUser);
+router.post("/", authenticateToken, demoMode, authorizedRoles(1), createUser);
 
-router.patch("/:id", authenticateToken, authorizedRoles(1, 2, 3), updateUserProfile);
+router.patch(
+	"/:id",
+	authenticateToken,
+	demoMode,
+	authorizedRoles(1, 2, 3),
+	updateUserProfile,
+);
 
-router.patch("/:id/role", authenticateToken, authorizedRoles(1), updateUserRole);
+router.patch(
+	"/:id/role",
+	authenticateToken,
+	demoMode,
+	authorizedRoles(1),
+	updateUserRole,
+);
 
-router.patch("/:id/status", authenticateToken, authorizedRoles(1), updateUserStatus);
+router.patch(
+	"/:id/status",
+	authenticateToken,
+	demoMode,
+	authorizedRoles(1),
+	updateUserStatus,
+);
 
-router.patch("/:id/password", authenticateToken, updateUserPassword);
+router.patch("/:id/password", authenticateToken, demoMode, updateUserPassword);
 
-router.delete("/:id", authenticateToken, authorizedRoles(1), deactivateUser);
+router.delete(
+	"/:id",
+	authenticateToken,
+	demoMode,
+	authorizedRoles(1),
+	deactivateUser,
+);
 
 export default router;
