@@ -12,7 +12,7 @@ Tugon is implemented as a full-stack web application with a React frontend, Expr
 
 ## Live Demo
 
-**Live Application:** [YOUR VERCEL URL]
+**Live Application:** https://tugon-issue-reporting-and-management-jfr9-dusky.vercel.app/
 
 ### Demo Accounts
 
