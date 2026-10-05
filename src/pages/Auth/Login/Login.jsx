@@ -63,7 +63,16 @@ function Login({ onSwitchToRegister, creds, onLoginSuccess }) {
 
     function handleDemoLogin(demoEmail) {
         setEmail(demoEmail);
-        setPassword("1234password");
+
+        if (
+            demoEmail === "testadmin@email.com" ||
+            demoEmail === "testcoordinator@email.com"
+        ) {
+            setPassword("TestPassword123");
+        } else if (demoEmail === "testreporter@email.com") {
+            setPassword("1234password");
+        }
+
         setErrorMessage("");
     }
 
