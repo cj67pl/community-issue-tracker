@@ -65,11 +65,11 @@ function Login({ onSwitchToRegister, creds, onLoginSuccess }) {
         setEmail(demoEmail);
 
         if (
-            demoEmail === "testadmin@email.com" ||
-            demoEmail === "testcoordinator@email.com"
+            demoEmail === "testadmin@example.com" ||
+            demoEmail === "testcoordinator@example.com"
         ) {
             setPassword("TestPassword123");
-        } else if (demoEmail === "testreporter@email.com") {
+        } else if (demoEmail === "john.dc@example.com") {
             setPassword("1234password");
         }
 
