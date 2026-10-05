@@ -63,7 +63,7 @@ function Login({ onSwitchToRegister, creds, onLoginSuccess }) {
 
     function handleDemoLogin(demoEmail) {
         setEmail(demoEmail);
-        setPassword("demo123");
+        setPassword("1234password");
         setErrorMessage("");
     }
 
@@ -232,14 +232,14 @@ function Login({ onSwitchToRegister, creds, onLoginSuccess }) {
                     </div>
 
                     {/* Demo Password */}
-                    <div className="mt-3 rounded-lg bg-teal-50 px-3 py-2 text-center">
+                    {/* <div className="mt-3 rounded-lg bg-teal-50 px-3 py-2 text-center">
                         <span className="text-xs text-neutral-500">
                             Demo password:
                         </span>{" "}
                         <span className="text-xs font-semibold text-teal-700">
                             1234password
                         </span>
-                    </div>
+                    </div> */}
 
                     <p className="mt-3 text-center text-[11px] leading-relaxed text-neutral-400">
                         Demo accounts are provided for portfolio
