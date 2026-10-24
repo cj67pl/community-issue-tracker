@@ -189,8 +189,8 @@ function IssueDetails({ style, issue, onDeleteIssue, onEditIssueStatus, onAddCom
                     console.log("UPDATED BY:", issueData.updated_by);
                 })()} */}
                 <ReporterCard
-                    initials={getInitials(issueData.reported_by)}
-                    name={issueData.reported_by}
+                    initials={getInitials(issueData.reported_by_name)}
+                    name={issueData.reported_by_name}
                     role={issueData.position}
                     profileColor={issueData.reporter_profile_color}
                     variant="large"
