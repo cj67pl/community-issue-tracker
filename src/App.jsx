@@ -14,6 +14,7 @@ import AdminUsers from "./pages/Admin/AdminUsers.jsx";
 import AdminCategories from "./pages/Admin/AdminCategories.jsx";
 // import AdminIssues from "./pages/Admin/AdminIssues.jsx";
 import AdminAnalytics from "./pages/Admin/AdminAnalytics.jsx";
+import LandingPage from "./pages/Public/LandingPage.jsx";
 
 import "./App.css";
 import { apiRequest } from "./api/api.js";
@@ -38,7 +39,8 @@ function App() {
 	const [isCollapsed, setCollapsed] = useState(false);
 	const [isMobileOpen, setIsMobileOpen] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
-	
+	const [showLogin, setShowLogin] = useState(false);
+
 	useEffect(() => {
 		const restoreSession = async () => {
 			const token = localStorage.getItem("token");
@@ -111,6 +113,7 @@ function App() {
 		localStorage.removeItem("token");
 		localStorage.removeItem("user");
 		setCurrentUser(null);
+		setShowLogin(false);
 	}
 
 	function handleNavigate(key) {
@@ -149,9 +152,20 @@ function App() {
 	}
 
 	if (!currentUser) {
-		return <AuthPage onLoginSuccess={handleLoginSuccess} />;
+		if (showLogin) {
+			return (
+				<AuthPage
+					onLoginSuccess={handleLoginSuccess}
+				/>
+			);
+		}
+
+		return (
+			<LandingPage
+				onLogin={() => setShowLogin(true)}
+			/>
+		);
 	}
-	
 	
 	return (
 		<div className="min-h-screen bg-white text-slate-900">
