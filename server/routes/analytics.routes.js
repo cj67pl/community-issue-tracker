@@ -18,9 +18,9 @@ import { authorizedRoles } from "../middleware/role.middleware.js";
 
 const router = express.Router();
 
-router.get("/kpi", authenticateToken, authorizedRoles(1), getAnalyticsKpi);
-router.get("/trends", authenticateToken, authorizedRoles(1), getIssueTrends);
-router.get("/by-status", authenticateToken, authorizedRoles(1), getIssueTrendsByStatus);
+router.get("/kpi", authenticateToken, authorizedRoles(1, 2), getAnalyticsKpi);
+router.get("/trends", authenticateToken, authorizedRoles(1, 2), getIssueTrends);
+router.get("/by-status", authenticateToken, authorizedRoles(1, 2), getIssueTrendsByStatus);
 router.get("/count-categories", authenticateToken, authorizedRoles(1), getIssuesByCategory);
 router.get("/count-priorities", authenticateToken, authorizedRoles(1), getIssuesByPriority);
 router.get("/count-locations", authenticateToken, authorizedRoles(1), getIssuesByLocation);
